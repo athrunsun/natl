@@ -1,0 +1,110 @@
+<#include "/tpl/common/_master.html" />
+
+<#macro customBody>
+    <div class="top-offset">
+        <div class="container grid fluid">
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Test Result Details</div>
+                        <div class="panel-content">
+                            <table id="queue_table" class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Test Name</td>
+                                        <td>
+                                            <span title="${testResult.getTestName()}">${testResult.getShortTestName()}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Exec Result</td>
+                                        <td>
+                                            <#if testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
+                                                <span class="label">${testResult.getExecResultLabel()}</span>
+                                            <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+                                                <span class="label warning">${testResult.getExecResultLabel()}</span>
+                                            <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+                                                <span class="label success">${testResult.getExecResultLabel()}</span>
+                                            <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+                                                <span class="label error">${testResult.getExecResultLabel()}</span>
+                                            <#else>
+                                                <span class="label">${testResult.getExecResultLabel()}</span>
+                                            </#if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Slave Name</td>
+                                        <td><span>${testResult.getSlaveName()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Slave Name</td>
+                                        <td><span>${testResult.getSlaveName()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Start Time</td>
+                                        <td><span>${testResult.getStartTimeAsString()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>End Time</td>
+                                        <td><span>${testResult.getEndTimeAsString()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Message</td>
+                                        <td><span>${testResult.getMessage()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Stack Trace</td>
+                                        <td><span>${testResult.getStackTrace()}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Screenshot</td>
+                                        <td>
+                                            <a href="${testResult.getScreenshotUrl()}" target="_blank">Click to View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Round</td>
+                                        <td>
+                                            <a href="${CPATH}/round/detail/${round.getId()}">${round.getName()}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ENV</td>
+                                        <td><span>${testResult.getEnv()}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header bg-darkBlue fg-white">Respective Queue Entry</div>
+                        <div class="panel-content">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>ID</td>
+                                    <td><span>${entry.getId()}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Index</td>
+                                    <td><span>${entry.getIndex()}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>JVM Options</td>
+                                    <td><span>${entry.getJvmOptions()}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>TestNG Params</td>
+                                    <td><span>${entry.getParams()}</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<@master/>

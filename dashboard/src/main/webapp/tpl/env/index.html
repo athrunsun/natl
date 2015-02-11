@@ -1,0 +1,57 @@
+<#include "/tpl/common/_master.html" />
+<#macro customBody>
+    <div class="top-offset">
+        <div class="container grid fluid">
+            <div class="row">
+                <div class="span3">
+                    <div class="sidebar">
+                        <ul>
+                            <li><a id="create_env" href="#">Create Env</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span8">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Env List</div>
+                        <div class="panel-content">
+                            <table id="env_table" class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-left">Name</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#list envList as env>
+                                    <tr>
+                                        <td>${env.getId()}</td>
+                                        <td>${env.getName()}</td>
+                                        <td><button data-id="${env.getId()}" class="button danger delete-env">Delete</button></td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<#macro customJavascript>
+    <script id="create_env_form_tpl" type="text/x-dot-template">
+        <form action="${CPATH}/env/create" method="post">
+            <label>Name</label>
+            <div class="input-control text">
+                <input name="name" type="text">
+            </div>
+            <input class="button primary" type="submit" value="Create">
+        </form>
+    </script>
+    <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/env.js" type="text/javascript"></script>
+</#macro>
+
+<@master/>

@@ -1,0 +1,45 @@
+<#include "/tpl/common/_master.html" />
+<#macro customBody>
+    <div class="top-offset">
+        <div class="grid fluid">
+            <div class="row">
+                <div class="span3">
+                    <div class="sidebar">
+                        <ul>
+                            <li><a id="stop_listening_all" href="#">Stop Listening On All Slaves</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span8">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Slave List</div>
+                        <div class="panel-content">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-left">Machine Name</th>
+                                    <th class="text-left">Concurrency</th>
+                                    <th class="text-left">Listening?</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#list slaveList as slave>
+                                    <tr>
+                                        <td>${slave.getId()}</td>
+                                        <td>${slave.getMachineName()}</td>
+                                        <td>${slave.getConcurrency()}</td>
+                                        <td>${slave.getIsListening()?string('yes','no')}</td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<@master/>

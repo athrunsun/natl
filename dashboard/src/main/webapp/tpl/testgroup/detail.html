@@ -1,0 +1,52 @@
+<#include "/tpl/common/_master.html" />
+
+<#macro customBody>
+    <div class="top-offset">
+        <div class="container fluid grid">
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Test Group #${testGroup.getId()} ${testGroup.getName()}</div>
+                        <div class="panel-content">
+                            <form action="${CPATH}/testgroup/save" method="post">
+                                <label>ID</label>
+                                <div class="input-control text">
+                                    <input type="text" value="${testGroup.getId()}" disabled="disabled">
+                                    <input name="test_group_id" type="hidden" value="${testGroup.getId()}">
+                                </div>
+                                <label>Name</label>
+                                <div class="input-control text">
+                                    <input name="test_group_name" type="text" value="${testGroup.getName()}" disabled="disabled">
+                                </div>
+                                <!--<input class="button primary" type="submit" value="Save">-->
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header bg-darkBlue fg-white">Containing Tests</div>
+                        <div class="panel-content">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">TestName</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#list testGroup.getTestGroupTestCases() as testGroupTestCase>
+                                    <tr>
+                                        <td>
+                                            <span title="${testGroupTestCase.getTestName()}">${testGroupTestCase.getShortTestName()}</span>
+                                        </td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<@master/>

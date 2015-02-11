@@ -1,0 +1,88 @@
+<#include "/tpl/common/_master.html" />
+
+<#macro customBody>
+    <div class="top-offset">
+        <div class="grid fluid">
+            <div class="row">
+                <div class="span3">
+                    <div class="sidebar">
+                        <ul>
+                            <li><a id="run_selected_test_groups" href="#">Run Selected</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span8">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Test Groups</div>
+                        <div class="panel-content">
+                            <table id="test_group_table" class="table">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-left">Name</th>
+                                    <th class="text-left"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#list testGroupList as testGroup>
+                                    <tr>
+                                        <td>
+                                            <div class="input-control checkbox">
+                                                <label>
+                                                    <input data-id="${testGroup.getId()}" type="checkbox" class="check-to-run-test-group"/>
+                                                    <span class="check"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>${testGroup.getId()}</td>
+                                        <td>${testGroup.getName()}</td>
+                                        <td><a class="button default" href="${CPATH}/testgroup/detail/${testGroup.getId()}">Detail</a></td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<#macro customJavascript>
+    <script id="create_round_form_tpl" type="text/x-dot-template">
+        <form id="create_round_form" action="${CPATH}/round/createByTestGroup" method="post">
+            <label>Name</label>
+            <div class="input-control text">
+                <input name="name" type="text">
+            </div>
+            <label>JVM Options</label>
+            <div class="input-control text">
+                <input name="jvm_options" type="text">
+            </div>
+            <label>TestNG Parameters</label>
+            <div class="input-control text">
+                <input name="params" type="text">
+            </div>
+            <label>ENV</label>
+            <div class="input-control text select">
+                <select name="env">
+                    {{~it.array :value:index}}
+                    {{? index === 0 }}
+                    <option value="{{=value.id}}" selected="selected">{{=value.name}}</option>
+                    {{??}}
+                    <option value="{{=value.id}}">{{=value.name}}</option>
+                    {{?}}
+                    {{~}}
+                </select>
+            </div>
+            <input id="selected_test_groups" name="selected_test_groups" type="hidden">
+            <input class="button primary" type="submit" value="Create">
+        </form>
+    </script>
+    <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/testGroup.js" type="text/javascript"></script>
+</#macro>
+
+<@master/>

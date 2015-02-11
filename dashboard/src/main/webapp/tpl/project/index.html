@@ -1,0 +1,43 @@
+<#include "/tpl/common/_master.html" />
+
+<#macro customBody>
+    <div class="top-offset">
+        <div class="container grid fluid">
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Project Details</div>
+                        <div class="panel-content">
+                            <form action="${CPATH}/project/save" method="post">
+                                <label>ID</label>
+                                <div class="input-control text">
+                                    <input type="text" value="${project.getId()}" disabled="disabled">
+                                    <input name="id" type="hidden" value="${project.getId()}">
+                                </div>
+                                <label>Name</label>
+                                <div class="input-control text">
+                                    <input name="name" type="text" value="${project.getName()}">
+                                </div>
+                                <label>Git URL</label>
+                                <div class="input-control text">
+                                    <input name="git_url" type="text" value="${project.getGitUrl()}">
+                                </div>
+                                <label>Jar Name</label>
+                                <div class="input-control text">
+                                    <input name="jar_name" type="text" value="${project.getJarName()}">
+                                </div>
+                                <label>Jar Name - With Dependency</label>
+                                <div class="input-control text">
+                                    <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}">
+                                </div>
+                                <input class="button primary" type="submit" value="Save">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<@master/>
