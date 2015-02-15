@@ -1,10 +1,11 @@
-SET project_path_util=D:\Git\nitrogen-ates-util
-SET project_path_core=D:\Git\nitrogen-ates-core
-SET project_path_daemon=D:\Git\nitrogen-ates-daemon
-SET project_path_dashboard=D:\Git\nitrogen-ates-dashboard
-SET project_path_testimporter=D:\Git\nitrogen-ates-testimporter
-SET project_path_testpartner=D:\Git\nitrogen-ates-testpartner
-SET project_path_testresultreporter=D:\Git\nitrogen-ates-testresultreporter
+SET project_root_path=D:\Git\nitrogen-ates
+SET project_path_util=%project_root_path%\util
+SET project_path_core=%project_root_path%\core
+SET project_path_daemon=%project_root_path%\daemon
+SET project_path_dashboard=%project_root_path%\dashboard
+SET project_path_testimporter=%project_root_path%\testimporter2
+SET project_path_testpartner=%project_root_path%\testpartner
+SET project_path_testresultreporter=%project_root_path%\testresultreporter
 SET ates_path_root=C:\ates
 SET ates_path_lib=%ates_path_root%\lib
 
@@ -23,6 +24,7 @@ REM CALL mvn clean compile package tomcat7:redeploy
 
 CD /D %project_path_testimporter%
 CALL mvn clean compile package assembly:single
+CALL mvn install
 xcopy %project_path_testimporter%\target\*.jar %ates_path_lib%\ /h /i /r /c /y /d
 
 CD /D %project_path_testpartner%
