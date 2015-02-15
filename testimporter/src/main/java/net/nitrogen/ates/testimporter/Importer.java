@@ -1,10 +1,6 @@
 package net.nitrogen.ates.testimporter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.entity.TestCase;
@@ -16,8 +12,10 @@ import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.c3p0.C3p0Plugin;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class Importer {
 	private long projectId;
@@ -28,11 +26,8 @@ public class Importer {
 
 	public void doImport(List<TestCase> testCasesToReload, List<TestGroup> testGroupsToReload, Map<String, List<String>> rawTestGroupTestCasesToReload) {
 		Properties props = PropertiesUtil.load("config.txt");
-		//C3p0Plugin c3p0Plugin = DBConfig.createC3p0Plugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"));
-		//c3p0Plugin.start();
 		DruidPlugin druidPlugin = DBConfig.createDruidPlugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"), 0, 0, 10);
 		druidPlugin.start();
-		//ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(c3p0Plugin);
 		ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
 		arp.start();
 
@@ -57,7 +52,6 @@ public class Importer {
 		TestSuiteTestCaseModel.me.deleteNonexistent(this.projectId);
 
 		arp.stop();
-		//c3p0Plugin.stop();
 		druidPlugin.stop();
 	}
 

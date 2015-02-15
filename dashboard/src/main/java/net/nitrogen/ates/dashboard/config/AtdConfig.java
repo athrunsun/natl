@@ -4,7 +4,6 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.*;
 import com.jfinal.ext.handler.ContextPathHandler;
-import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import net.nitrogen.ates.core.config.DBConfig;
@@ -39,9 +38,6 @@ public class AtdConfig extends JFinalConfig {
 
     @Override
     public void configPlugin(Plugins me) {
-        //C3p0Plugin c3p0 = DBConfig.createC3p0Plugin(getProperty("jdbcUrl"), getProperty("dbuser"), getProperty("dbpassword").trim());
-        //me.add(c3p0);
-        //me.add(DBConfig.createActiveRecordPlugin(c3p0));
         DruidPlugin druidPlugin = DBConfig.createDruidPlugin(getProperty("jdbcUrl"), getProperty("dbuser"), getProperty("dbpassword"), 10, 10, 50);
         druidPlugin.addFilter(new StatFilter());
         WallFilter wall = new WallFilter();
