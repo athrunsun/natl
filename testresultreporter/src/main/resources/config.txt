@@ -1,4 +1,3 @@
 jdbcUrl=jdbc:mysql://10.119.35.103:3306/nitrogenates?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 dbuser=nitrogenadmin
 dbpassword=@ctive123
-devMode=true
