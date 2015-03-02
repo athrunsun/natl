@@ -12,11 +12,13 @@
   * Create new execution based on current execution
   * Add/remove entries
   * Display result
-  * Favorite(single/multiple TestGroup with paramters, reload automatically when full-building project)
-    * (TBD)Historical pass rate
   * Rerun all/failed/selected
   * Automatically rerun(replace former entries on webpage, but keep data)
   * `P1`Pie chart to display pass rate
+<br/>
+
+* Favorite Execution(single/multiple TestGroup with paramters, reload automatically when full-building project)
+  * (TBD)Historical pass rate
 <br/>
 
 * TestCase
@@ -25,7 +27,9 @@
   * Filter(testGroup/execResult/execution)
   * Historical results, and filter(env/browser/slave)
   * Group test cases by failure message
-  * `P1`Treeview to display test cases
+  * `P1`Treeview to display test cases: left-right panel, left panel to display treeview, right to display test case detail (result history, linked defects)
+    `http://codepen.io/fsbdev/embed/nILhu?height=600&user=fsbdev&type=result&slug-hash=nILhu&safe=true&default-tab=result&animations=run#js-box`
+  * Gridview to display test cases: add/remove columns, filter(with condition AND/OR), group by column
 <br/>
 
 * TestGroup
