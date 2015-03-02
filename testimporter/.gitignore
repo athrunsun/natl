@@ -7,3 +7,4 @@
 .settings/
 /target/
 /test-output/
+/src/main/resources/config.txt
