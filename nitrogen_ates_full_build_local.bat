@@ -29,6 +29,7 @@ CALL mvn clean compile package install
 CD /D %project_path_daemon%
 CALL mvn clean compile package assembly:single
 XCOPY %project_path_daemon%\target\*.jar %ates_path_lib%\ /h /i /r /c /y /d
+COPY %project_path_daemon%\launchDaemon.bat %ates_path_lib%\ /y
 
 REM CD /D %project_path_dashboard%
 REM CALL mvn clean compile package tomcat7:redeploy
