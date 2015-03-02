@@ -64,6 +64,11 @@
             <artifactId>ates-util</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--<dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>8.1.8</version>
+        </dependency>-->
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>
