@@ -1,0 +1,2 @@
+%JavaExePath% -Dnitrogen_ates_projectid=%ProjectId% -cp %ATESLibRoot%\ates-testimporter-jar-with-dependencies.jar;%TestJarWithDependenciesName% org.testng.TestNG -testjar %TestJarWithDependenciesName% -xmlpathinjar caseImporter.xml
+pause
