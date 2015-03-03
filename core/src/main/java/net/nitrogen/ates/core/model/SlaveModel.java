@@ -1,9 +1,7 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.Slave;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SlaveModel extends Model<SlaveModel> {
@@ -19,7 +17,47 @@ public class SlaveModel extends Model<SlaveModel> {
 
     public static final SlaveModel me = new SlaveModel();
 
-    public List<Slave> findAllSlaves() {
+    public long getId() {
+        return this.getLong(Fields.ID);
+    }
+
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
+
+    public String getMachineName() {
+        return this.getStr(Fields.MACHINE_NAME);
+    }
+
+    public void setMachineName(String machineName) {
+        this.set(Fields.MACHINE_NAME, machineName);
+    }
+
+    public int getStatus() {
+        return this.getInt(Fields.STATUS);
+    }
+
+    public void setStatus(int status) {
+        this.set(Fields.STATUS, status);
+    }
+
+    public int getConcurrency() {
+        return this.getInt(Fields.CONCURRENCY);
+    }
+
+    public void setConcurrency(int concurrency) {
+        this.set(Fields.CONCURRENCY, concurrency);
+    }
+
+    public boolean getIsListening() {
+        return this.getBoolean(Fields.IS_LISTENING);
+    }
+
+    public void setIsListening(boolean isListening) {
+        this.set(Fields.IS_LISTENING, isListening);
+    }
+
+    public List<SlaveModel> findAllSlaves() {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
@@ -29,13 +67,7 @@ public class SlaveModel extends Model<SlaveModel> {
                 Fields.IS_LISTENING,
                 TABLE);
 
-        List<Slave> slaves = new ArrayList<>();
-
-        for (SlaveModel m : find(sql)) {
-            slaves.add(Slave.create(m));
-        }
-
-        return slaves;
+        return find(sql);
     }
 
     public boolean slaveExists(String slaveName) {
@@ -44,6 +76,10 @@ public class SlaveModel extends Model<SlaveModel> {
 
     public void insertSlave(String slaveName) {
         SlaveModel m = new SlaveModel();
-        m.set(Fields.MACHINE_NAME, slaveName).set(Fields.STATUS, 0).set(Fields.CONCURRENCY, 1).set(Fields.IS_LISTENING, true).save();
+        m.setMachineName(slaveName);
+        m.setStatus(0);
+        m.setConcurrency(1);
+        m.setIsListening(true);
+        m.save();
     }
 }

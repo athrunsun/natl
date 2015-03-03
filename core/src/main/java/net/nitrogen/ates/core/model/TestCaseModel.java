@@ -3,13 +3,13 @@ package net.nitrogen.ates.core.model;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.TestCase;
+import net.nitrogen.ates.util.StringUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestCaseModel extends Model<TestCaseModel> {
+    public static final int MAX_TEST_NAME_LENGTH = 80;
     public static final String TABLE = "test_case";
 
     public class Fields {
@@ -20,20 +20,42 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public static final TestCaseModel me = new TestCaseModel();
 
-    public TestCase findFirstTestCase(long projectId, String name) {
-        TestCaseModel m = this.findFirst(
+    public long getProjectId() {
+        return getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public String getMappingId() {
+        return getStr(Fields.MAPPING_ID);
+    }
+
+    public void setMappingId(String mappingId) {
+        this.set(Fields.MAPPING_ID, mappingId);
+    }
+
+    public String getName() {
+        return getStr(Fields.NAME);
+    }
+
+    public String getShortName() {
+        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public TestCaseModel findFirstTestCase(long projectId, String name) {
+        return this.findFirst(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1", Fields.PROJECT_ID, Fields.MAPPING_ID, Fields.NAME, TABLE, Fields.PROJECT_ID, Fields.NAME),
                 projectId,
                 name);
-
-        if (m != null) {
-            return TestCase.create(m);
-        }
-
-        return null;
     }
 
-    public List<TestCase> findTestCases(long projectId) {
+    public List<TestCaseModel> findTestCases(long projectId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
                 Fields.PROJECT_ID,
@@ -42,16 +64,10 @@ public class TestCaseModel extends Model<TestCaseModel> {
                 TABLE,
                 Fields.PROJECT_ID);
 
-        List<TestCase> testCases = new ArrayList<>();
-
-        for(TestCaseModel m : find(sql, projectId)) {
-            testCases.add(TestCase.create(m));
-        }
-
-        return testCases;
+        return find(sql, projectId);
     }
 
-    public void reloadTestCases(final long projectId, List<TestCase> testCases) {
+    public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
         final String deleteSql = String.format("DELETE FROM `%s` WHERE `%s`=?", TABLE, Fields.PROJECT_ID);
 
         final int INSERT_PARAMS_SIZE = 3;

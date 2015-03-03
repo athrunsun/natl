@@ -3,10 +3,8 @@ package net.nitrogen.ates.core.model;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.TestGroup;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestGroupModel extends Model<TestGroupModel> {
@@ -20,32 +18,45 @@ public class TestGroupModel extends Model<TestGroupModel> {
 
     public static final TestGroupModel me = new TestGroupModel();
 
-    public TestGroup findTestGroup(long testGroupId){
-        TestGroupModel m = findById(testGroupId);
-        return TestGroup.create(m);
+    public long getId() {
+        return getLong(Fields.ID);
     }
 
-    public List<TestGroup> findTestGroups(long projectId) {
-        List<TestGroup> testGroups = new ArrayList<TestGroup>();
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
 
-        List<TestGroupModel> mList = find(
+    public String getName() {
+        return getStr(Fields.NAME);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public long getProjectId() {
+        return getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public List<TestGroupTestCaseModel> getTestGroupTestCases() {
+        return TestGroupTestCaseModel.me.findTestGroupTestCases(this.getId());
+    }
+
+    public TestGroupModel findTestGroup(long testGroupId){
+        return findById(testGroupId);
+    }
+
+    public List<TestGroupModel> findTestGroups(long projectId) {
+        return find(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID),
                 projectId);
-
-        for(TestGroupModel m : mList) {
-            testGroups.add(TestGroup.create(m));
-        }
-
-        return testGroups;
     }
 
-    public void insertTestGroup(TestGroup testGroup) {
-        TestGroupModel m = new TestGroupModel();
-        m.set(Fields.NAME, testGroup.getName()).set(Fields.PROJECT_ID, testGroup.getProjectId()).save();
-        testGroup.setId(m.getInt(Fields.ID));
-    }
-
-    public void insertTestGroups(List<TestGroup> testGroups) {
+    public void insertTestGroups(List<TestGroupModel> testGroups) {
         final int INSERT_TEST_GROUP_PARAMS_SIZE = 2;
         final String insertTestGroupSql = String.format("INSERT `%s`(`%s`,`%s`) VALUES(?,?)", TABLE, Fields.NAME, Fields.PROJECT_ID);
         final Object[][] insertTestGroupParams = new Object[testGroups.size()][INSERT_TEST_GROUP_PARAMS_SIZE];

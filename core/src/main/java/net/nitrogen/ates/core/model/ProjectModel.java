@@ -1,9 +1,7 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.Project;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectModel extends Model<ProjectModel> {
@@ -19,20 +17,56 @@ public class ProjectModel extends Model<ProjectModel> {
 
     public static final ProjectModel me = new ProjectModel();
 
-    public Project findProject(long projectId){
-        return Project.create(me.findById(projectId));
+    public long getId() {
+        return this.getLong(Fields.ID);
     }
 
-    public String findJarName(long projectId) {
-        return this.findById(projectId).getStr(Fields.JAR_NAME);
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
+
+    public String getName() {
+        return this.getStr(Fields.NAME);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public String getJarName() {
+        return this.getStr(Fields.JAR_NAME);
+    }
+
+    public void setJarName(String jarName) {
+        this.set(Fields.JAR_NAME, jarName);
+    }
+
+    public String getJarWithDependencyName() {
+        return this.getStr(Fields.JAR_WITH_DEPENDENCY_NAME);
+    }
+
+    public void setJarWithDependencyName(String jarWithDependencyName) {
+        this.set(Fields.JAR_WITH_DEPENDENCY_NAME, jarWithDependencyName);
+    }
+
+    public String getGitUrl() {
+        return this.getStr(Fields.GIT_URL);
+    }
+
+    public void setGitUrl(String gitUrl) {
+        this.set(Fields.GIT_URL, gitUrl);
+    }
+
+    public ProjectModel findProject(long projectId){
+        return me.findById(projectId);
     }
 
     public String findJarWithDependencyName(long projectId) {
         return this.findById(projectId).getStr(Fields.JAR_WITH_DEPENDENCY_NAME);
     }
 
-    public List<Project> findAllProjects(){
-        List<ProjectModel> projectModelList = this.find(String.format(
+    public List<ProjectModel> findAllProjects(){
+        return this.find(String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
                 Fields.NAME,
@@ -40,13 +74,5 @@ public class ProjectModel extends Model<ProjectModel> {
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
                 TABLE));
-
-        List<Project> projects = new ArrayList<Project>();
-
-        for(ProjectModel m : projectModelList){
-            projects.add(Project.create(m));
-        }
-
-        return projects;
     }
 }

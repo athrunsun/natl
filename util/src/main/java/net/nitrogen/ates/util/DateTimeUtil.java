@@ -11,6 +11,10 @@ public class DateTimeUtil {
         return new DateTime(t.getTime());
     }
 
+    public static Timestamp toSqlTimestamp(DateTime t) {
+        return new Timestamp(t.getMillis());
+    }
+
     public static String toStringWithDefaultFormat(DateTime dt) {
         return dt.toString(DEFAULT_DATE_TIME_FORMAT);
     }

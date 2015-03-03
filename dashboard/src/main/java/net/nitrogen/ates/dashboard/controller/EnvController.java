@@ -5,7 +5,7 @@ import net.nitrogen.ates.core.model.CustomEnvModel;
 
 public class EnvController extends Controller {
     public void index() {
-        setAttr("envList", CustomEnvModel.me.findEnvs(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("envList", CustomEnvModel.me.findEnvsAsModelList(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 

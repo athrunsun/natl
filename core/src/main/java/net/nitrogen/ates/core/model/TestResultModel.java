@@ -1,12 +1,12 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.ICallback;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.TestResult;
+import net.nitrogen.ates.core.enumeration.ExecResult;
+import net.nitrogen.ates.util.DateTimeUtil;
+import net.nitrogen.ates.util.StringUtil;
+import org.joda.time.DateTime;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class TestResultModel extends Model<TestResultModel> {
@@ -30,7 +30,147 @@ public class TestResultModel extends Model<TestResultModel> {
 
     public static final TestResultModel me = new TestResultModel();
 
-    public List<TestResult> findTestResults(long projectId) {
+    public long getId() {
+        return getLong(Fields.ID);
+    }
+
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
+
+    public long getEntryId() {
+        return getLong(Fields.ENTRY_ID);
+    }
+
+    public void setEntryId(long entryId) {
+        this.set(Fields.ENTRY_ID, entryId);
+    }
+
+    public String getTestName() {
+        return getStr(Fields.TEST_NAME);
+    }
+
+    public String getShortTestName() {
+        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+    }
+
+    public void setTestName(String testName) {
+        this.set(Fields.TEST_NAME, testName);
+    }
+
+    public String getSlaveName() {
+        return getStr(Fields.SLAVE_NAME);
+    }
+
+    public void setSlaveName(String slaveName) {
+        this.set(Fields.SLAVE_NAME, slaveName);
+    }
+
+    public Timestamp getStartTimestamp() {
+        return getTimestamp(TestResultModel.Fields.START_TIME);
+    }
+
+    public DateTime getStartTime() {
+        return DateTimeUtil.fromSqlTimestamp(this.getStartTimestamp());
+    }
+
+    public String getStartTimeAsString() {
+        return this.getStartTime().toString(DateTimeUtil.DEFAULT_DATE_TIME_FORMAT);
+    }
+
+    public void setStartTimestamp(Timestamp t) {
+        set(Fields.START_TIME, t);
+    }
+
+    public void setStartTime(DateTime startTime) {
+        this.setStartTimestamp(DateTimeUtil.toSqlTimestamp(startTime));
+    }
+
+    public Timestamp getEndTimestamp() {
+        return getTimestamp(TestResultModel.Fields.END_TIME);
+    }
+
+    public DateTime getEndTime() {
+        return DateTimeUtil.fromSqlTimestamp(this.getEndTimestamp());
+    }
+
+    public String getEndTimeAsString() {
+        return this.getEndTime().toString(DateTimeUtil.DEFAULT_DATE_TIME_FORMAT);
+    }
+
+    public void setEndTimestamp(Timestamp t) {
+        set(Fields.END_TIME, t);
+    }
+
+    public void setEndTime(DateTime endTime) {
+        this.setEndTimestamp(DateTimeUtil.toSqlTimestamp(endTime));
+    }
+
+    public int getExecResult() {
+        return getInt(Fields.EXEC_RESULT);
+    }
+
+    public String getExecResultLabel() {
+        return ExecResult.fromInt(this.getExecResult()).toString();
+    }
+
+    public void setExecResult(int execResult) {
+        set(Fields.EXEC_RESULT, execResult);
+    }
+
+    public void setExecResult(ExecResult execResult) {
+        this.setExecResult(execResult.getValue());
+    }
+
+    public String getMessage() {
+        return getStr(Fields.MESSAGE);
+    }
+
+    public void setMessage(String message) {
+        this.set(Fields.MESSAGE, message);
+    }
+
+    public String getStackTrace() {
+        return getStr(Fields.STACK_TRACE);
+    }
+
+    public void setStackTrace(String stackTrace) {
+        this.set(Fields.STACK_TRACE, stackTrace);
+    }
+
+    public String getScreenshotUrl() {
+        return getStr(Fields.SCREENSHOT_URL);
+    }
+
+    public void setScreenshotUrl(String screenshotUrl) {
+        this.set(Fields.SCREENSHOT_URL, screenshotUrl);
+    }
+
+    public long getRoundId() {
+        return getLong(Fields.ROUND_ID);
+    }
+
+    public void setRoundId(long roundId) {
+        this.set(Fields.ROUND_ID, roundId);
+    }
+
+    public long getProjectId() {
+        return getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public String getEnv() {
+        return getStr(Fields.ENV);
+    }
+
+    public void setEnv(String env) {
+        this.set(Fields.ENV, env);
+    }
+
+    public List<TestResultModel> findTestResults(long projectId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
@@ -50,60 +190,25 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.PROJECT_ID,
                 Fields.ID);
 
-        List<TestResult> testResults = new ArrayList<>();
-
-        for(TestResultModel m : find(sql, projectId)) {
-            testResults.add(TestResult.create(m));
-        }
-
-        return testResults;
+        return find(sql, projectId);
     }
 
-    public long insertTestResult(final TestResult testResult) {
-//        Db.execute(new ICallback() {
-//            @Override
-//            public Object call(Connection conn) {
-//                try {
-//                    CallableStatement statement = conn.prepareCall("{CALL InsertTestResult(?,?,?,?,?,?,?,?,?,?,?,?)}");
-//                    statement.setLong(1, testResult.getEntryId());
-//                    statement.setString(2, testResult.getTestName());
-//                    statement.setString(3, testResult.getSlaveName());
-//                    statement.setString(4, testResult.getStartTimeAsString());
-//                    statement.setString(5, testResult.getEndTimeAsString());
-//                    statement.setInt(6, testResult.getExecResult());
-//                    statement.setString(7, testResult.getMessage());
-//                    statement.setString(8, testResult.getStackTrace());
-//                    statement.setString(9, testResult.getScreenshotUrl());
-//                    statement.setLong(10, testResult.getRoundId());
-//                    statement.setLong(11, testResult.getProjectId());
-//                    statement.setString(12, testResult.getEnv());
-//                    statement.execute();
-//                    ResultSet rs = statement.getResultSet();
-//                    ResultSetMetaData md = rs.getMetaData();
-//                    int columns = md.getColumnCount();
-//                    rs.close();
-//                    return null;
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                    return null;
-//                }
-//            }
-//        });
-
+    public long insertTestResult(TestResultModel testResult) {
         TestResultModel m = new TestResultModel();
 
-        m.set(Fields.ENTRY_ID, testResult.getEntryId()).
-                set(Fields.TEST_NAME, testResult.getTestName()).
-                set(Fields.SLAVE_NAME, testResult.getSlaveName()).
-                set(Fields.START_TIME, testResult.getStartTimeAsString()).
-                set(Fields.END_TIME, testResult.getEndTimeAsString()).
-                set(Fields.EXEC_RESULT, testResult.getExecResult()).
-                set(Fields.MESSAGE, testResult.getMessage()).
-                set(Fields.STACK_TRACE, testResult.getStackTrace()).
-                set(Fields.SCREENSHOT_URL, testResult.getScreenshotUrl()).
-                set(Fields.ROUND_ID, testResult.getRoundId()).
-                set(Fields.PROJECT_ID, testResult.getProjectId()).
-                set(Fields.ENV, testResult.getEnv()).save();
+        m.setEntryId(testResult.getEntryId());
+        m.setTestName(testResult.getTestName());
+        m.setSlaveName(testResult.getSlaveName());
+        m.setStartTime(testResult.getStartTime());
+        m.setEndTime(testResult.getEndTime());
+        m.setExecResult(testResult.getExecResult());
+        m.setMessage(testResult.getMessage());
+        m.setStackTrace(testResult.getStackTrace());
+        m.setScreenshotUrl(testResult.getScreenshotUrl());
+        m.setRoundId(testResult.getRoundId());
+        m.setProjectId(testResult.getProjectId());
+        m.setEnv(testResult.getEnv());
+        m.save();
 
         return m.getLong(Fields.ID);
     }

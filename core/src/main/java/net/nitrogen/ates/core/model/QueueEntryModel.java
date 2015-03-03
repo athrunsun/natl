@@ -2,15 +2,16 @@ package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.ICallback;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.QueueEntry;
-import net.nitrogen.ates.core.entity.TestCase;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
+import net.nitrogen.ates.util.StringUtil;
 import org.joda.time.DateTime;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,124 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
     public static final QueueEntryModel me = new QueueEntryModel();
 
+    public long getId() {
+        return this.getLong(Fields.ID);
+    }
+
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
+
+    public int getStatus() {
+        return this.getInt(Fields.STATUS);
+    }
+
+    public void setStatus(int status) {
+        this.set(Fields.STATUS, status);
+    }
+
+    public String getName() {
+        return this.getStr(Fields.NAME);
+    }
+
+    public String getShortName() {
+        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public String getSlaveName() {
+        return this.getStr(Fields.SLAVE_NAME);
+    }
+
+    public void setSlaveName(String slaveName) {
+        this.set(Fields.SLAVE_NAME, slaveName);
+    }
+
+    public int getIndex() {
+        return this.getInt(Fields.INDEX);
+    }
+
+    public void setIndex(int index) {
+        this.set(Fields.INDEX, index);
+    }
+
+    public Timestamp getStartTimestamp() {
+        return this.getTimestamp(Fields.START_TIME);
+    }
+
+    public DateTime getStartTime() {
+        Timestamp startTimestamp = this.getStartTimestamp();
+        return startTimestamp == null ? null : DateTimeUtil.fromSqlTimestamp(startTimestamp);
+    }
+
+    public void setStartTimestamp(Timestamp t) {
+        this.set(Fields.START_TIME, t);
+    }
+
+    public void setStartTime(DateTime startTime) {
+        this.setStartTimestamp(DateTimeUtil.toSqlTimestamp(startTime));
+    }
+
+    public Timestamp getEndTimestamp() {
+        return this.getTimestamp(Fields.END_TIME);
+    }
+
+    public DateTime getEndTime() {
+        Timestamp endTimestamp = this.getEndTimestamp();
+        return endTimestamp == null ? null : DateTimeUtil.fromSqlTimestamp(endTimestamp);
+    }
+
+    public void setEndTimestamp(Timestamp t) {
+        this.set(Fields.END_TIME, t);
+    }
+
+    public void setEndTime(DateTime endTime) {
+        this.setEndTimestamp(DateTimeUtil.toSqlTimestamp(endTime));
+    }
+
+    public long getRoundId() {
+        return this.getLong(Fields.ROUND_ID);
+    }
+
+    public void setRoundId(long roundId) {
+        this.set(Fields.ROUND_ID, roundId);
+    }
+
+    public long getProjectId() {
+        return this.getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public String getEnv() {
+        return this.getStr(Fields.ENV);
+    }
+
+    public void setEnv(String env) {
+        this.set(Fields.ENV, env);
+    }
+
+    public String getJvmOptions() {
+        return this.getStr(Fields.JVM_OPTIONS);
+    }
+
+    public void setJvmOptions(String jvmOptions) {
+        this.set(Fields.JVM_OPTIONS, jvmOptions);
+    }
+
+    public String getParams() {
+        return this.getStr(Fields.PARAMS);
+    }
+
+    public void setParams(String params) {
+        this.set(Fields.PARAMS, params);
+    }
+
     public List<QueueEntryModel> findAllEntriesAsModelList() {
         return find(String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
@@ -53,16 +172,16 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.ID));
     }
 
-    public List<QueueEntry> findAllEntries() {
-        List<QueueEntryModel> entryModelList = this.findAllEntriesAsModelList();
-        List<QueueEntry> entries = new ArrayList<QueueEntry>();
-
-        for (QueueEntryModel m : entryModelList) {
-            entries.add(QueueEntry.create(m));
-        }
-
-        return entries;
-    }
+//    public List<QueueEntry> findAllEntries() {
+//        List<QueueEntryModel> entryModelList = this.findAllEntriesAsModelList();
+//        List<QueueEntry> entries = new ArrayList<QueueEntry>();
+//
+//        for (QueueEntryModel m : entryModelList) {
+//            entries.add(QueueEntry.create(m));
+//        }
+//
+//        return entries;
+//    }
 
     public List<QueueEntryModel> findEntriesAsModelList(long roundId) {
         String sql = String.format(
@@ -86,13 +205,13 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         return find(sql, roundId);
     }
 
-    public void insertEntries(List<QueueEntry> entries) {
-        List<QueueEntry> foundEntries = new ArrayList<QueueEntry>();
+    public void insertEntries(List<QueueEntryModel> entries) {
+        List<QueueEntryModel> foundEntries = new ArrayList<QueueEntryModel>();
 
         // Make sure all entries have corresponding test cases
-        for (QueueEntry entry : entries) {
+        for (QueueEntryModel entry : entries) {
             // Test case name (i.e. test method name) is the unique identifier
-            TestCase foundTestCase = TestCaseModel.me.findFirstTestCase(entry.getProjectId(), entry.getName());
+            TestCaseModel foundTestCase = TestCaseModel.me.findFirstTestCase(entry.getProjectId(), entry.getName());
 
             if (foundTestCase != null) {
                 foundEntries.add(entry);
@@ -137,7 +256,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         }
     }
 
-    public QueueEntry fetchEntry(final String slaveName) {
+    public QueueEntryModel fetchEntry(final String slaveName) {
         Long entryId = (Long)(Db.execute(new FetchQueueEntryCallback(slaveName)));
 //        Connection dbConnection = null;
 //        dbConnection = getDBConnection();
@@ -156,7 +275,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 //        }
 
         if (entryId != null && entryId.longValue() > 0) {
-            return QueueEntry.create(findById(entryId.longValue()));
+            return findById(entryId.longValue());
         } else {
             return null;
         }
