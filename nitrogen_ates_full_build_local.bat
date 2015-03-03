@@ -1,4 +1,4 @@
-SET project_path_db_config=D:\Git\nitrogen-ates-dbconfig
+SET project_path_db_config=D:\Git\nitrogen-ates-misc\dbconfig
 SET project_root_path=D:\Git\nitrogen-ates
 SET project_path_util=%project_root_path%\util
 SET project_path_core=%project_root_path%\core
