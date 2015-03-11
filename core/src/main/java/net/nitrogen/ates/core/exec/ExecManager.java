@@ -1,6 +1,5 @@
 package net.nitrogen.ates.core.exec;
 
-import net.nitrogen.ates.core.entity.QueueEntry;
 import net.nitrogen.ates.core.env.EnvParameter;
 import net.nitrogen.ates.core.model.ProjectModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
@@ -12,9 +11,7 @@ import org.apache.commons.exec.Executor;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ExecManager {
     public static final String EXEC_PARAM_KEY_DEBUG = "nitrogen_ates_debug";
@@ -32,7 +29,7 @@ public class ExecManager {
             SlaveModel.me.insertSlave(EnvParameter.machineName());
         }
 
-        QueueEntry entry = QueueEntryModel.me.fetchEntry(EnvParameter.machineName());
+        QueueEntryModel entry = QueueEntryModel.me.fetchEntry(EnvParameter.machineName());
 
         if (entry != null) {
             //Map<String, String> envVars = new HashMap<>();

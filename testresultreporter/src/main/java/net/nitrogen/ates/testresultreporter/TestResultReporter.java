@@ -1,10 +1,8 @@
 package net.nitrogen.ates.testresultreporter;
 
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.core.entity.TestResult;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.env.EnvParameter;
 import net.nitrogen.ates.core.model.TestResultModel;
@@ -35,21 +33,17 @@ public class TestResultReporter {
 
     public void report(ITestResult result, ExecResult status) throws ClassNotFoundException, SQLException, UnknownHostException {
         Properties props = PropertiesUtil.load("config.txt");
-        //C3p0Plugin c3p0Plugin = DBConfig.createC3p0Plugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"));
-        //c3p0Plugin.start();
         DruidPlugin druidPlugin = DBConfig.createDruidPlugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"), 0, 0, 1);
         druidPlugin.start();
-        //ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(c3p0Plugin);
         ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
         arp.start();
         TestResultModel.me.insertTestResult(this.prepareTestResult(result, status));
         arp.stop();
-        //c3p0Plugin.stop();
         druidPlugin.stop();
     }
 
-    private TestResult prepareTestResult(ITestResult result, ExecResult status) throws UnknownHostException {
-        TestResult testResult = new TestResult();
+    private TestResultModel prepareTestResult(ITestResult result, ExecResult status) throws UnknownHostException {
+        TestResultModel testResult = new TestResultModel();
         testResult.setEntryId(EnvParameter.entryId());
         testResult.setTestName(String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName()));
         testResult.setSlaveName(EnvParameter.machineName());
@@ -92,7 +86,7 @@ public class TestResultReporter {
         return testResult;
     }
 
-    private void takeScreenshot(ITestResult result, StringBuilder message, TestResult testResult) throws UnknownHostException {
+    private void takeScreenshot(ITestResult result, StringBuilder message, TestResultModel testResult) throws UnknownHostException {
         String fileName = String.format("%s.png", result.getName() + "_" + System.currentTimeMillis());
         String imageFolderPath = String.format("%s/%d", NGINX_REAL_PATH, testResult.getProjectId());
         String imagePath = String.format("%s/%d/%s", NGINX_REAL_PATH, testResult.getProjectId(), fileName);

@@ -8,3 +8,5 @@
 /target/
 /test-output/
 /src/main/resources/config.txt
+/src/main/webapp/WEB-INF/lib
+/src/main/webapp/WEB-INF/classes

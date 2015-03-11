@@ -1,9 +1,7 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.TestSuite;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestSuiteModel extends Model<TestSuiteModel> {
@@ -17,13 +15,31 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
 
     public static final TestSuiteModel me = new TestSuiteModel();
 
-    public List<TestSuite> findTestSuites(long projectId) {
-        List<TestSuite> testSuites = new ArrayList<TestSuite>();
+    public long getId() {
+        return getLong(Fields.ID);
+    }
 
-        for(TestSuiteModel m : this.find(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", TABLE, Fields.ID, Fields.NAME, Fields.PROJECT_ID), projectId)) {
-            testSuites.add(TestSuite.create(m));
-        }
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
 
-        return testSuites;
+    public String getName() {
+        return getStr(Fields.NAME);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public long getProjectId() {
+        return getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public List<TestSuiteModel> findTestSuites(long projectId) {
+        return this.find(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", TABLE, Fields.ID, Fields.NAME, Fields.PROJECT_ID), projectId);
     }
 }

@@ -1,8 +1,6 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.ICallback;
-import net.nitrogen.ates.core.entity.QueueEntry;
-import net.nitrogen.ates.util.DateTimeUtil;
 
 import java.sql.*;
 

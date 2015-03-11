@@ -1,8 +1,6 @@
 package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.entity.CustomEnv;
-import net.nitrogen.ates.core.entity.Round;
 import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.core.model.RoundModel;
@@ -19,7 +17,7 @@ public class RoundController extends Controller {
 
     public void detail() {
         long roundId = getParaToLong(0);
-        setAttr("round", Round.create(RoundModel.me.findById(roundId)));
+        setAttr("round", RoundModel.me.findById(roundId));
         render("detail.html");
     }
 
@@ -31,7 +29,7 @@ public class RoundController extends Controller {
         String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
         testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
         String envId = getPara(QueueEntryModel.Fields.ENV);
-        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnv.create(CustomEnvModel.me.findById(Long.parseLong(envId))).getName();
+        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
         String selectedTestGroups = getPara("selected_test_groups");
         List<Long> testGroupIds = new ArrayList<>();
 

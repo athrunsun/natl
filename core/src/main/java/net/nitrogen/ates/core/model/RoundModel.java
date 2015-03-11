@@ -1,12 +1,12 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.entity.QueueEntry;
-import net.nitrogen.ates.core.entity.Round;
-import net.nitrogen.ates.core.entity.TestGroupTestCase;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class RoundModel extends Model<RoundModel> {
     public static final String TABLE = "round";
@@ -19,18 +19,34 @@ public class RoundModel extends Model<RoundModel> {
 
     public static final RoundModel me = new RoundModel();
 
-    public List<Round> findRounds(long projectId) {
-        List<RoundModel> mList = find(
+    public long getId() {
+        return this.getLong(Fields.ID);
+    }
+
+    public void setId(long id) {
+        this.set(Fields.ID, id);
+    }
+
+    public String getName() {
+        return this.getStr(Fields.NAME);
+    }
+
+    public void setName(String name) {
+        this.set(Fields.NAME, name);
+    }
+
+    public long getProjectId() {
+        return this.getLong(Fields.PROJECT_ID);
+    }
+
+    public void setProjectId(long projectId) {
+        this.set(Fields.PROJECT_ID, projectId);
+    }
+
+    public List<RoundModel> findRounds(long projectId) {
+        return find(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID, Fields.ID),
                 projectId);
-
-        List<Round> rounds = new ArrayList<Round>();
-
-        for(RoundModel m : mList) {
-            rounds.add(Round.create(m));
-        }
-
-        return rounds;
     }
 
     public long createRoundByTestGroup(long projectId, String roundName, String env, String jvmOptions, String params, List<Long> testGroupIds) {
@@ -40,15 +56,15 @@ public class RoundModel extends Model<RoundModel> {
         Set<String> uniqueTestNames = new HashSet<String>();
 
         for(Long testGroupId : testGroupIds) {
-            for(TestGroupTestCase tg_tc : TestGroupTestCaseModel.me.findTestGroupTestCases(testGroupId.longValue())) {
+            for(TestGroupTestCaseModel tg_tc : TestGroupTestCaseModel.me.findTestGroupTestCases(testGroupId.longValue())) {
                 uniqueTestNames.add(tg_tc.getTestName());
             }
         }
 
-        List<QueueEntry> entries = new ArrayList<QueueEntry>();
+        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
 
         for(String testName : uniqueTestNames) {
-            QueueEntry entry = new QueueEntry();
+            QueueEntryModel entry = new QueueEntryModel();
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
             entry.setName(testName);
             entry.setSlaveName("");
