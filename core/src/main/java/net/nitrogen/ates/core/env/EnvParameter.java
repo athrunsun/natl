@@ -29,8 +29,8 @@ public class EnvParameter {
         return Integer.parseInt(System.getProperty(ExecManager.EXEC_PARAM_KEY_ENTRY_INDEX));
     }
 
-    public static long roundId() {
-        return Long.parseLong(System.getProperty(ExecManager.EXEC_PARAM_KEY_ROUND_ID));
+    public static long executionId() {
+        return Long.parseLong(System.getProperty(ExecManager.EXEC_PARAM_KEY_EXECUTION_ID));
     }
 
     public static long projectId() {

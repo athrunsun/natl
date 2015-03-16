@@ -9,11 +9,7 @@
                         <div class="panel-header bg-lightBlue fg-white">Project Details</div>
                         <div class="panel-content">
                             <form action="${CPATH}/project/save" method="post">
-                                <label>ID</label>
-                                <div class="input-control text">
-                                    <input type="text" value="${project.getId()}" disabled="disabled">
-                                    <input name="id" type="hidden" value="${project.getId()}">
-                                </div>
+                                <input name="id" type="hidden" value="${project.getId()}">
                                 <label>Name</label>
                                 <div class="input-control text">
                                     <input name="name" type="text" value="${project.getName()}">
@@ -29,6 +25,10 @@
                                 <label>Jar Name - With Dependency</label>
                                 <div class="input-control text">
                                     <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}">
+                                </div>
+                                <label>Total Test Case Count</label>
+                                <div class="input-control text">
+                                    <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}">
                                 </div>
                                 <input class="button primary" type="submit" value="Save">
                             </form>

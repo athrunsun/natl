@@ -2,7 +2,9 @@ package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectModel extends Model<ProjectModel> {
     public static final String TABLE = "project";
@@ -13,6 +15,7 @@ public class ProjectModel extends Model<ProjectModel> {
         public static final String JAR_NAME = "jar_name";
         public static final String JAR_WITH_DEPENDENCY_NAME = "jar_with_dependency_name";
         public static final String GIT_URL = "git_url";
+        public static final String TOTAL_TEST_CASE_COUNT = "total_test_case_count";
     }
 
     public static final ProjectModel me = new ProjectModel();
@@ -57,6 +60,14 @@ public class ProjectModel extends Model<ProjectModel> {
         this.set(Fields.GIT_URL, gitUrl);
     }
 
+    public int getTotalTestCaseCount() {
+        return this.getInt(Fields.TOTAL_TEST_CASE_COUNT);
+    }
+
+    public void setTotalTestCaseCount(int totalTestCaseCount) {
+        this.set(Fields.TOTAL_TEST_CASE_COUNT, totalTestCaseCount);
+    }
+
     public ProjectModel findProject(long projectId){
         return me.findById(projectId);
     }
@@ -74,5 +85,19 @@ public class ProjectModel extends Model<ProjectModel> {
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
                 TABLE));
+    }
+
+    public Map<String, Integer> automationCoverage(long projectId) {
+        Map<String, Integer> coverageData = new HashMap<>();
+        int totalTestCaseCount = this.findProject(projectId).getTotalTestCaseCount();
+
+        if(totalTestCaseCount <= 0) {
+            return null;
+        }else {
+            coverageData.put("TOTAL", totalTestCaseCount);
+            int automatedTestCaseCount = TestCaseModel.me.findTestCases(projectId).size();
+            coverageData.put("AUTOMATED", automatedTestCaseCount);
+            return coverageData;
+        }
     }
 }

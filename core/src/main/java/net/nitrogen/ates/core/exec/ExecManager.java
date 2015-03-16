@@ -17,7 +17,7 @@ public class ExecManager {
     public static final String EXEC_PARAM_KEY_DEBUG = "nitrogen_ates_debug";
     public static final String EXEC_PARAM_KEY_ENTRY_ID = "nitrogen_ates_entryid";
     public static final String EXEC_PARAM_KEY_ENTRY_INDEX = "nitrogen_ates_entryindex";
-    public static final String EXEC_PARAM_KEY_ROUND_ID = "nitrogen_ates_roundid";
+    public static final String EXEC_PARAM_KEY_EXECUTION_ID = "nitrogen_ates_executionid";
     public static final String EXEC_PARAM_KEY_PROJECT_ID = "nitrogen_ates_projectid";
     public static final String EXEC_PARAM_KEY_ENV = "nitrogen_ates_env";
 
@@ -51,7 +51,7 @@ public class ExecManager {
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_DEBUG, "0"), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ENTRY_ID, String.valueOf(entry.getId())), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ENTRY_INDEX, String.valueOf(entry.getIndex())), false);
-            cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ROUND_ID, String.valueOf(entry.getRoundId())), false);
+            cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_EXECUTION_ID, String.valueOf(entry.getExecutionId())), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_PROJECT_ID, String.valueOf(entry.getProjectId())), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ENV, entry.getEnv()), false);
             //cmdLine.addArgument(entry.getJvmOptions(), false);

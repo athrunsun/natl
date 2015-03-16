@@ -23,7 +23,7 @@
                 //end_time:endTimeTDContent,
                 start_time:item.start_time,
                 end_time:item.end_time,
-                round_id:item.round_id,
+                execution_id:item.execution_id,
                 env:item.env,
                 jvm_options:item.jvm_options,
                 params:item.params});
@@ -45,13 +45,13 @@
         });
     }
 
-    ates.refreshQueueByRoundId = function(roundId){
+    ates.refreshQueueByExecutionId = function(executionId){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
-            url: ates.contextPath + "/queue/fetchQueueEntriesByRoundIdAsJson",
-            data: "roundId=" + roundId,
+            url: ates.contextPath + "/queue/fetchQueueEntriesByExecutionIdAsJson",
+            data: "executionId=" + executionId,
             success: function(result) {
                 ates.refreshQueueSuccessHandler(result);
             }

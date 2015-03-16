@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `queue_entry` (
   `index` INT,
   `start_time` DATETIME,
   `end_time` DATETIME,
-  `round_id` INT UNSIGNED NOT NULL,
+  `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
   `env` VARCHAR(200) NOT NULL,
   `jvm_options` VARCHAR(500) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `queue_entry` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `round` (
+CREATE TABLE IF NOT EXISTS `execution` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `test_result` (
   `message` VARCHAR(2000) NOT NULL,
   `stack_trace` VARCHAR(5000) NOT NULL,
   `screenshot_url` VARCHAR(500) NOT NULL,
-  `round_id` INT UNSIGNED NOT NULL,
+  `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
   `env` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id`)
@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `jar_name` VARCHAR(500) NOT NULL,
   `jar_with_dependency_name` VARCHAR(500) NOT NULL,
   `git_url` VARCHAR(500) NOT NULL,
+  `total_test_case_count` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 

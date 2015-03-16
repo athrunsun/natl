@@ -26,7 +26,7 @@ public class DBConfig {
 
     private static void addActiveRecordPluginMapping(ActiveRecordPlugin arp) {
         arp.addMapping("queue_entry", QueueEntryModel.class);
-        arp.addMapping("round", RoundModel.class);
+        arp.addMapping("execution", ExecutionModel.class);
         arp.addMapping("test_case", TestCaseModel.class);
         arp.addMapping("test_group", TestGroupModel.class);
         arp.addMapping("test_group-test_case", TestGroupTestCaseModel.class);

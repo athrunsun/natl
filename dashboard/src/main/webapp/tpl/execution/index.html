@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="span12">
                     <div class="panel">
-                        <div class="panel-header bg-lightBlue fg-white">Round List</div>
+                        <div class="panel-header bg-lightBlue fg-white">Execution List</div>
                         <div class="panel-content">
                             <table class="table">
                                 <thead>
@@ -16,11 +16,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list roundList as round>
+                                <#list executionList as execution>
                                     <tr>
-                                        <td>${round.getId()}</td>
-                                        <td>${round.getName()}</td>
-                                        <td><a class="button default" href="${CPATH}/round/detail/${round.getId()}">Detail</a></td>
+                                        <td>${execution.getId()}</td>
+                                        <td>${execution.getName()}</td>
+                                        <td><a class="button default" href="${CPATH}/execution/detail/${execution.getId()}">Detail</a></td>
                                     </tr>
                                 </#list>
                                 </tbody>

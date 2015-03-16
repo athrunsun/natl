@@ -3,27 +3,27 @@ package net.nitrogen.ates.dashboard.controller;
 import com.jfinal.core.Controller;
 import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
-import net.nitrogen.ates.core.model.RoundModel;
+import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoundController extends Controller {
+public class ExecutionController extends Controller {
     public void index() {
-        setAttr("roundList", RoundModel.me.findRounds(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("executionList", ExecutionModel.me.findExecutions(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 
     public void detail() {
-        long roundId = getParaToLong(0);
-        setAttr("round", RoundModel.me.findById(roundId));
+        long executionId = getParaToLong(0);
+        setAttr("execution", ExecutionModel.me.findById(executionId));
         render("detail.html");
     }
 
     public void createByTestGroup() {
-        String roundName = getPara(RoundModel.Fields.NAME);
-        roundName = StringUtil.isNullOrWhiteSpace(roundName) ? "" : roundName;
+        String executionName = getPara(ExecutionModel.Fields.NAME);
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
         String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
         jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
         String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
@@ -37,7 +37,7 @@ public class RoundController extends Controller {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long roundId = RoundModel.me.createRoundByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), roundName, env, jvmOptions, testngParams, testGroupIds);
-        redirect(String.format("/round/detail/%d", roundId));
+        long executionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, testGroupIds);
+        redirect(String.format("/execution/detail/%d", executionId));
     }
 }

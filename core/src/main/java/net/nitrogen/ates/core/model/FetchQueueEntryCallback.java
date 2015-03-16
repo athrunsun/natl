@@ -53,7 +53,7 @@ public class FetchQueueEntryCallback implements ICallback {
 //                    entry.setIndex(rs.getInt(QueueEntryModel.Fields.INDEX));
 //                    entry.setStartTime(DateTimeUtil.fromSqlTimestamp(rs.getTimestamp(QueueEntryModel.Fields.START_TIME)));
 //                    entry.setEndTime(DateTimeUtil.fromSqlTimestamp(rs.getTimestamp(QueueEntryModel.Fields.END_TIME)));
-//                    entry.setRoundId(rs.getLong(QueueEntryModel.Fields.ROUND_ID));
+//                    entry.setExecutionId(rs.getLong(QueueEntryModel.Fields.EXECUTION_ID));
 //                    entry.setProjectId(rs.getLong(QueueEntryModel.Fields.PROJECT_ID));
 //                    entry.setEnv(rs.getString(QueueEntryModel.Fields.ENV));
 //                    entry.setJvmOptions(rs.getString(QueueEntryModel.Fields.JVM_OPTIONS));
