@@ -52,7 +52,7 @@ public class TestResultReporter {
         testResult.setMessage("");
         testResult.setStackTrace("");
         testResult.setScreenshotUrl("");
-        testResult.setRoundId(EnvParameter.roundId());
+        testResult.setExecutionId(EnvParameter.executionId());
         testResult.setProjectId(EnvParameter.projectId());
         testResult.setEnv(StringUtil.isNullOrWhiteSpace(EnvParameter.env()) ? "" : EnvParameter.env());
         StringBuilder message = new StringBuilder();

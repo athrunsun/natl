@@ -26,7 +26,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         public static final String INDEX = "index";
         public static final String START_TIME = "start_time";
         public static final String END_TIME = "end_time";
-        public static final String ROUND_ID = "round_id";
+        public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
         public static final String ENV = "env";
         public static final String JVM_OPTIONS = "jvm_options";
@@ -113,12 +113,12 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         this.setEndTimestamp(DateTimeUtil.toSqlTimestamp(endTime));
     }
 
-    public long getRoundId() {
-        return this.getLong(Fields.ROUND_ID);
+    public long getExecutionId() {
+        return this.getLong(Fields.EXECUTION_ID);
     }
 
-    public void setRoundId(long roundId) {
-        this.set(Fields.ROUND_ID, roundId);
+    public void setExecutionId(long roundId) {
+        this.set(Fields.EXECUTION_ID, roundId);
     }
 
     public long getProjectId() {
@@ -163,7 +163,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.INDEX,
                 Fields.START_TIME,
                 Fields.END_TIME,
-                Fields.ROUND_ID,
+                Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
                 Fields.ENV,
                 Fields.JVM_OPTIONS,
@@ -172,18 +172,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.ID));
     }
 
-//    public List<QueueEntry> findAllEntries() {
-//        List<QueueEntryModel> entryModelList = this.findAllEntriesAsModelList();
-//        List<QueueEntry> entries = new ArrayList<QueueEntry>();
-//
-//        for (QueueEntryModel m : entryModelList) {
-//            entries.add(QueueEntry.create(m));
-//        }
-//
-//        return entries;
-//    }
-
-    public List<QueueEntryModel> findEntriesAsModelList(long roundId) {
+    public List<QueueEntryModel> findEntriesAsModelList(long executionId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
@@ -193,16 +182,16 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.INDEX,
                 Fields.START_TIME,
                 Fields.END_TIME,
-                Fields.ROUND_ID,
+                Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
                 Fields.ENV,
                 Fields.JVM_OPTIONS,
                 Fields.PARAMS,
                 TABLE,
-                Fields.ROUND_ID,
+                Fields.EXECUTION_ID,
                 Fields.ID);
 
-        return find(sql, roundId);
+        return find(sql, executionId);
     }
 
     public void insertEntries(List<QueueEntryModel> entries) {
@@ -227,7 +216,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                     Fields.STATUS,
                     Fields.NAME,
                     Fields.SLAVE_NAME,
-                    Fields.ROUND_ID,
+                    Fields.EXECUTION_ID,
                     Fields.PROJECT_ID,
                     Fields.ENV,
                     Fields.JVM_OPTIONS,
@@ -239,7 +228,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 params[i][0] = foundEntries.get(i).getStatus();
                 params[i][1] = foundEntries.get(i).getName();
                 params[i][2] = foundEntries.get(i).getSlaveName();
-                params[i][3] = foundEntries.get(i).getRoundId();
+                params[i][3] = foundEntries.get(i).getExecutionId();
                 params[i][4] = foundEntries.get(i).getProjectId();
                 params[i][5] = foundEntries.get(i).getEnv();
                 params[i][6] = foundEntries.get(i).getJvmOptions();

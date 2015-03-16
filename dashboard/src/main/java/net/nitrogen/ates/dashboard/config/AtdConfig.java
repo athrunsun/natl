@@ -25,7 +25,7 @@ public class AtdConfig extends JFinalConfig {
     public void configRoute(Routes me) {
         me.add("/", IndexController.class);
         me.add("/summary", SummaryController.class, "/tpl/summary");
-        me.add("/round", RoundController.class, "/tpl/round");
+        me.add("/execution", ExecutionController.class, "/tpl/execution");
         me.add("/queue", QueueController.class, "/tpl/queue");
         me.add("/testcase", TestCaseController.class, "/tpl/testcase");
         me.add("/testgroup", TestGroupController.class, "/tpl/testgroup");
