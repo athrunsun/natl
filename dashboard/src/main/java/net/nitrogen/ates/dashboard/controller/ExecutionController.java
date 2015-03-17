@@ -40,4 +40,8 @@ public class ExecutionController extends Controller {
         long executionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, testGroupIds);
         redirect(String.format("/execution/detail/%d", executionId));
     }
+
+    public void fecthPassrateAsJson() {
+        renderJson(ExecutionModel.me.passrateOfExecution(getParaToLong("executionId")));
+    }
 }

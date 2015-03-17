@@ -78,12 +78,13 @@ public class ProjectModel extends Model<ProjectModel> {
 
     public List<ProjectModel> findAllProjects(){
         return this.find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
                 Fields.NAME,
                 Fields.JAR_NAME,
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
+                Fields.TOTAL_TEST_CASE_COUNT,
                 TABLE));
     }
 

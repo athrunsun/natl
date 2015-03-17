@@ -4,10 +4,31 @@
     <input id="current_execution_id" type="hidden" value="${execution.getId()}">
     <div class="top-offset">
         <div class="container fluid grid">
+            <h1>
+                <a href="${CPATH}/execution"><i class="icon-arrow-left-3 fg-darker smaller"></i></a>
+                Execution<small class="on-right">${execution.getName()}</small>
+            </h1>
             <div class="row">
                 <div class="span12">
                     <div class="panel">
-                        <div class="panel-header bg-lightBlue fg-white">Queue Entries in Execution #${execution.getId()} ${execution.getName()}</div>
+                        <div class="panel-header bg-lightBlue fg-white">Passrate</div>
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="span12">
+                                    <div id="passrate_chart_container" class="container grid fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fluid grid">
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Queue Entries</div>
                         <div class="panel-content">
                             <table id="queue_table" class="table">
                                 <thead>
@@ -52,6 +73,8 @@
             <td>{{=it.params}}</td>
         </tr>
     </script>
+    <script src="${CPATH}/highcharts/highcharts.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/execution.js" type="text/javascript"></script>
     <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
     <script src="${CPATH}/js/queue.js" type="text/javascript"></script>
     <script src="${CPATH}/js/refreshQueueByExecutionId.js" type="text/javascript"></script>

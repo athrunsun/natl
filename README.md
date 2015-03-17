@@ -75,6 +75,10 @@
 * Ant support
 * Test method dependency
 * `P2`Email notification against execution
-* `P1`Remove TestResult page
+* `P1`Hide TestResult page
 * Test case mapping with test case management system
 * `P1`Migration manual
+* `P1`Modify Jenkins configuration to: copy maven resources to project/{projectId}/main/resources (clean before copying)
+* `P1`Let users define Java packages that contain valid tests they want to import,
+  then run TestNG programatically to import tests with a virtual TestNG suite.
+  This way users don't have to add `ATESTestImporter.xml` to their project.

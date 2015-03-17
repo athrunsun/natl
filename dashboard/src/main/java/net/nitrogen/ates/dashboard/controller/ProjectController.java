@@ -16,6 +16,7 @@ public class ProjectController extends Controller {
                 set(ProjectModel.Fields.GIT_URL, getPara(ProjectModel.Fields.GIT_URL)).
                 set(ProjectModel.Fields.JAR_NAME, getPara(ProjectModel.Fields.JAR_NAME)).
                 set(ProjectModel.Fields.JAR_WITH_DEPENDENCY_NAME, getPara(ProjectModel.Fields.JAR_WITH_DEPENDENCY_NAME)).
+                set(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT, getParaToInt(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT)).
                 set(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT, getPara(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT)).
                 update();
 

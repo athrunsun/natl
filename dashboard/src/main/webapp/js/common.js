@@ -3,6 +3,13 @@
     ates.cookieKeyProjectPref = "ates_project_pref";
     ates.maxTestNameLength = 80;
 
+    ates.passrateColorEnum = {
+        "PASSED":'#60a917',
+        "FAILED":'#e51400',
+        "SKIPPED":'#e3c800',
+        "UNKNOWN":'#555555'
+    };
+
     ates.queueEntryStatusEnum = {
         "WAITING":0,
         "RUNNING":1,

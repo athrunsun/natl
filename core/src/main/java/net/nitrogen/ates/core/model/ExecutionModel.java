@@ -78,6 +78,46 @@ public class ExecutionModel extends Model<ExecutionModel> {
         return executionId;
     }
 
+    public Map<String, Map<String, Integer>> passrateOfExecution(long executionId) {
+        ExecutionModel execution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
+        Map<String, Map<String, Integer>> passrates = new HashMap<>();
+        Map<String, Integer> percentages = new HashMap<>();
+        List<QueueEntryModel> entries = QueueEntryModel.me.findEntriesAsModelList(execution.getId());
+
+        int total = entries.size();
+        int passed = 0;
+        int failed = 0;
+        int skipped = 0;
+        int unknown = 0;
+
+        for(QueueEntryModel entry : entries) {
+            TestResultModel result = TestResultModel.me.findTestResult(entry.getId());
+
+            if(result == null) {
+                unknown += 1;
+            }else {
+                if(result.getExecResult() == ExecResult.PASSED.getValue()) {
+                    passed += 1;
+                }else if(result.getExecResult() == ExecResult.FAILED.getValue()) {
+                    failed += 1;
+                }else if(result.getExecResult() == ExecResult.SKIPPED.getValue()) {
+                    skipped += 1;
+                }else {
+                    unknown += 1;
+                }
+            }
+        }
+
+        percentages.put(ExecResult.PASSED.toString(), passed);
+        percentages.put(ExecResult.FAILED.toString(), failed);
+        percentages.put(ExecResult.SKIPPED.toString(), skipped);
+        percentages.put(ExecResult.UNKNOWN.toString(), unknown);
+        percentages.put("TOTAL", total);
+
+        passrates.put(String.format("%d,%s", execution.getId(), execution.getName()), percentages);
+        return passrates;
+    }
+
     /**
      *
      * @param projectId
