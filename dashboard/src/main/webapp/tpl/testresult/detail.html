@@ -13,7 +13,7 @@
                                     <tr>
                                         <td>Test Name</td>
                                         <td>
-                                            <span title="${testResult.getTestName()}">${testResult.getShortTestName()}</span>
+                                            <span title="${testResult.getTestName()}">${testResult.getTestName()}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -31,10 +31,6 @@
                                                 <span class="label">${testResult.getExecResultLabel()}</span>
                                             </#if>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Slave Name</td>
-                                        <td><span>${testResult.getSlaveName()}</span></td>
                                     </tr>
                                     <tr>
                                         <td>Slave Name</td>
@@ -63,9 +59,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Round</td>
+                                        <td>Execution</td>
                                         <td>
-                                            <a href="${CPATH}/round/detail/${round.getId()}">${round.getName()}</a>
+                                            <a href="${CPATH}/execution/detail/${execution.getId()}">${execution.getName()}</a>
                                         </td>
                                     </tr>
                                     <tr>

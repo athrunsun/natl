@@ -150,8 +150,8 @@ public class TestResultModel extends Model<TestResultModel> {
         return getLong(Fields.EXECUTION_ID);
     }
 
-    public void setExecutionId(long roundId) {
-        this.set(Fields.EXECUTION_ID, roundId);
+    public void setExecutionId(long executionId) {
+        this.set(Fields.EXECUTION_ID, executionId);
     }
 
     public long getProjectId() {
