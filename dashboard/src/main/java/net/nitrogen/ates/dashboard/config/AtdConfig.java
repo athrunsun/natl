@@ -11,6 +11,7 @@ import net.nitrogen.ates.dashboard.controller.*;
 import net.nitrogen.ates.dashboard.controller.admin.AdminIndexController;
 import net.nitrogen.ates.dashboard.controller.admin.AdminProjectController;
 import net.nitrogen.ates.dashboard.controller.admin.AdminSlaveController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminQueueController;
 import net.nitrogen.ates.dashboard.interceptor.MasterTplProjectListInterceptor;
 import net.nitrogen.ates.dashboard.interceptor.ProjectPrefInterceptor;
 
@@ -25,14 +26,15 @@ public class AtdConfig extends JFinalConfig {
     public void configRoute(Routes me) {
         me.add("/", IndexController.class);
         me.add("/summary", SummaryController.class, "/tpl/summary");
-        me.add("/execution", ExecutionController.class, "/tpl/execution");
         me.add("/queue", QueueController.class, "/tpl/queue");
+        me.add("/execution", ExecutionController.class, "/tpl/execution");
         me.add("/testcase", TestCaseController.class, "/tpl/testcase");
         me.add("/testgroup", TestGroupController.class, "/tpl/testgroup");
         me.add("/project", ProjectController.class, "/tpl/project");
         me.add("/env", EnvController.class, "/tpl/env");
         me.add("/testresult", TestResultController.class, "/tpl/testresult");
         me.add("/admin", AdminIndexController.class);
+        me.add("/admin/queue", AdminQueueController.class, "/tpl/admin/queue");
         me.add("/admin/project", AdminProjectController.class, "/tpl/admin/project");
         me.add("/admin/slave", AdminSlaveController.class, "/tpl/admin/slave");
     }

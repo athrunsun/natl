@@ -1,8 +1,8 @@
 (function(ates, $, undefined){
     ates.queueTableRowTplFn = undefined;
 
-    ates.refreshQueueSuccessHandler = function(result) {
-        $("#queue_table > tbody > tr").remove();
+    ates.refreshQueueSuccessHandler = function($entryTable, result) {
+        $entryTable.find("> tbody > tr").remove();
         var tbody = "";
 
         $.each(result, function (index, item) {
@@ -11,49 +11,51 @@
             var statusTDContent = ates.composeQueueTableRowStatusTDContent(item.status);
             var startTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.start_time);
             var endTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.end_time);
+            var execResultTDContent = ates.composeQueueTableRowExecResultTDContent(item.exec_result);
 
             tbody += ates.queueTableRowTplFn({
-                rowCssClass:trCssClass,
-                id:item.id,
-                status:statusTDContent,
-                name:nameTDContent,
-                slave_name:item.slave_name,
-                index:item.index,
+                rowCssClass: trCssClass,
+                id: item.id,
+                status: statusTDContent,
+                name: nameTDContent,
+                slave_name: item.slave_name,
+                index: item.index,
                 //start_time:startTimeTDContent,
                 //end_time:endTimeTDContent,
-                start_time:item.start_time,
-                end_time:item.end_time,
-                execution_id:item.execution_id,
-                env:item.env,
-                jvm_options:item.jvm_options,
-                params:item.params});
+                start_time: item.start_time,
+                end_time: item.end_time,
+                execution_id: item.execution_id,
+                jvm_options: item.jvm_options,
+                params: item.params,
+                exec_result: execResultTDContent
+            });
         });
 
-        $("#queue_table > tbody").append(tbody);
+        $entryTable.find("> tbody").append(tbody);
     }
 
-    ates.refreshQueue = function(){
+    ates.refreshQueue = function($entryTable){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
-            url: ates.contextPath + "/queue/fetchAllQueueEntriesAsJson",
+            url: ates.contextPath + "/queue/fetchAllQueueEntriesWithResultAsJson",
             //data: "{}",
             success: function(result) {
-                ates.refreshQueueSuccessHandler(result);
+                ates.refreshQueueSuccessHandler($entryTable, result);
             }
         });
     }
 
-    ates.refreshQueueByExecutionId = function(executionId){
+    ates.refreshQueueByExecutionId = function($entryTable, executionId){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
-            url: ates.contextPath + "/queue/fetchQueueEntriesByExecutionIdAsJson",
+            url: ates.contextPath + "/queue/fetchQueueEntriesWithResultByExecutionIdAsJson",
             data: "executionId=" + executionId,
             success: function(result) {
-                ates.refreshQueueSuccessHandler(result);
+                ates.refreshQueueSuccessHandler($entryTable, result);
             }
         });
     }
@@ -121,5 +123,33 @@
 
     ates.composeQueueTableRowDateTimeTDContent = function(jsonDateTime){
         return (!jsonDateTime ? "N/A" : ates.convertJSONDateToString(jsonDateTime));
+    }
+
+    ates.composeQueueTableRowExecResultTDContent = function(execResultId) {
+        var cssClass = "label";
+        var execResultLabel = "";
+
+        switch (execResultId) {
+            case ates.execResultEnum["UNKNOWN"]:
+                execResultLabel = "UNKNOWN";
+                break;
+            case ates.execResultEnum["SKIPPED"]:
+                cssClass += " bg-yellow";
+                execResultLabel = "SKIPPED";
+                break;
+            case ates.execResultEnum["PASSED"]:
+                cssClass += " success";
+                execResultLabel = "PASSED";
+                break;
+            case ates.execResultEnum["FAILED"]:
+                cssClass += " error";
+                execResultLabel = "FAILED";
+                break;
+            default:
+                execResultLabel = "UNKNOWN";
+                break;
+        }
+
+        return "<span class=\"" + cssClass + "\">" + execResultLabel + "</span>";
     }
 })(window.ates = window.ates || {}, jQuery)

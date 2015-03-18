@@ -82,7 +82,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         ExecutionModel execution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
         Map<String, Map<String, Integer>> passrates = new HashMap<>();
         Map<String, Integer> percentages = new HashMap<>();
-        List<QueueEntryModel> entries = QueueEntryModel.me.findEntriesAsModelList(execution.getId());
+        List<QueueEntryModel> entries = QueueEntryModel.me.findEntries(execution.getId());
 
         int total = entries.size();
         int passed = 0;
@@ -130,7 +130,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
         for(ExecutionModel exec : lastFiveExecutions) {
             Map<String, Integer> percentages = new HashMap<>();
-            List<QueueEntryModel> entries = QueueEntryModel.me.findEntriesAsModelList(exec.getId());
+            List<QueueEntryModel> entries = QueueEntryModel.me.findEntries(exec.getId());
 
             int total = entries.size();
             int passed = 0;
