@@ -21,11 +21,6 @@ this_proc:BEGIN
   DECLARE ConcurrencySum INT UNSIGNED;
   DECLARE UniqueIndex INT UNSIGNED;
   
-  #SET autocommit := 0;
-  #LOCK TABLES `queue_entry` WRITE;
-  #START TRANSACTION;
-  
-  #SET EntryId := 0;
   SELECT `is_listening` INTO IsSlaveListening FROM `slave` WHERE `machine_name` = SlaveName LIMIT 1;
 
   IF IsSlaveListening = 0
@@ -69,10 +64,6 @@ this_proc:BEGIN
       SET UniqueIndex := UniqueIndex + 1;
     END WHILE;
   END IF;
-
-  #SELECT `id`, `status`, `name`, `slave_name`, `index`, `start_time`, `end_time`, `round_id`, `project_id`, `env`, `jvm_options`, `params` FROM `queue_entry` WHERE `id` = EntryId;
-  #COMMIT;
-  #UNLOCK TABLES;
 END $$
 
 DELIMITER ;

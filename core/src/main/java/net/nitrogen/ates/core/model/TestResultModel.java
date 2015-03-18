@@ -23,7 +23,7 @@ public class TestResultModel extends Model<TestResultModel> {
         public static final String MESSAGE = "message";
         public static final String STACK_TRACE = "stack_trace";
         public static final String SCREENSHOT_URL = "screenshot_url";
-        public static final String ROUND_ID = "round_id";
+        public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
         public static final String ENV = "env";
     }
@@ -146,12 +146,12 @@ public class TestResultModel extends Model<TestResultModel> {
         this.set(Fields.SCREENSHOT_URL, screenshotUrl);
     }
 
-    public long getRoundId() {
-        return getLong(Fields.ROUND_ID);
+    public long getExecutionId() {
+        return getLong(Fields.EXECUTION_ID);
     }
 
-    public void setRoundId(long roundId) {
-        this.set(Fields.ROUND_ID, roundId);
+    public void setExecutionId(long roundId) {
+        this.set(Fields.EXECUTION_ID, roundId);
     }
 
     public long getProjectId() {
@@ -170,6 +170,28 @@ public class TestResultModel extends Model<TestResultModel> {
         this.set(Fields.ENV, env);
     }
 
+    public TestResultModel findTestResult(long entryId) {
+        String sql = String.format(
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1",
+                Fields.ID,
+                Fields.ENTRY_ID,
+                Fields.TEST_NAME,
+                Fields.SLAVE_NAME,
+                Fields.START_TIME,
+                Fields.END_TIME,
+                Fields.EXEC_RESULT,
+                Fields.MESSAGE,
+                Fields.STACK_TRACE,
+                Fields.SCREENSHOT_URL,
+                Fields.EXECUTION_ID,
+                Fields.PROJECT_ID,
+                Fields.ENV,
+                TABLE,
+                Fields.ENTRY_ID);
+
+        return findFirst(sql, entryId);
+    }
+
     public List<TestResultModel> findTestResults(long projectId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
@@ -183,7 +205,7 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.MESSAGE,
                 Fields.STACK_TRACE,
                 Fields.SCREENSHOT_URL,
-                Fields.ROUND_ID,
+                Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
                 Fields.ENV,
                 TABLE,
@@ -205,7 +227,7 @@ public class TestResultModel extends Model<TestResultModel> {
         m.setMessage(testResult.getMessage());
         m.setStackTrace(testResult.getStackTrace());
         m.setScreenshotUrl(testResult.getScreenshotUrl());
-        m.setRoundId(testResult.getRoundId());
+        m.setExecutionId(testResult.getExecutionId());
         m.setProjectId(testResult.getProjectId());
         m.setEnv(testResult.getEnv());
         m.save();

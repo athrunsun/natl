@@ -1,9 +1,9 @@
 (function (ates, $, undefined) {
-    ates.createRoundFormTplFn = null;
+    ates.createExecutionFormTplFn = null;
 })(window.ates = window.ates || {}, jQuery)
 
 $(document).ready(function () {
-    ates.createRoundFormTplFn = doT.template($('#create_round_form_tpl').text(), undefined, undefined);
+    ates.createExecutionFormTplFn = doT.template($('#create_execution_form_tpl').text(), undefined, undefined);
 
     $("#run_selected_test_groups").on('click', function (e) {
         var hasCheckedTestGroup = false;
@@ -30,14 +30,14 @@ $(document).ready(function () {
                     overlay: false,
                     draggable: true,
                     icon: false,
-                    title: 'Create Round',
+                    title: 'Create Execution',
                     width: 700,
                     padding: 10,
                     content: '',
                     onShow: function () {
-                        $.Dialog.content(ates.createRoundFormTplFn({"array":envList}));
+                        $.Dialog.content(ates.createExecutionFormTplFn({"array":envList}));
 
-                        $("#create_round_form").on("submit", function (event) {
+                        $("#create_execution_form").on("submit", function (event) {
                             var hasCheckedTestGroup = false;
                             var selectedTestGroups = [];
 

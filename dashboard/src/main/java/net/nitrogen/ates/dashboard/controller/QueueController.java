@@ -12,7 +12,7 @@ public class QueueController extends Controller {
         renderJson(QueueEntryModel.me.findAllEntriesAsModelList());
     }
 
-    public void fetchQueueEntriesByRoundIdAsJson() {
-        renderJson(QueueEntryModel.me.findEntriesAsModelList(getParaToLong("roundId")));
+    public void fetchQueueEntriesByExecutionIdAsJson() {
+        renderJson(QueueEntryModel.me.findEntriesAsModelList(getParaToLong("executionId")));
     }
 }
