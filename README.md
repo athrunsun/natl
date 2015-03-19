@@ -3,7 +3,7 @@
 
 ## TODO
 ### Dashboard
-* `P1`Charts
+* ~~`P1`Charts~~
   * ~~Pass rate of last 5 execution~~
   * ~~Coverage of all test cases(add manual test cases field to project table)~~
 <br/>
@@ -11,11 +11,11 @@
 * Execution
   * Create new execution based on current execution
   * Add/remove entries
-  * `P1`Display result
-  * `P1`Rerun all/failed
+  * ~~`P1`Display result~~
+  * ~~`P1`Rerun all/failed~~
   * Rerun selected
   * Automatically rerun(replace former entries on webpage, but keep data)
-  * `P1`Pie chart to display pass rate
+  * ~~`P1`Pie chart to display pass rate~~
 <br/>
 
 * Favorite Execution(single/multiple TestGroup with paramters, reload automatically when full-building project)
@@ -24,7 +24,7 @@
 
 * TestCase
   * Display latest result
-  * `P1`Run selected(in a new execution or append to existing ones)
+  * ~~`P1`Run selected(in a new execution or append to existing ones)~~
   * Filter(testGroup/execResult/execution)
   * Historical results, and filter(env/browser/slave)
   * Group test cases by failure message
@@ -74,11 +74,11 @@
 * Multiple browser support(IE10/Firefox/Chrome)
 * Ant support
 * Test method dependency
-* `P2`Email notification against execution
-* `P1`Hide TestResult page
+* ~~`P2`Email notification against execution~~
+* ~~`P1`Hide TestResult page~~
 * Test case mapping with test case management system
-* `P1`Migration manual
-* `P1`Modify Jenkins configuration to: copy maven resources to project/{projectId}/main/resources (clean before copying)
-* `P1`Let users define Java packages that contain valid tests they want to import,
+* ~~`P1`Migration manual~~
+* ~~`P1`Modify Jenkins configuration to: copy maven resources to project/{projectId}/main/resources (clean before copying)~~
+* ~~`P1`Let users define Java packages that contain valid tests they want to import,
   then run TestNG programatically to import tests with a virtual TestNG suite.
-  This way users don't have to add `ATESTestImporter.xml` to their project.
+  This way users don't have to add `ATESTestImporter.xml` to their project.~~
