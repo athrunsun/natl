@@ -1,12 +1,13 @@
 package net.nitrogen.ates.core.model;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import net.nitrogen.ates.util.StringUtil;
+
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.util.StringUtil;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class TestCaseModel extends Model<TestCaseModel> {
     public static final int MAX_TEST_NAME_LENGTH = 80;
@@ -41,7 +42,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public String getShortName() {
-        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setName(String name) {
@@ -49,20 +50,18 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public TestCaseModel findFirstTestCase(long projectId, String name) {
-        return this.findFirst(
-                String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1", Fields.PROJECT_ID, Fields.MAPPING_ID, Fields.NAME, TABLE, Fields.PROJECT_ID, Fields.NAME),
-                projectId,
-                name);
+        return this.findFirst(String.format(
+                "SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1",
+                Fields.PROJECT_ID,
+                Fields.MAPPING_ID,
+                Fields.NAME,
+                TABLE,
+                Fields.PROJECT_ID,
+                Fields.NAME), projectId, name);
     }
 
     public List<TestCaseModel> findTestCases(long projectId) {
-        String sql = String.format(
-                "SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
-                Fields.PROJECT_ID,
-                Fields.NAME,
-                Fields.MAPPING_ID,
-                TABLE,
-                Fields.PROJECT_ID);
+        String sql = String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.PROJECT_ID, Fields.NAME, Fields.MAPPING_ID, TABLE, Fields.PROJECT_ID);
 
         return find(sql, projectId);
     }

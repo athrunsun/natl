@@ -1,13 +1,15 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Model;
+import java.sql.Timestamp;
+import java.util.List;
+
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.util.DateTimeUtil;
 import net.nitrogen.ates.util.StringUtil;
+
 import org.joda.time.DateTime;
 
-import java.sql.Timestamp;
-import java.util.List;
+import com.jfinal.plugin.activerecord.Model;
 
 public class TestResultModel extends Model<TestResultModel> {
     public static final String TABLE = "test_result";
@@ -51,7 +53,7 @@ public class TestResultModel extends Model<TestResultModel> {
     }
 
     public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setTestName(String testName) {

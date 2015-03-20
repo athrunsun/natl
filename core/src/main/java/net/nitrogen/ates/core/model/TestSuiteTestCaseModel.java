@@ -1,8 +1,9 @@
 package net.nitrogen.ates.core.model;
 
+import net.nitrogen.ates.util.StringUtil;
+
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.util.StringUtil;
 
 public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
     public static final String TABLE = "test_suite-test_case";
@@ -36,7 +37,7 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
     }
 
     public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setTestName(String testName) {

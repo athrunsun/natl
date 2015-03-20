@@ -58,7 +58,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     }
 
     public String getShortName() {
-        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setName(String name) {
@@ -249,21 +249,21 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
     public QueueEntryModel fetchEntry(final String slaveName) {
         Long entryId = (Long) (Db.execute(new FetchQueueEntryCallback(slaveName)));
-//        Connection dbConnection = null;
-//        dbConnection = getDBConnection();
-//        Long entryId = null;
-//
-//        try {
-//            entryId = (Long)(new FetchQueueEntryCallback(slaveName).call(dbConnection));
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//            try {
-//                dbConnection.rollback();
-//                dbConnection.close();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
+        // Connection dbConnection = null;
+        // dbConnection = getDBConnection();
+        // Long entryId = null;
+        //
+        // try {
+        // entryId = (Long)(new FetchQueueEntryCallback(slaveName).call(dbConnection));
+        // } catch (SQLException e) {
+        // System.out.println(e.getMessage());
+        // try {
+        // dbConnection.rollback();
+        // dbConnection.close();
+        // } catch (SQLException e1) {
+        // e1.printStackTrace();
+        // }
+        // }
 
         if (entryId != null && entryId.longValue() > 0) {
             return findById(entryId.longValue());
@@ -282,7 +282,10 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         }
 
         try {
-            dbConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/nitrogenates?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", "nitrogenadmin", "@ctive123");
+            dbConnection = DriverManager.getConnection(
+                    "jdbc:mysql://127.0.0.1:3306/nitrogenates?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull",
+                    "nitrogenadmin",
+                    "@ctive123");
             return dbConnection;
 
         } catch (SQLException e) {
@@ -293,6 +296,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     }
 
     public void markEntryAsFinished(long entryId) {
-        this.me.findById(entryId).set(Fields.STATUS, QueueEntryStatus.FINISHED.getStatus()).set(Fields.END_TIME, DateTimeUtil.toStringWithDefaultFormat(DateTime.now())).update();
+        this.me.findById(entryId).set(Fields.STATUS, QueueEntryStatus.FINISHED.getStatus())
+                .set(Fields.END_TIME, DateTimeUtil.toStringWithDefaultFormat(DateTime.now())).update();
     }
 }

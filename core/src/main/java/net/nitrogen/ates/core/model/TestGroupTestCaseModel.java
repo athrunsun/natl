@@ -1,12 +1,13 @@
 package net.nitrogen.ates.core.model;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import net.nitrogen.ates.util.StringUtil;
+
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.util.StringUtil;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class TestGroupTestCaseModel extends Model<TestGroupTestCaseModel> {
     public static final String TABLE = "test_group-test_case";
@@ -40,14 +41,14 @@ public class TestGroupTestCaseModel extends Model<TestGroupTestCaseModel> {
     }
 
     public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH);
+        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setTestName(String testName) {
         this.set(Fields.TEST_NAME, testName);
     }
 
-    public List<TestGroupTestCaseModel> findTestGroupTestCases(long testGroupId){
+    public List<TestGroupTestCaseModel> findTestGroupTestCases(long testGroupId) {
         return find(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.TEST_GROUP_ID, Fields.TEST_NAME, TABLE, Fields.TEST_GROUP_ID),
                 testGroupId);
@@ -55,7 +56,11 @@ public class TestGroupTestCaseModel extends Model<TestGroupTestCaseModel> {
 
     public void insertTestGroupTestCases(List<TestGroupTestCaseModel> testGroupTestCases) {
         final int INSERT_TEST_GROUP_TEST_CASE_PARAMS_SIZE = 2;
-        final String insertTestGroupTestCaseSql = String.format("INSERT `%s`(`%s`,`%s`) VALUES(?,?)", TestGroupTestCaseModel.TABLE, TestGroupTestCaseModel.Fields.TEST_GROUP_ID, TestGroupTestCaseModel.Fields.TEST_NAME);
+        final String insertTestGroupTestCaseSql = String.format(
+                "INSERT `%s`(`%s`,`%s`) VALUES(?,?)",
+                TestGroupTestCaseModel.TABLE,
+                TestGroupTestCaseModel.Fields.TEST_GROUP_ID,
+                TestGroupTestCaseModel.Fields.TEST_NAME);
         final Object[][] insertTestGroupTestCaseParams = new Object[testGroupTestCases.size()][INSERT_TEST_GROUP_TEST_CASE_PARAMS_SIZE];
 
         for (int i = 0; i < testGroupTestCases.size(); i++) {

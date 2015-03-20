@@ -46,7 +46,7 @@ public class StringUtil {
         return joinStrings(strs, delimiter);
     }
 
-    public static String shortenString(String origin, int maxSize) {
+    public static String shortenString(String origin, int maxSize, boolean dotAddedToEnd) {
         if (maxSize <= 0) {
             return "";
         }
@@ -57,7 +57,10 @@ public class StringUtil {
             if (maxSize < 3) {
                 return origin.substring(0, maxSize);
             } else {
-                return String.format("%s...", origin.substring(0, maxSize - 3));
+                if (dotAddedToEnd) {
+                    return String.format("%s...", origin.substring(0, maxSize - 3));
+                }
+                return String.format("...%s", origin.substring(origin.length() - maxSize + 3));
             }
         }
     }
