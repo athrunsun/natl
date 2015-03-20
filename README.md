@@ -9,21 +9,17 @@
 <br/>
 
 * Execution
-  * Create new execution based on current execution
   * Add/remove entries
   * ~~`P1`Display result~~
-  * ~~`P1`Rerun all/failed~~
+  * ~~`P1`Rerun all/failed, will create a new execution~~
   * Rerun selected
   * Automatically rerun(replace former entries on webpage, but keep data)
   * ~~`P1`Pie chart to display pass rate~~
-<br/>
-
-* Favorite Execution(single/multiple TestGroup with paramters, reload automatically when full-building project)
-  * (TBD)Historical pass rate
+  * Append to current execution?
 <br/>
 
 * TestCase
-  * Display latest result
+  * `P1`Display latest result
   * ~~`P1`Run selected(in a new execution or append to existing ones)~~
   * Filter(testGroup/execResult/execution)
   * Historical results, and filter(env/browser/slave)
@@ -39,20 +35,20 @@
 
 * Project
   * Project concurrency
+  * Reload: reload all TestCase/TestGroup/TestSuite, call Jenkins job to do this, add a process bar on the webpage
 <br/>
 
 * TestResultDetail
   * Failure reason(regression/environment/scriptError)
   * Comments
-  * Log(provided by TestPartner)
+  * Log(provided by TestPartner)(redirect TestNG commandline output to a file, then save to DB)
 <br/>
 
-* (TBD)TestSuite
-  * Think it over before implementing
-<br/>
-
-* ENV
-  * Customize env parameter name
+* TestSuite
+  * Single/multiple TestGroup/TestCase with default paramters, user can use default parameter or define their own when creating executions
+  * Reload automatically when full-building project
+  * Historical pass rate (need to create relationship with execution)
+  * Define test suite based on certain condition: 1) TestGroup.name == "ABC" OR "DEF"
 <br/>
 
 * Slave
@@ -82,3 +78,4 @@
 * ~~`P1`Let users define Java packages that contain valid tests they want to import,
   then run TestNG programatically to import tests with a virtual TestNG suite.
   This way users don't have to add `ATESTestImporter.xml` to their project.~~
+* Add DB build

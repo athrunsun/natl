@@ -6,7 +6,7 @@
         <div class="container fluid grid">
             <h1>
                 <a href="${CPATH}/execution"><i class="icon-arrow-left-3 fg-darker smaller"></i></a>
-                Execution<small class="on-right">${execution.getName()}</small>
+                Execution<small class="on-right fg-lightBlue">${execution.getName()}</small>
             </h1>
             <div class="row">
                 <div class="span12">
@@ -28,7 +28,11 @@
             <div class="row">
                 <div class="span12">
                     <div class="panel">
-                        <div class="panel-header bg-lightBlue fg-white">Queue Entries</div>
+                        <div class="panel-header bg-lightBlue fg-white">
+                            Queue Entries
+                            <a class="button default place-right">Rerun ALL</a>
+                            <a class="button default place-right">Rerun FAILED</a>
+                        </div>
                         <div class="panel-content">
                             <table id="queue_table" class="table">
                                 <thead>
