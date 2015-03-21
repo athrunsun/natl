@@ -194,6 +194,29 @@ public class TestResultModel extends Model<TestResultModel> {
         return findFirst(sql, entryId);
     }
 
+    public TestResultModel findTestResultByCaseName(String testName) {
+        String sql = String.format(
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY '%s' DESC",
+                Fields.ID,
+                Fields.ENTRY_ID,
+                Fields.TEST_NAME,
+                Fields.SLAVE_NAME,
+                Fields.START_TIME,
+                Fields.END_TIME,
+                Fields.EXEC_RESULT,
+                Fields.MESSAGE,
+                Fields.STACK_TRACE,
+                Fields.SCREENSHOT_URL,
+                Fields.EXECUTION_ID,
+                Fields.PROJECT_ID,
+                Fields.ENV,
+                TABLE,
+                Fields.TEST_NAME,
+                Fields.ID);
+
+        return findFirst(sql, testName);
+    }
+
     public List<TestResultModel> findTestResults(long projectId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",

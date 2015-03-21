@@ -66,6 +66,10 @@ public class TestCaseModel extends Model<TestCaseModel> {
         return find(sql, projectId);
     }
 
+    public TestResultModel getLastExecutionResult() {
+        return TestResultModel.me.findTestResultByCaseName(this.getName());
+    }
+
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
         final String deleteSql = String.format("DELETE FROM `%s` WHERE `%s`=?", TABLE, Fields.PROJECT_ID);
 
