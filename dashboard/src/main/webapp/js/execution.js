@@ -4,7 +4,7 @@
             type: "POST",
             dataType: "json",
             url: ates.contextPath + "/execution/fecthPassrateAsJson",
-            data: "executionId=" + $.cookie(ates.cookieKeyProjectPref)
+            data: "executionId=" + $("#current_execution_id").val()
         }).done(function(passrates) {
             if(passrates === undefined || passrates === null) {
                 return;

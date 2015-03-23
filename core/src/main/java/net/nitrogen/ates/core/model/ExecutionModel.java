@@ -80,12 +80,18 @@ public class ExecutionModel extends Model<ExecutionModel> {
     }
 
     public long cloneExecution(long executionId) {
+        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findEntries(executionId);
+
+        if(existingEntries == null || existingEntries.size() <= 0) {
+            return executionId;
+        }
+
         ExecutionModel existingExecution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.set(Fields.NAME, String.format("%s_RerunALL", existingExecution.getName())).set(Fields.PROJECT_ID, existingExecution.getProjectId()).save();
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
-        for(QueueEntryModel entry : QueueEntryModel.me.findEntries(executionId)) {
+        for(QueueEntryModel entry : existingEntries) {
             QueueEntryModel newEntry = new QueueEntryModel();
             newEntry.setStatus(QueueEntryStatus.WAITING.getStatus());
             newEntry.setName(entry.getName());
@@ -103,12 +109,18 @@ public class ExecutionModel extends Model<ExecutionModel> {
     }
 
     public long createExecutionByExecResult(long executionId, ExecResult execResult) {
+        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findEntries(executionId, execResult);
+
+        if(existingEntries == null || existingEntries.size() <= 0) {
+            return executionId;
+        }
+
         ExecutionModel existingExecution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.set(Fields.NAME, String.format("%s_Rerun%s", existingExecution.getName(), execResult.toString())).set(Fields.PROJECT_ID, existingExecution.getProjectId()).save();
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
-        for(QueueEntryModel entry : QueueEntryModel.me.findEntries(executionId, execResult)) {
+        for(QueueEntryModel entry : existingEntries) {
             QueueEntryModel newEntry = new QueueEntryModel();
             newEntry.setStatus(QueueEntryStatus.WAITING.getStatus());
             newEntry.setName(entry.getName());
