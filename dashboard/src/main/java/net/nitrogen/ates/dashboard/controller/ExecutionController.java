@@ -1,6 +1,7 @@
 package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
+import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.core.model.ExecutionModel;
@@ -43,5 +44,13 @@ public class ExecutionController extends Controller {
 
     public void fecthPassrateAsJson() {
         renderJson(ExecutionModel.me.passrateOfExecution(getParaToLong("executionId")));
+    }
+
+    public void rerunAll() {
+        redirect(String.format("/execution/detail/%d", ExecutionModel.me.cloneExecution(getParaToLong(0))));
+    }
+
+    public void rerunFailed() {
+        redirect(String.format("/execution/detail/%d", ExecutionModel.me.createExecutionByExecResult(getParaToLong(0), ExecResult.FAILED)));
     }
 }

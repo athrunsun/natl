@@ -5,10 +5,10 @@ CREATE DATABASE IF NOT EXISTS `nitrogenates`
 USE `nitrogenates`;
 
 # `status` enum:
-# 0 - waiting
-# 1 - running
-# 2 - finished
-# 3 - stopped
+# 0 - WAITING
+# 1 - RUNNING
+# 2 - FINISHED
+# 3 - STOPPED
 CREATE TABLE IF NOT EXISTS `queue_entry` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `status` INT NOT NULL,
@@ -66,6 +66,11 @@ CREATE TABLE IF NOT EXISTS `test_suite-test_case` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
+# `exec_result` enum:
+# 0 - UNKNOWN
+# 1 - SKIPPED
+# 2 - PASSED
+# 3 - FAILED
 CREATE TABLE IF NOT EXISTS `test_result` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `entry_id` INT UNSIGNED NOT NULL,
