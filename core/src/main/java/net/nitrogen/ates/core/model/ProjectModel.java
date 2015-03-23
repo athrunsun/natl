@@ -1,10 +1,10 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Model;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.jfinal.plugin.activerecord.Model;
 
 public class ProjectModel extends Model<ProjectModel> {
     public static final String TABLE = "project";
@@ -12,7 +12,6 @@ public class ProjectModel extends Model<ProjectModel> {
     public class Fields {
         public static final String ID = "id";
         public static final String NAME = "name";
-        public static final String JAR_NAME = "jar_name";
         public static final String JAR_WITH_DEPENDENCY_NAME = "jar_with_dependency_name";
         public static final String GIT_URL = "git_url";
         public static final String TOTAL_TEST_CASE_COUNT = "total_test_case_count";
@@ -34,14 +33,6 @@ public class ProjectModel extends Model<ProjectModel> {
 
     public void setName(String name) {
         this.set(Fields.NAME, name);
-    }
-
-    public String getJarName() {
-        return this.getStr(Fields.JAR_NAME);
-    }
-
-    public void setJarName(String jarName) {
-        this.set(Fields.JAR_NAME, jarName);
     }
 
     public String getJarWithDependencyName() {
@@ -68,7 +59,7 @@ public class ProjectModel extends Model<ProjectModel> {
         this.set(Fields.TOTAL_TEST_CASE_COUNT, totalTestCaseCount);
     }
 
-    public ProjectModel findProject(long projectId){
+    public ProjectModel findProject(long projectId) {
         return me.findById(projectId);
     }
 
@@ -76,12 +67,11 @@ public class ProjectModel extends Model<ProjectModel> {
         return this.findById(projectId).getStr(Fields.JAR_WITH_DEPENDENCY_NAME);
     }
 
-    public List<ProjectModel> findAllProjects(){
+    public List<ProjectModel> findAllProjects() {
         return this.find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
                 Fields.NAME,
-                Fields.JAR_NAME,
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
                 Fields.TOTAL_TEST_CASE_COUNT,
@@ -92,9 +82,9 @@ public class ProjectModel extends Model<ProjectModel> {
         Map<String, Integer> coverageData = new HashMap<>();
         int totalTestCaseCount = this.findProject(projectId).getTotalTestCaseCount();
 
-        if(totalTestCaseCount <= 0) {
+        if (totalTestCaseCount <= 0) {
             return null;
-        }else {
+        } else {
             coverageData.put("TOTAL", totalTestCaseCount);
             int automatedTestCaseCount = TestCaseModel.me.findTestCases(projectId).size();
             coverageData.put("AUTOMATED", automatedTestCaseCount);

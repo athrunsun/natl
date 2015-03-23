@@ -100,7 +100,6 @@ CREATE TABLE IF NOT EXISTS `slave` (
 CREATE TABLE IF NOT EXISTS `project` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(200) NOT NULL,
-  `jar_name` VARCHAR(500) NOT NULL,
   `jar_with_dependency_name` VARCHAR(500) NOT NULL,
   `git_url` VARCHAR(500) NOT NULL,
   `total_test_case_count` INT NOT NULL,

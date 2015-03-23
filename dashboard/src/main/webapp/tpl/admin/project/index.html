@@ -20,7 +20,6 @@
                                     <th class="text-left">ID</th>
                                     <th class="text-left">Name</th>
                                     <th class="text-left">Git URL</th>
-                                    <th class="text-left">Jar Name</th>
                                     <th class="text-left">Jar Name (WithDependency)</th>
                                     <th class="text-left">Total TestCase Count</th>
                                 </tr>
@@ -31,7 +30,6 @@
                                         <td>${project.getId()}</td>
                                         <td>${project.getName()}</td>
                                         <td>${project.getGitUrl()}</td>
-                                        <td>${project.getJarName()}</td>
                                         <td>${project.getJarWithDependencyName()}</td>
                                         <td>${project.getTotalTestCaseCount()}</td>
                                     </tr>
@@ -56,10 +54,6 @@
             <label>Git URL</label>
             <div class="input-control text">
                 <input name="git_url" type="text">
-            </div>
-            <label>JarName</label>
-            <div class="input-control text">
-                <input name="jar_name" type="text">
             </div>
             <label>JarName - WithDependency</label>
             <div class="input-control text">
