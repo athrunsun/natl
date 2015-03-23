@@ -67,7 +67,8 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public TestResultModel getLastExecutionResult() {
-        return TestResultModel.me.findTestResultByCaseName(this.getName());
+        final List<TestResultModel> testResults = TestResultModel.me.findTestResultsByCaseName(this.getName(), 1);
+        return (testResults == null || testResults.size() < 1) ? null : testResults.get(0);
     }
 
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {

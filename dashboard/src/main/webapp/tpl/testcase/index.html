@@ -23,12 +23,14 @@
                                     <th class="text-left"></th>
                                     <th class="text-left">Name</th>
                                     <!--<th class="text-left">MappingId</th> -->
-                                    <th class="text-left">Last Result</th>
+                                    <th class="text-left">Latest Status</th>
                                     <th class="text-left">Exec Result</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list testCaseList as testCase>
+                                <#list testCaseWithResultList as testCaseWithResult>
+                                    <#assign testCase=testCaseWithResult.getTestcase()>
+                                    <#assign testResult=testCaseWithResult.getLatestTestResult()!>
                                     <tr>
                                         <td>
                                             <div class="input-control checkbox">
@@ -43,7 +45,6 @@
                                         </td>
                                         <!--<td>${testCase.getMappingId()}</td> -->
                                         <td>
-                                            <#assign testResult=testCase.getLastExecutionResult()!>
                                             <#if testResult =="">
                                                 <span class="label">No Result</span>
                                             <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
