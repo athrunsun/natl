@@ -22,6 +22,7 @@
                                     <th class="text-left">Git URL</th>
                                     <th class="text-left">Jar Name (WithDependency)</th>
                                     <th class="text-left">Total TestCase Count</th>
+                                    <th class="text-left">Edit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -32,6 +33,11 @@
                                         <td>${project.getGitUrl()}</td>
                                         <td>${project.getJarWithDependencyName()}</td>
                                         <td>${project.getTotalTestCaseCount()}</td>
+                                        <td>
+                                            <#if project.getId()== currentProjectId>
+                                                <a class="icon-pencil" href="${CPATH}/project"></a>
+                                            </#if>
+                                        </td>
                                     </tr>
                                 </#list>
                                 </tbody>

@@ -17,7 +17,7 @@ public class ProjectController extends Controller {
                 .set(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT, getParaToInt(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT))
                 .set(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT, getPara(ProjectModel.Fields.TOTAL_TEST_CASE_COUNT)).update();
 
-        redirect("/project");
+        redirect("/admin/project");
     }
 
     public void fetchAutomationCoverageAsJson() {
