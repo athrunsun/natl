@@ -8,6 +8,7 @@ import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ExecutionController extends Controller {
@@ -22,6 +23,20 @@ public class ExecutionController extends Controller {
         render("detail.html");
     }
 
+    public void createByTestCase() {
+        String executionName = getPara(ExecutionModel.Fields.NAME);
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
+        String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
+        jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
+        String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
+        testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
+        String envId = getPara(QueueEntryModel.Fields.ENV);
+        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
+        String[] selectedTestCaseNames = getParaValues("selected_test_cases");
+        long newExecutionId = ExecutionModel.me.createExecutionByTestCase(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, Arrays.asList(selectedTestCaseNames));
+        redirect(String.format("/execution/detail/%d", newExecutionId));
+    }
+
     public void createByTestGroup() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
@@ -34,12 +49,12 @@ public class ExecutionController extends Controller {
         String selectedTestGroups = getPara("selected_test_groups");
         List<Long> testGroupIds = new ArrayList<>();
 
-        for(String testGroupIdAsString : selectedTestGroups.split(",")) {
+        for (String testGroupIdAsString : selectedTestGroups.split(",")) {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long executionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, testGroupIds);
-        redirect(String.format("/execution/detail/%d", executionId));
+        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, testGroupIds);
+        redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
     public void fecthPassrateAsJson() {

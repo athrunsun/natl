@@ -48,10 +48,33 @@ public class ExecutionModel extends Model<ExecutionModel> {
                 projectId);
     }
 
+    public long createExecutionByTestCase(long projectId, String executionName, String env, String jvmOptions, String params, List<String> testCaseNames) {
+        ExecutionModel newExecution = new ExecutionModel();
+        newExecution.set(Fields.NAME, executionName).set(Fields.PROJECT_ID, projectId).save();
+        long newExecutionId = newExecution.get(Fields.ID);
+        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
+
+        for(String testName : testCaseNames) {
+            QueueEntryModel entry = new QueueEntryModel();
+            entry.setStatus(QueueEntryStatus.WAITING.getStatus());
+            entry.setName(testName);
+            entry.setSlaveName("");
+            entry.setExecutionId(newExecutionId);
+            entry.setProjectId(projectId);
+            entry.setEnv(env);
+            entry.setJvmOptions(jvmOptions);
+            entry.setParams(params);
+            entries.add(entry);
+        }
+
+        QueueEntryModel.me.insertEntries(entries);
+        return newExecutionId;
+    }
+
     public long createExecutionByTestGroup(long projectId, String executionName, String env, String jvmOptions, String params, List<Long> testGroupIds) {
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.set(Fields.NAME, executionName).set(Fields.PROJECT_ID, projectId).save();
-        long executionId = newExecution.get(Fields.ID);
+        long newExecutionId = newExecution.get(Fields.ID);
         Set<String> uniqueTestNames = new HashSet<String>();
 
         for(Long testGroupId : testGroupIds) {
@@ -67,7 +90,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
             entry.setName(testName);
             entry.setSlaveName("");
-            entry.setExecutionId(executionId);
+            entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
             entry.setEnv(env);
             entry.setJvmOptions(jvmOptions);
@@ -76,7 +99,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         }
 
         QueueEntryModel.me.insertEntries(entries);
-        return executionId;
+        return newExecutionId;
     }
 
     public long cloneExecution(long executionId) {
