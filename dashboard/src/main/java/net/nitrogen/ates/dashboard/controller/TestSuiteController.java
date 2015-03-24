@@ -4,6 +4,7 @@ import com.jfinal.core.Controller;
 
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomEnvModel;
+import net.nitrogen.ates.core.model.ProjectModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.TestCaseModel;
@@ -27,6 +28,16 @@ public class TestSuiteController extends Controller {
         ControllerHelper.setExecResultEnumAttr(this);
         setAttr("testCaseWithResultList", getResultList(TestCaseModel.me.findTestCases(ControllerHelper.getProjectPrefFromCookie(this))));
         render("detail.html");
+    }
+
+    public void create() {
+        new TestSuiteModel().set(TestSuiteModel.Fields.NAME, getPara(TestSuiteModel.Fields.NAME))
+                .set(TestSuiteModel.Fields.PROJECT_ID, ControllerHelper.getProjectPrefFromCookie(this)).save();
+        redirect("/testsuite");
+    }
+
+    public void delete() {
+        renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
     }
 
     private List<TestCaseWithResult> getResultList(List<TestCaseModel> entries) {
