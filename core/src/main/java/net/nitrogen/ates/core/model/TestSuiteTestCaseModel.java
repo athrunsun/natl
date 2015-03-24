@@ -1,5 +1,7 @@
 package net.nitrogen.ates.core.model;
 
+import java.util.List;
+
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -42,6 +44,17 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
 
     public void setTestName(String testName) {
         this.set(Fields.TEST_NAME, testName);
+    }
+
+    public List<TestSuiteTestCaseModel> findEntries(long testSuiteId) {
+        String sql = String.format(
+                "SELECT '%s', '%s', '%s' FROM '%s' WHERE '%s'=?",
+                Fields.ID,
+                Fields.TEST_SUITE_ID,
+                Fields.TEST_NAME,
+                TABLE,
+                Fields.TEST_SUITE_ID);
+        return find(sql, testSuiteId);
     }
 
     public void deleteNonexistent(long projectId) {

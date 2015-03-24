@@ -40,6 +40,8 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
     }
 
     public List<TestSuiteModel> findTestSuites(long projectId) {
-        return this.find(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", TABLE, Fields.ID, Fields.NAME, Fields.PROJECT_ID), projectId);
+        return this.find(
+                String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID),
+                projectId);
     }
 }
