@@ -1,0 +1,85 @@
+<#include "/tpl/common/_master.html" />
+
+<#macro customBody>
+    <input id="current_testsuite_id" type="hidden" value="${testsuite.getId()}">
+    <div class="top-offset">
+        <div class="container fluid grid">
+            <h1>
+                <a href="${CPATH}/testsuite"><i class="icon-arrow-left-3 fg-darker smaller"></i></a>
+                Test Suite<small class="on-right fg-lightBlue">${testsuite.getName()}</small>
+            </h1>
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Passrate</div>
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="span12">
+                                    <div id="passrate_chart_container" class="container grid fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fluid grid">
+            <div class="row">
+                <div class="span12">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">
+                            Queue Entries
+                            <a href="${CPATH}/testsuite/rerunAll/${testsuite.getId()}" class="button default place-right">Rerun ALL</a>
+                            <a href="${CPATH}/testsuite/rerunFailed/${testsuite.getId()}" class="button default place-right">Rerun FAILED</a>
+                        </div>
+                        <div class="panel-content">
+                            <table id="queue_table" class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-left">Name</th>
+                                    <th class="text-left">Slave</th>
+                                    <th class="text-left">Index</th>
+                                    <th class="text-left">Status</th>
+                                    <th class="text-left">StartTime</th>
+                                    <th class="text-left">EndTime</th>
+                                    <th class="text-left">JVM Options</th>
+                                    <th class="text-left">Custom Params</th>
+                                    <th class="text-left">Exec Result</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<#macro customJavascript>
+    <script id="queue_table_row_tpl" type="text/x-dot-template">
+        <tr class="{{=it.rowCssClass}}">
+            <td>{{=it.id}}</td>
+            <td>{{=it.name}}</td>
+            <td>{{=it.slave_name}}</td>
+            <td>{{=it.index}}</td>
+            <td>{{=it.status}}</td>
+            <td>{{=it.start_time}}</td>
+            <td>{{=it.end_time}}</td>
+            <td>{{=it.jvm_options}}</td>
+            <td>{{=it.params}}</td>
+            <td>{{=it.exec_result}}</td>
+        </tr>
+    </script>
+    <script src="${CPATH}/highcharts/highcharts.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/testsuite.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/queue.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/refreshQueueByExecutionId.js" type="text/javascript"></script>
+</#macro>
+
+<@master/>
