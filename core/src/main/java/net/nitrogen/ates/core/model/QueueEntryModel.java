@@ -3,16 +3,14 @@ package net.nitrogen.ates.core.model;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
 import net.nitrogen.ates.util.StringUtil;
 import org.joda.time.DateTime;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,46 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     }
 
     public static final QueueEntryModel me = new QueueEntryModel();
+
+    public static QueueEntryModel createByDbRecord(Record record) {
+        QueueEntryModel entry = new QueueEntryModel();
+        entry.setId(record.getLong(Fields.ID));
+        entry.setStatus(record.getInt(Fields.STATUS));
+        entry.setName(record.getStr(Fields.NAME));
+        entry.setSlaveName(record.getStr(Fields.SLAVE_NAME));
+        entry.setIndex(record.getInt(Fields.INDEX));
+        entry.setStartTimestamp(record.getTimestamp(Fields.START_TIME));
+        entry.setEndTimestamp(record.getTimestamp(Fields.END_TIME));
+        entry.setExecutionId(record.getLong(Fields.EXECUTION_ID));
+        entry.setProjectId(record.getLong(Fields.PROJECT_ID));
+        entry.setEnv(record.getStr(Fields.ENV));
+        entry.setJvmOptions(record.getStr(Fields.JVM_OPTIONS));
+        entry.setParams(record.getStr(Fields.PARAMS));
+        return entry;
+    }
+
+    public static QueueEntryModel createByResultSet(ResultSet rs) {
+        QueueEntryModel entry = new QueueEntryModel();
+
+        try {
+            entry.setId(rs.getLong(Fields.ID));
+            entry.setStatus(rs.getInt(Fields.STATUS));
+            entry.setName(rs.getString(Fields.NAME));
+            entry.setSlaveName(rs.getString(Fields.SLAVE_NAME));
+            entry.setIndex(rs.getInt(Fields.INDEX));
+            entry.setStartTimestamp(rs.getTimestamp(Fields.START_TIME));
+            entry.setEndTimestamp(rs.getTimestamp(Fields.END_TIME));
+            entry.setExecutionId(rs.getLong(Fields.EXECUTION_ID));
+            entry.setProjectId(rs.getLong(Fields.PROJECT_ID));
+            entry.setEnv(rs.getString(Fields.ENV));
+            entry.setJvmOptions(rs.getString(Fields.JVM_OPTIONS));
+            entry.setParams(rs.getString(Fields.PARAMS));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return entry;
+    }
 
     public long getId() {
         return this.getLong(Fields.ID);

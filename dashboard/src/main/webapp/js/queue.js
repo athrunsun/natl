@@ -11,7 +11,7 @@
             var statusTDContent = ates.composeQueueTableRowStatusTDContent(item.status);
             var startTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.start_time);
             var endTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.end_time);
-            var execResultTDContent = ates.composeQueueTableRowExecResultTDContent(item.exec_result);
+            var execResultTDContent = ates.composeQueueTableRowExecResultTDContent(item.test_result_exec_result);
 
             tbody += ates.queueTableRowTplFn({
                 rowCssClass: trCssClass,

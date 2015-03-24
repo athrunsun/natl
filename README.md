@@ -16,6 +16,7 @@
   * Automatically rerun(replace former entries on webpage, but keep data)
   * ~~`P1`Pie chart to display pass rate~~
   * Append to current execution?
+  * Queue entry count, execution's created date on execution list page
 <br/>
 
 * TestCase
