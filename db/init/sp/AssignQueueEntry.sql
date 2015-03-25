@@ -21,16 +21,16 @@ this_proc:BEGIN
   DECLARE ConcurrencySum INT UNSIGNED;
   DECLARE UniqueIndex INT UNSIGNED;
   
-  SELECT `is_listening` INTO IsSlaveListening FROM `slave` WHERE `machine_name` = SlaveName LIMIT 1;
+  SELECT `is_listening` INTO IsSlaveListening FROM `slave` WHERE `machine_name` COLLATE utf8_unicode_ci = SlaveName LIMIT 1;
 
   IF IsSlaveListening = 0
   THEN LEAVE this_proc;
   END IF;
 
   SET ProjectId := 0;
-  SELECT `concurrency` INTO SlaveConcurrency FROM `slave` WHERE `machine_name` = SlaveName LIMIT 1;
+  SELECT `concurrency` INTO SlaveConcurrency FROM `slave` WHERE `machine_name` COLLATE utf8_unicode_ci = SlaveName LIMIT 1;
   SELECT SUM(`concurrency`) INTO ConcurrencySum FROM `slave`;
-  SELECT COUNT(`id`) INTO CurrentConcurrency FROM `queue_entry` WHERE `slave_name` = SlaveName AND `status` = 1;
+  SELECT COUNT(`id`) INTO CurrentConcurrency FROM `queue_entry` WHERE `slave_name` COLLATE utf8_unicode_ci = SlaveName AND `status` = 1;
   
   IF CurrentConcurrency < SlaveConcurrency 
   THEN
