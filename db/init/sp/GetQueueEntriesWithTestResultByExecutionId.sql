@@ -12,7 +12,8 @@ BEGIN
   FROM 
     `queue_entry` AS `q` LEFT JOIN `test_result` AS `tr` ON `q`.`id` = `tr`.`entry_id` 
   WHERE 
-    `q`.`execution_id`=ExecutionId;
+    `q`.`execution_id`=ExecutionId
+  ORDER BY `q`.`id` DESC;
 END $$
 
 DELIMITER ;
