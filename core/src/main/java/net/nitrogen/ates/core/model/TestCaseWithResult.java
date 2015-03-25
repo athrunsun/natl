@@ -13,6 +13,12 @@ public class TestCaseWithResult {
         this.testResults = TestResultModel.me.findTestResultsByCaseName(testcase.getName(), 5);
     }
 
+    public TestCaseWithResult(Long projectId, String testcaseName) {
+        this.testcase = TestCaseModel.me.findFirstTestCase(projectId, testcaseName);
+        // Default test result number, 5
+        this.testResults = TestResultModel.me.findTestResultsByCaseName(testcase.getName(), 5);
+    }
+
     public TestResultModel getLatestTestResult() {
         return (this.testResults == null || this.testResults.size() < 1) ? null : testResults.get(0);
     }

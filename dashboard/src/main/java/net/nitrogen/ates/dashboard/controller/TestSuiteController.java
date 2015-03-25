@@ -10,6 +10,7 @@ import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestCaseWithResult;
 import net.nitrogen.ates.core.model.TestSuiteModel;
+import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class TestSuiteController extends Controller {
         long suiteId = getParaToLong(0);
         setAttr("testsuite", TestSuiteModel.me.findById(suiteId));
         ControllerHelper.setExecResultEnumAttr(this);
-        setAttr("testCaseWithResultList", getResultList(TestCaseModel.me.findTestCases(ControllerHelper.getProjectPrefFromCookie(this))));
+        setAttr(
+                "testCaseWithResultList",
+                getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestSuiteTestCaseModel.me.findTestSuiteTestCases(suiteId)));
         render("detail.html");
     }
 
@@ -40,11 +43,35 @@ public class TestSuiteController extends Controller {
         renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
     }
 
+    public void fetchTestSuitesByProjectIdAsJson() {
+        renderJson(TestSuiteModel.me.findTestSuites(getParaToLong("projectId")));
+    }
+
+    public void assignTestCases() {
+        Long testsuiteId = getParaToLong("testsuite");
+        String suiteName = getPara("suitename");
+        if (!StringUtil.isNullOrWhiteSpace(suiteName)) {
+            // Create a suite and reassign the ID
+        }
+        String[] selectedTestCaseNames = getParaValues("selected_test_cases");
+        redirect(String.format("/testsuite/detail/%d", testsuiteId));
+    }
+
     private List<TestCaseWithResult> getResultList(List<TestCaseModel> entries) {
         List<TestCaseWithResult> entriesWithResults = new ArrayList<>();
 
         for (TestCaseModel entry : entries) {
             entriesWithResults.add(new TestCaseWithResult(entry));
+        }
+
+        return entriesWithResults;
+    }
+
+    private List<TestCaseWithResult> getResultList(Long projectId, List<TestSuiteTestCaseModel> entries) {
+        List<TestCaseWithResult> entriesWithResults = new ArrayList<>();
+
+        for (TestSuiteTestCaseModel entry : entries) {
+            entriesWithResults.add(new TestCaseWithResult(projectId, entry.getTestName()));
         }
 
         return entriesWithResults;

@@ -1,0 +1,58 @@
+<#macro table>
+<div class="panel">
+    <div class="panel-header bg-lightBlue fg-white">Test Cases</div>
+    <div class="panel-content">
+        <table id="test_case_table" class="table">
+            <thead>
+            <tr>
+                <th class="text-left"></th>
+                <th class="text-left">Name</th>
+                <!--<th class="text-left">MappingId</th> -->
+                <th class="text-left">Latest Status</th>
+                <th class="text-left">Exec Result</th>
+            </tr>
+            </thead>
+            <tbody>
+            <#list testCaseWithResultList as testCaseWithResult>
+                <#assign testCase=testCaseWithResult.getTestcase()>
+                <#assign testResult=testCaseWithResult.getLatestTestResult()!>
+                <tr>
+                    <td>
+                        <div class="input-control checkbox">
+                            <label>
+                                <input data-id="${testCase.getName()}" type="checkbox" class="check-to-run-test-case"/>
+                                <span class="check"></span>
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <span title="${testCase.getName()}">${testCase.getShortName()}</span>
+                    </td>
+                    <!--<td>${testCase.getMappingId()}</td> -->
+                    <td>
+                        <#if testResult =="">
+                            <span class="label">No Result</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
+                            <span class="label">${testResult.getExecResultLabel()}</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+                            <span class="label warning">${testResult.getExecResultLabel()}</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+                            <span class="label success">${testResult.getExecResultLabel()}</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+                            <span class="label error">${testResult.getExecResultLabel()}</span>
+                        <#else>
+                            <span class="label">${testResult.getExecResultLabel()!}</span>
+                        </#if>
+                    </td>
+                    <#if testResult!="">
+                        <td><a class="button default" href="${CPATH}/testresult/detail/${testResult.getId()}">Detail</a></td>
+                    <#else>
+                        <td/>
+                    </#if>
+                </tr>
+            </#list>
+            </tbody>
+        </table>
+    </div>
+</div>
+</#macro>
