@@ -11,7 +11,7 @@
             var statusTDContent = ates.composeQueueTableRowStatusTDContent(item.status);
             var startTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.start_time);
             var endTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.end_time);
-            var execResultTDContent = ates.composeQueueTableRowExecResultTDContent(item.test_result_exec_result);
+            var execResultTDContent = ates.composeQueueTableRowExecResultTDContent(item.test_result_id, item.exec_result);
 
             tbody += ates.queueTableRowTplFn({
                 rowCssClass: trCssClass,
@@ -125,13 +125,15 @@
         return (!jsonDateTime ? "N/A" : ates.convertJSONDateToString(jsonDateTime));
     }
 
-    ates.composeQueueTableRowExecResultTDContent = function(execResultId) {
+    ates.composeQueueTableRowExecResultTDContent = function(testResultId, execResultId) {
         var cssClass = "label";
         var execResultLabel = "";
+        var isResultUnknown = false;
 
         switch (execResultId) {
             case ates.execResultEnum["UNKNOWN"]:
                 execResultLabel = "UNKNOWN";
+                isResultUnknown = true;
                 break;
             case ates.execResultEnum["SKIPPED"]:
                 cssClass += " bg-yellow";
@@ -147,9 +149,14 @@
                 break;
             default:
                 execResultLabel = "UNKNOWN";
+                isResultUnknown = true;
                 break;
         }
 
-        return "<span class=\"" + cssClass + "\">" + execResultLabel + "</span>";
+        if(isResultUnknown === false) {
+            return "<a target=\"_blank\" href=\"" + ates.contextPath + "/testresult/detail/" + testResultId + "\"><span class=\"" + cssClass + "\">" + execResultLabel + "</span></a>";
+        }else {
+            return "<span class=\"" + cssClass + "\">" + execResultLabel + "</span>";
+        }
     }
 })(window.ates = window.ates || {}, jQuery)

@@ -1,4 +1,4 @@
-# Nitrogen ATES (Automation Test Eco System)
+# ATES (Automation Test Eco System)
 <br/>
 
 ## TODO
@@ -7,6 +7,9 @@
   * ~~Pass rate of last 5 execution~~
   * ~~Coverage of all test cases(add manual test cases field to project table)~~
 <br/>
+
+* Navigation
+  * Replace current project preference `<select>` with a metro dropdown menu
 
 * Execution
   * Add/remove entries

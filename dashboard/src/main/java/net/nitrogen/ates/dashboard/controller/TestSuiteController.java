@@ -2,18 +2,11 @@ package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
 
-import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.model.CustomEnvModel;
-import net.nitrogen.ates.core.model.ProjectModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
-import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestCaseWithResult;
+import net.nitrogen.ates.core.model.TestCaseWithAdditionalInfo;
 import net.nitrogen.ates.core.model.TestSuiteModel;
-import net.nitrogen.ates.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TestSuiteController extends Controller {
@@ -40,11 +33,11 @@ public class TestSuiteController extends Controller {
         renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
     }
 
-    private List<TestCaseWithResult> getResultList(List<TestCaseModel> entries) {
-        List<TestCaseWithResult> entriesWithResults = new ArrayList<>();
+    private List<TestCaseWithAdditionalInfo> getResultList(List<TestCaseModel> entries) {
+        List<TestCaseWithAdditionalInfo> entriesWithResults = new ArrayList<>();
 
         for (TestCaseModel entry : entries) {
-            entriesWithResults.add(new TestCaseWithResult(entry));
+            entriesWithResults.add(new TestCaseWithAdditionalInfo(entry));
         }
 
         return entriesWithResults;

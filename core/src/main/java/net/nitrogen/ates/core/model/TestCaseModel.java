@@ -1,5 +1,6 @@
 package net.nitrogen.ates.core.model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,6 +21,20 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public static final TestCaseModel me = new TestCaseModel();
+
+    public static TestCaseModel createByResultSet(ResultSet rs) {
+        TestCaseModel testCaseModel = new TestCaseModel();
+
+        try {
+            testCaseModel.setProjectId(rs.getLong(Fields.PROJECT_ID));
+            testCaseModel.setName(rs.getString(Fields.NAME));
+            testCaseModel.setMappingId(rs.getString(Fields.MAPPING_ID));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return testCaseModel;
+    }
 
     public long getProjectId() {
         return getLong(Fields.PROJECT_ID);

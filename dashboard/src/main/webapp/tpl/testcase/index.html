@@ -2,10 +2,10 @@
 
 <#macro customBody>
     <div class="top-offset">
-        <div class="container grid fluid">
+        <div class="grid fluid">
             <div class="row">
-                <div class="span3 float">
-                    <div class="sidebar">
+                <div class="span3">
+                    <div class="sidebar sticky-sidebar">
                         <ul>
                             <li class="title">Control Panel</li>
                             <li><a id="run_selected_test_cases" href="#">Run Selected</a></li>
@@ -13,8 +13,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="span3"></div>
-                <div class="span8">
+                <div class="span9">
                     <div class="panel">
                         <div class="panel-header bg-lightBlue fg-white">Test Cases</div>
                         <div class="panel-content">
@@ -24,14 +23,13 @@
                                     <th class="text-left"></th>
                                     <th class="text-left">Name</th>
                                     <!--<th class="text-left">MappingId</th> -->
-                                    <th class="text-left">Latest Status</th>
-                                    <th class="text-left">Exec Result</th>
+                                    <th class="text-left">Latest Result</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list testCaseWithResultList as testCaseWithResult>
-                                    <#assign testCase=testCaseWithResult.getTestcase()>
-                                    <#assign testResult=testCaseWithResult.getLatestTestResult()!>
+                                <#list testCaseListWithAdditionalInfo as testCaseWithAdditionalInfo>
+                                    <#assign testCase=testCaseWithAdditionalInfo.getTestCase()>
+                                    <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
                                     <tr>
                                         <td>
                                             <div class="input-control checkbox">
@@ -46,25 +44,26 @@
                                         </td>
                                         <!--<td>${testCase.getMappingId()}</td> -->
                                         <td>
-                                            <#if testResult =="">
-                                                <span class="label">No Result</span>
+                                            <#if testResult == "">
+                                                <span class="label">UNKNOWN</span>
                                             <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
-                                                <span class="label">${testResult.getExecResultLabel()}</span>
+                                                <span class="label">UNKNOWN</span>
                                             <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
-                                                <span class="label warning">${testResult.getExecResultLabel()}</span>
+                                                <a target="_blank" href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                                    <span class="label warning">${testResult.getExecResultLabel()}</span>
+                                                </a>
                                             <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
-                                                <span class="label success">${testResult.getExecResultLabel()}</span>
+                                                <a target="_blank" href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                                    <span class="label success">${testResult.getExecResultLabel()}</span>
+                                                </a>
                                             <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
-                                                <span class="label error">${testResult.getExecResultLabel()}</span>
+                                                <a target="_blank" href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                                    <span class="label error">${testResult.getExecResultLabel()}</span>
+                                                </a>
                                             <#else>
-                                                <span class="label">${testResult.getExecResultLabel()!}</span>
+                                                <span class="label">UNKNOWN</span>
                                             </#if>
                                         </td>
-                                        <#if testResult!="">
-                                            <td><a class="button default" href="${CPATH}/testresult/detail/${testResult.getId()}">Detail</a></td>
-                                        <#else>
-                                            <td/>
-                                        </#if>
                                     </tr>
                                 </#list>
                                 </tbody>
