@@ -13,10 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QueueEntryWithResult {
+public class QueueEntryWithAdditionalInfo {
     public class Fields {
         public static final String TEST_RESULT_ID = "test_result_id";
-        public static final String TEST_RESULT_EXEC_RESULT = "test_result_exec_result";
     }
 
     private QueueEntryModel entryModel;
@@ -25,7 +24,7 @@ public class QueueEntryWithResult {
     public static List<Map<String, Object>> createMapListForAllQueueEntries() {
         List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (QueueEntryWithResult entryWithResult : createListForAllQueueEntries()) {
+        for (QueueEntryWithAdditionalInfo entryWithResult : createListForAllQueueEntries()) {
             mapList.add(entryWithResult.toMap());
         }
 
@@ -35,7 +34,7 @@ public class QueueEntryWithResult {
     public static List<Map<String, Object>> createMapList(long executionId) {
         List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (QueueEntryWithResult entryWithResult : createListByExecution(executionId)) {
+        for (QueueEntryWithAdditionalInfo entryWithResult : createListByExecution(executionId)) {
             mapList.add(entryWithResult.toMap());
         }
 
@@ -43,15 +42,15 @@ public class QueueEntryWithResult {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<QueueEntryWithResult> createListForAllQueueEntries() {
-        return (List<QueueEntryWithResult>)Db.execute(new ICallback() {
+    private static List<QueueEntryWithAdditionalInfo> createListForAllQueueEntries() {
+        return (List<QueueEntryWithAdditionalInfo>)Db.execute(new ICallback() {
             @Override
             public Object call(Connection conn) throws SQLException {
                 CallableStatement callSP = null;
-                List<QueueEntryWithResult> entriesWithResult = new ArrayList<>();
+                List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetAllQueueEntriesWithTestResult()}");
+                    callSP = conn.prepareCall("{CALL GetAllQueueEntriesWithAdditionalInfo()}");
                     boolean hadResults = callSP.execute();
 
                     if (hadResults) {
@@ -59,10 +58,10 @@ public class QueueEntryWithResult {
                         rs.beforeFirst();
 
                         while (rs.next()) {
-                            QueueEntryWithResult entryWithResult = new QueueEntryWithResult();
+                            QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.entryModel = QueueEntryModel.createByResultSet(rs);
                             TestResultModel result = new TestResultModel();
-                            result.setId(rs.getLong(TestResultModel.Fields.ID));
+                            result.setId(rs.getLong(Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
                             entryWithResult.testResultModel = result;
                             entriesWithResult.add(entryWithResult);
@@ -84,15 +83,15 @@ public class QueueEntryWithResult {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<QueueEntryWithResult> createListByExecution(final long executionId) {
-        return (List<QueueEntryWithResult>)Db.execute(new ICallback() {
+    private static List<QueueEntryWithAdditionalInfo> createListByExecution(final long executionId) {
+        return (List<QueueEntryWithAdditionalInfo>)Db.execute(new ICallback() {
             @Override
             public Object call(Connection conn) throws SQLException {
                 CallableStatement callSP = null;
-                List<QueueEntryWithResult> entriesWithResult = new ArrayList<>();
+                List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithTestResultByExecutionId(?)}");
+                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionId(?)}");
                     callSP.setLong(1, executionId);
                     boolean hadResults = callSP.execute();
 
@@ -101,10 +100,10 @@ public class QueueEntryWithResult {
                         rs.beforeFirst();
 
                         while (rs.next()) {
-                            QueueEntryWithResult entryWithResult = new QueueEntryWithResult();
+                            QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.entryModel = QueueEntryModel.createByResultSet(rs);
                             TestResultModel result = new TestResultModel();
-                            result.setId(rs.getLong(TestResultModel.Fields.ID));
+                            result.setId(rs.getLong(Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
                             entryWithResult.testResultModel = result;
                             entriesWithResult.add(entryWithResult);
@@ -134,10 +133,10 @@ public class QueueEntryWithResult {
 
         if (this.testResultModel == null) {
             fieldsMap.put(Fields.TEST_RESULT_ID, null);
-            fieldsMap.put(Fields.TEST_RESULT_EXEC_RESULT, ExecResult.UNKNOWN.getValue());
+            fieldsMap.put(TestResultModel.Fields.EXEC_RESULT, ExecResult.UNKNOWN.getValue());
         } else {
             fieldsMap.put(Fields.TEST_RESULT_ID, this.testResultModel.getId());
-            fieldsMap.put(Fields.TEST_RESULT_EXEC_RESULT, testResultModel.getExecResult());
+            fieldsMap.put(TestResultModel.Fields.EXEC_RESULT, testResultModel.getExecResult());
         }
 
         return fieldsMap;

@@ -1,7 +1,7 @@
 package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.QueueEntryWithResult;
+import net.nitrogen.ates.core.model.QueueEntryWithAdditionalInfo;
 
 public class QueueController extends Controller {
     public void index() {
@@ -9,10 +9,10 @@ public class QueueController extends Controller {
     }
 
     public void fetchAllQueueEntriesWithResultAsJson(){
-        renderJson(QueueEntryWithResult.createMapListForAllQueueEntries());
+        renderJson(QueueEntryWithAdditionalInfo.createMapListForAllQueueEntries());
     }
 
     public void fetchQueueEntriesWithResultByExecutionIdAsJson() {
-        renderJson(QueueEntryWithResult.createMapList(getParaToLong("executionId")));
+        renderJson(QueueEntryWithAdditionalInfo.createMapList(getParaToLong("executionId")));
     }
 }

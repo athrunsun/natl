@@ -1,4 +1,4 @@
-# Nitrogen ATES (Automation Test Eco System)
+# ATES (Automation Test Eco System)
 <br/>
 
 ## TODO
@@ -8,6 +8,9 @@
   * ~~Coverage of all test cases(add manual test cases field to project table)~~
 <br/>
 
+* Navigation
+  * Replace current project preference `<select>` with a metro dropdown menu
+
 * Execution
   * Add/remove entries
   * ~~`P1`Display result~~
@@ -16,7 +19,7 @@
   * Automatically rerun(replace former entries on webpage, but keep data)
   * ~~`P1`Pie chart to display pass rate~~
   * Append to current execution?
-  * Queue entry count, execution's created date on execution list page
+  * `P1`Queue entry count, execution's created date on execution list page
 <br/>
 
 * TestCase
@@ -62,6 +65,7 @@
 ### Daemon
 * ~~`P1`Deployment(stop/deploy/start)~~
 * Run TestNG programatically inside `net.nitrogen.ates.TestRunner`, to fit `@Parameters` requirement
+* Timeout for queue entry (to avoid 'dead' queue entry to block slave)
 <br/>
 
 ### Miscellaneous

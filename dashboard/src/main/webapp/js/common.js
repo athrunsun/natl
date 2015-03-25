@@ -50,4 +50,22 @@ $(document).ready(function(){
         $.cookie(ates.cookieKeyProjectPref, $(this).find("option:selected").val());
         window.location.replace(window.location.href);
     });
+
+    if ($('.sticky-sidebar').length) {
+        // Check the initial Poistion of the sticky sidebar
+        var stickySidebarTop = $('.sticky-sidebar').offset().top;
+
+        $(window).scroll(function () {
+            var stickySidebarWidth = $('.sticky-sidebar').width();
+            var stickySidebarHeight = $('.sticky-sidebar').height();
+            console.log(stickySidebarWidth);
+            console.log(stickySidebarHeight);
+
+            if ($(window).scrollTop() > stickySidebarTop) {
+                $('.sticky-sidebar').css({ position: 'fixed', top: '0px', 'margin-top': '0px', width: stickySidebarWidth, height: stickySidebarHeight, 'z-index': '10' });
+            } else {
+                $('.sticky-sidebar').css({ position: '', top: '', background: '', 'margin-top': '', width: '', height: '', 'z-index': '' });
+            }
+        });
+    }
 });
