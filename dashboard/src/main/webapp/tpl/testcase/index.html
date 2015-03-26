@@ -56,9 +56,9 @@
     <script id="add_case_to_suite_form_tpl" type="text/x-dot-template">
         <form id="add_case_to_suite_form" action="${CPATH}/testsuite/assignTestCases" method="post">
 			{{? it.array.length === 0}}
-            <div class="label">There is no test suite created for this project. Please create a new one:</div>
+            <label>Test Suite Name:</label>
             <div class="input-control text">
-                <input name="suitename" type="text">
+                <input name="suitename" type="text" placeholder="Enter new test suite name.">
             </div>
             <input class="button primary place-right" type="submit" value="Create Test Suite and Assign">
 			{{??}}

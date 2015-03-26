@@ -1,7 +1,11 @@
 package net.nitrogen.ates.dashboard.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestSuiteModel;
+import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
@@ -42,7 +46,18 @@ public class TestSuiteController extends Controller {
             // Create the suite
             testsuiteId = TestSuiteModel.me.insert(ControllerHelper.getProjectPrefFromCookie(this), suiteName);
         }
+
+        // Construct a list for assignment
         String[] selectedTestCaseNames = getParaValues("selected_test_cases");
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(selectedTestCaseNames.length);
+        for (String selectedTestCaseName : selectedTestCaseNames) {
+            TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
+            testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
+            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCases.add(testSuiteTestCaseModel);
+        }
+
+        TestSuiteTestCaseModel.me.insertTestSuiteTestCasesIfNotExists(testSuiteTestCases);
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
     }
 }

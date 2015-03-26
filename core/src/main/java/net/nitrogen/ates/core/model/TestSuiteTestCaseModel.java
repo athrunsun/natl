@@ -67,18 +67,25 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
         Db.update(sql, projectId);
     }
 
-    public void insertTestSuiteTestCases(List<TestSuiteTestCaseModel> testSuiteTestCases) {
-        final int INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE = 2;
+    public void insertTestSuiteTestCasesIfNotExists(List<TestSuiteTestCaseModel> testSuiteTestCases) {
+        final int INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE = 4;
         final String insertTestSuiteTestCaseSql = String.format(
-                "INSERT `%s`(`%s`,`%s`) VALUES(?,?)",
+                "INSERT INTO `%s` (`%s`,`%s`) SELECT ?, ? FROM dual WHERE ",
                 TestSuiteTestCaseModel.TABLE,
                 TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
-                TestSuiteTestCaseModel.Fields.TEST_NAME);
+                TestSuiteTestCaseModel.Fields.TEST_NAME)
+                + String.format(
+                        "NOT EXISTS(SELECT * FROM `%s` WHERE `%s`=? AND `%s`=?);",
+                        TestSuiteTestCaseModel.TABLE,
+                        TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
+                        TestSuiteTestCaseModel.Fields.TEST_NAME);
         final Object[][] insertTestSuiteTestCaseParams = new Object[testSuiteTestCases.size()][INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE];
 
         for (int i = 0; i < testSuiteTestCases.size(); i++) {
             insertTestSuiteTestCaseParams[i][0] = testSuiteTestCases.get(i).getTestSuiteId();
             insertTestSuiteTestCaseParams[i][1] = testSuiteTestCases.get(i).getTestName();
+            insertTestSuiteTestCaseParams[i][2] = testSuiteTestCases.get(i).getTestSuiteId();
+            insertTestSuiteTestCaseParams[i][3] = testSuiteTestCases.get(i).getTestName();
         }
 
         Db.tx(new IAtom() {
