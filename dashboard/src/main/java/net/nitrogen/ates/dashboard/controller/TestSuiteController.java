@@ -14,12 +14,10 @@ public class TestSuiteController extends Controller {
 
     public void detail() {
         long suiteId = getParaToLong(0);
-        setAttr("testsuite", TestSuiteModel.me.findById(suiteId));
+        final TestSuiteModel testSuite = TestSuiteModel.me.findById(suiteId);
+        setAttr("testsuite", testSuite);
         ControllerHelper.setExecResultEnumAttr(this);
-        // setAttr("testCaseWithResultList",
-        // getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestSuiteTestCaseModel.me.findTestSuiteTestCases(suiteId)));
-        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me()
-                .createTestCaseListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfo(testSuite));
         render("detail.html");
     }
 
