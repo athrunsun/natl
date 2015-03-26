@@ -1,11 +1,12 @@
 package net.nitrogen.ates.core.model;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel.Fields;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
 
 public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
@@ -64,5 +65,29 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 TestCaseModel.Fields.NAME);
 
         Db.update(sql, projectId);
+    }
+
+    public void insertTestSuiteTestCases(List<TestSuiteTestCaseModel> testSuiteTestCases) {
+        final int INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE = 2;
+        final String insertTestSuiteTestCaseSql = String.format(
+                "INSERT `%s`(`%s`,`%s`) VALUES(?,?)",
+                TestSuiteTestCaseModel.TABLE,
+                TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
+                TestSuiteTestCaseModel.Fields.TEST_NAME);
+        final Object[][] insertTestSuiteTestCaseParams = new Object[testSuiteTestCases.size()][INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE];
+
+        for (int i = 0; i < testSuiteTestCases.size(); i++) {
+            insertTestSuiteTestCaseParams[i][0] = testSuiteTestCases.get(i).getTestSuiteId();
+            insertTestSuiteTestCaseParams[i][1] = testSuiteTestCases.get(i).getTestName();
+        }
+
+        Db.tx(new IAtom() {
+            @Override
+            public boolean run() throws SQLException {
+                // Insert new test_suite-test_case records
+                Db.batch(insertTestSuiteTestCaseSql, insertTestSuiteTestCaseParams, 500);
+                return true;
+            }
+        });
     }
 }

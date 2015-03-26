@@ -39,7 +39,8 @@ public class TestSuiteController extends Controller {
         Long testsuiteId = getParaToLong("testsuite");
         String suiteName = getPara("suitename");
         if (!StringUtil.isNullOrWhiteSpace(suiteName)) {
-            // Create a suite and reassign the ID
+            // Create the suite
+            testsuiteId = TestSuiteModel.me.insert(ControllerHelper.getProjectPrefFromCookie(this), suiteName);
         }
         String[] selectedTestCaseNames = getParaValues("selected_test_cases");
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
