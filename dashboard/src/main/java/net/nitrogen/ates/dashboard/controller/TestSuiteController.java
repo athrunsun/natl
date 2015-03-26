@@ -1,16 +1,10 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import com.jfinal.core.Controller;
-
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestCaseWithAdditionalInfo;
-import net.nitrogen.ates.core.model.TestCaseWithResult;
+import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestSuiteModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jfinal.core.Controller;
 
 public class TestSuiteController extends Controller {
     public void index() {
@@ -22,9 +16,10 @@ public class TestSuiteController extends Controller {
         long suiteId = getParaToLong(0);
         setAttr("testsuite", TestSuiteModel.me.findById(suiteId));
         ControllerHelper.setExecResultEnumAttr(this);
-        setAttr(
-                "testCaseWithResultList",
-                getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestSuiteTestCaseModel.me.findTestSuiteTestCases(suiteId)));
+        // setAttr("testCaseWithResultList",
+        // getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestSuiteTestCaseModel.me.findTestSuiteTestCases(suiteId)));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me()
+                .createTestCaseListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("detail.html");
     }
 
@@ -50,25 +45,5 @@ public class TestSuiteController extends Controller {
         }
         String[] selectedTestCaseNames = getParaValues("selected_test_cases");
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
-    }
-
-    private List<TestCaseWithAdditionalInfo> getResultList(List<TestCaseModel> entries) {
-        List<TestCaseWithAdditionalInfo> entriesWithResults = new ArrayList<>();
-
-        for (TestCaseModel entry : entries) {
-            entriesWithResults.add(new TestCaseWithAdditionalInfo(entry));
-        }
-
-        return entriesWithResults;
-    }
-
-    private List<TestCaseWithResult> getResultList(Long projectId, List<TestSuiteTestCaseModel> entries) {
-        List<TestCaseWithResult> entriesWithResults = new ArrayList<>();
-
-        for (TestSuiteTestCaseModel entry : entries) {
-            entriesWithResults.add(new TestCaseWithResult(projectId, entry.getTestName()));
-        }
-
-        return entriesWithResults;
     }
 }

@@ -1,14 +1,9 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.nitrogen.ates.core.model.TestCaseListFactory;
+import net.nitrogen.ates.core.model.TestGroupModel;
 
 import com.jfinal.core.Controller;
-
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestCaseWithResult;
-import net.nitrogen.ates.core.model.TestGroupModel;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 
 public class TestGroupController extends Controller {
     public void index() {
@@ -20,9 +15,10 @@ public class TestGroupController extends Controller {
         final TestGroupModel testGroup = TestGroupModel.me.findTestGroup(getParaToLong(0));
         ControllerHelper.setExecResultEnumAttr(this);
         setAttr("testGroup", testGroup);
-        setAttr(
-                "testCaseWithResultList",
-                getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestGroupTestCaseModel.me.findTestGroupTestCases(testGroup.getId())));
+        // setAttr("testCaseWithResultList",
+        // getResultList(ControllerHelper.getProjectPrefFromCookie(this), TestGroupTestCaseModel.me.findTestGroupTestCases(testGroup.getId())));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me()
+                .createTestCaseListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("detail.html");
     }
 
@@ -32,13 +28,4 @@ public class TestGroupController extends Controller {
         redirect(String.format("/testgroup/detail/%d", testGroupId));
     }
 
-    private List<TestCaseWithResult> getResultList(Long projectId, List<TestGroupTestCaseModel> list) {
-        List<TestCaseWithResult> entriesWithResults = new ArrayList<>();
-
-        for (TestGroupTestCaseModel entry : list) {
-            entriesWithResults.add(new TestCaseWithResult(projectId, entry.getTestName()));
-        }
-
-        return entriesWithResults;
-    }
 }
