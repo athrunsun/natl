@@ -9,6 +9,7 @@
                 <th class="text-left">Name</th>
                 <!--<th class="text-left">MappingId</th> -->
                 <th class="text-left">Latest Result</th>
+                <@additionalThs/>
             </tr>
             </thead>
             <tbody>
@@ -49,10 +50,19 @@
                             <span class="label">UNKNOWN</span>
                         </#if>
                     </td>
+                    <@additionalTds/>
                 </tr>
             </#list>
             </tbody>
         </table>
     </div>
 </div>
+</#macro>
+
+<#macro additionalThs>
+    <!-- Custom table headers here -->
+</#macro>
+
+<#macro additionalTds>
+    <!-- Custom table columns here -->
 </#macro>

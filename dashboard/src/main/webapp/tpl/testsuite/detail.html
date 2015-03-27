@@ -33,6 +33,13 @@
     </div>
 </#macro>
 
+<#macro additionalThs>
+    <th class="text-left"></th>
+</#macro>
+
+<#macro additionalTds>
+    <td><span data-id="${testsuite.getId()}" data-name="${testCase.getName()}" class="remove-from-testsuite" title="Remove from Suite"><a class="icon-remove"></a></span></td>
+</#macro>
 
 <#macro customJavascript>
     <script src="${CPATH}/highcharts/highcharts.js" type="text/javascript"></script>

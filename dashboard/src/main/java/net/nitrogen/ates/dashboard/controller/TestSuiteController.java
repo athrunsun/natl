@@ -1,7 +1,13 @@
 package net.nitrogen.ates.dashboard.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import net.nitrogen.ates.core.model.TestCaseListFactory;
+import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.TestSuiteModel;
+import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
@@ -31,6 +37,12 @@ public class TestSuiteController extends Controller {
         renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
     }
 
+    public void removeCaseFromSuite() {
+        long suiteId = getParaToLong("testsuiteId");
+        final String testcaseName = getPara("testcaseName");
+        renderText(String.valueOf(TestSuiteTestCaseModel.me.delete(suiteId, testcaseName)));
+    }
+
     public void fetchTestSuitesByProjectIdAsJson() {
         renderJson(TestSuiteModel.me.findTestSuites(getParaToLong("projectId")));
     }
@@ -38,10 +50,51 @@ public class TestSuiteController extends Controller {
     public void assignTestCases() {
         Long testsuiteId = getParaToLong("testsuite");
         String suiteName = getPara("suitename");
-        if (!StringUtil.isNullOrWhiteSpace(suiteName)) {
-            // Create a suite and reassign the ID
+        if (!StringUtil.isNullOrWhiteSpace(suiteName) || testsuiteId == null || testsuiteId < 1) {
+            // Create the suite
+            testsuiteId = TestSuiteModel.me.insert(ControllerHelper.getProjectPrefFromCookie(this), suiteName);
         }
+
+        // Construct a list for assignment
         String[] selectedTestCaseNames = getParaValues("selected_test_cases");
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(selectedTestCaseNames.length);
+        for (String selectedTestCaseName : selectedTestCaseNames) {
+            TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
+            testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
+            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCases.add(testSuiteTestCaseModel);
+        }
+
+        TestSuiteTestCaseModel.me.insertTestSuiteTestCasesIfNotExists(testSuiteTestCases);
+        redirect(String.format("/testsuite/detail/%d", testsuiteId));
+    }
+
+    public void assignTestGroups() {
+        Long testsuiteId = getParaToLong("testsuite");
+        String suiteName = getPara("suitename");
+        if (!StringUtil.isNullOrWhiteSpace(suiteName) || testsuiteId == null || testsuiteId < 1) {
+            // Create the suite
+            testsuiteId = TestSuiteModel.me.insert(ControllerHelper.getProjectPrefFromCookie(this), suiteName);
+        }
+
+        // Construct a list for assignment
+        String[] selectedTestGroupIds = getParaValues("selected_test_groups");
+        HashSet<String> caseNamesToBeAssigned = new HashSet();
+        for (String selectedTestGroupId : selectedTestGroupIds) {
+            List<TestGroupTestCaseModel> testcases = TestGroupTestCaseModel.me.findTestGroupTestCases(Long.parseLong(selectedTestGroupId));
+            for (TestGroupTestCaseModel caseModel : testcases) {
+                caseNamesToBeAssigned.add(caseModel.getTestName());
+            }
+        }
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(caseNamesToBeAssigned.size());
+        for (String selectedTestCaseName : caseNamesToBeAssigned) {
+            TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
+            testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
+            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCases.add(testSuiteTestCaseModel);
+        }
+
+        TestSuiteTestCaseModel.me.insertTestSuiteTestCasesIfNotExists(testSuiteTestCases);
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
     }
 }

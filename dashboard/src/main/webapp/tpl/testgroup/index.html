@@ -8,6 +8,7 @@
                     <div class="sidebar sticky-sidebar">
                         <ul>
                             <li class="title">Control Panel</li>
+                            <li><a id="assign_to_test_suite" href="#">Assign to Test Suite</a></li>
                             <li><a id="run_selected_test_groups" href="#">Run Selected</a></li>
                         </ul>
                     </div>
@@ -80,6 +81,30 @@
             </div>
             <input id="selected_test_groups" name="selected_test_groups" type="hidden">
             <input class="button primary" type="submit" value="Create">
+        </form>
+    </script>
+    <script id="add_group_to_suite_form_tpl" type="text/x-dot-template">
+        <form id="add_group_to_suite_form" action="${CPATH}/testsuite/assignTestGroups" method="post">
+            {{? it.array.length === 0}}
+            <label>Create a New Test Suite:</label>
+			{{??}}
+            <label>Saved Suites</label>
+            <div class="input-control text select">
+                <select name="testsuite">
+                    {{~it.array :value:index}}
+                    {{? index === 0 }}
+                    <option value="{{=value.id}}" selected="selected">{{=value.name}}</option>
+                    {{??}}
+                    <option value="{{=value.id}}">{{=value.name}}</option>
+                    {{?}}
+                    {{~}}
+                </select>
+            </div>
+			{{?}}
+            <div class="input-control text">
+                <input name="suitename" type="text" placeholder="Enter new test suite name.">
+            </div>
+            <input class="button primary place-right" type="submit" value="Assign to Test Suite">
         </form>
     </script>
     <script src="${CPATH}/js/doT.js" type="text/javascript"></script>

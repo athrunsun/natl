@@ -35,4 +35,19 @@ $(document).ready(function () {
             }
         });
     });
+
+    $("#test_case_table .remove-from-testsuite").on("click", function(event) {
+        event.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: ates.contextPath + "/testsuite/removeCaseFromSuite",
+            data: {testcaseName:$(this).attr("data-name"),testsuiteId:$(this).attr("data-id")},
+            success: function(result) {
+                window.location.replace(window.location.href);
+            }
+        });
+    });
+    
 });

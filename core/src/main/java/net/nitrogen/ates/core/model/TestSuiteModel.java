@@ -1,8 +1,8 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Model;
-
 import java.util.List;
+
+import com.jfinal.plugin.activerecord.Model;
 
 public class TestSuiteModel extends Model<TestSuiteModel> {
     public static final String TABLE = "test_suite";
@@ -14,6 +14,18 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
     }
 
     public static final TestSuiteModel me = new TestSuiteModel();
+
+    public long insert(long projectId, String suiteName) {
+        TestSuiteModel newExecution = new TestSuiteModel();
+        newExecution.set(Fields.NAME, suiteName).set(Fields.PROJECT_ID, projectId).save();
+        return newExecution.get(Fields.ID);
+    }
+
+    public List<TestSuiteModel> findTestSuites(long projectId) {
+        return this.find(
+                String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID),
+                projectId);
+    }
 
     public long getId() {
         return getLong(Fields.ID);
@@ -37,11 +49,5 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
 
     public void setProjectId(long projectId) {
         this.set(Fields.PROJECT_ID, projectId);
-    }
-
-    public List<TestSuiteModel> findTestSuites(long projectId) {
-        return this.find(
-                String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID),
-                projectId);
     }
 }
