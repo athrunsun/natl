@@ -52,6 +52,7 @@
                                         <td>Stack Trace</td>
                                         <td><span>${testResult.getStackTrace()}</span></td>
                                     </tr>
+                                    <#if testResult.getScreenshotUrl() != "">
                                     <tr>
                                         <td>Screenshot</td>
                                         <td>
@@ -60,6 +61,7 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    </#if>
                                     <tr>
                                         <td>Execution</td>
                                         <td>
