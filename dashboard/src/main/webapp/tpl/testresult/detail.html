@@ -7,15 +7,10 @@
                 <div class="span12">
                     <div class="panel">
                         <div class="panel-header bg-lightBlue fg-white">Test Result Details</div>
+                        <div class="panel-subheader bg-lightBlue fg-white">${testResult.getTestName()}()</div>
                         <div class="panel-content">
                             <table id="queue_table" class="table">
                                 <tbody>
-                                    <tr>
-                                        <td>Test Name</td>
-                                        <td>
-                                            <span title="${testResult.getTestName()}">${testResult.getTestName()}</span>
-                                        </td>
-                                    </tr>
                                     <tr>
                                         <td>Exec Result</td>
                                         <td>
@@ -32,6 +27,31 @@
                                             </#if>
                                         </td>
                                     </tr>
+                                    <#if testResult.getMessage() != "">
+                                    <tr>
+                                        <td>Message</td>
+                                        <td>
+                                            <div class="accordion with-marker place-left" data-role="accordion" data-closeany="false">
+                                                <div class="accordion-frame">
+                                                    <a class="heading collapsed" href="#">${testResult.getMessage().replaceAll("\r\n","<br/>").replaceAll(" Current url:","<br/>Current URL: ")}</a>
+                                                    <div class="content" style="display: none;">
+                                                        <p class="code-text bg-lightTeal"><small>${testResult.getStackTrace().replaceAll("\r\n","<br/>")}</small></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </#if>
+                                    <#if testResult.getScreenshotUrl() != "">
+                                    <tr>
+                                        <td>Screenshot</td>
+                                        <td>
+                                            <div class="container">
+                                                <img src="${testResult.getScreenshotUrl()}" class="shadow img-thumb"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </#if>
                                     <tr>
                                         <td>Slave Name</td>
                                         <td><span>${testResult.getSlaveName()}</span></td>
@@ -44,24 +64,6 @@
                                         <td>End Time</td>
                                         <td><span>${testResult.getEndTimeAsString()}</span></td>
                                     </tr>
-                                    <tr>
-                                        <td>Message</td>
-                                        <td><span>${testResult.getMessage().replaceAll("\r\n","<br/>").replaceAll(" Current url:","<br/>Current URL: ")}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Stack Trace</td>
-                                        <td><span>${testResult.getStackTrace().replaceAll("\r\n","<br/>")}</span></td>
-                                    </tr>
-                                    <#if testResult.getScreenshotUrl() != "">
-                                    <tr>
-                                        <td>Screenshot</td>
-                                        <td>
-                                            <a href="${testResult.getScreenshotUrl()}">
-                                                <img src="${testResult.getScreenshotUrl()}" class="shadow img-thumb">
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    </#if>
                                     <tr>
                                         <td>Execution</td>
                                         <td>
@@ -105,6 +107,10 @@
             </div>
         </div>
     </div>
+</#macro>
+
+<#macro customJavascript>
+    <script src="${CPATH}/js/testresult.js" type="text/javascript"></script>
 </#macro>
 
 <@master/>
