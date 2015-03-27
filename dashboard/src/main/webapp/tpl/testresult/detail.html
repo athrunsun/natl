@@ -13,7 +13,7 @@
                                     <tr>
                                         <td>Test Name</td>
                                         <td>
-                                            <span title="${testResult.getTestName()}">${testResult.getShortTestName()}</span>
+                                            <span title="${testResult.getTestName()}">${testResult.getTestName()}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -46,11 +46,11 @@
                                     </tr>
                                     <tr>
                                         <td>Message</td>
-                                        <td><span>${testResult.getMessage()}</span></td>
+                                        <td><span>${testResult.getMessage().replaceAll("\r\n","<br/>").replaceAll(" Current url:","<br/>Current URL: ")}</span></td>
                                     </tr>
                                     <tr>
                                         <td>Stack Trace</td>
-                                        <td><span>${testResult.getStackTrace()}</span></td>
+                                        <td><span>${testResult.getStackTrace().replaceAll("\r\n","<br/>")}</span></td>
                                     </tr>
                                     <#if testResult.getScreenshotUrl() != "">
                                     <tr>
