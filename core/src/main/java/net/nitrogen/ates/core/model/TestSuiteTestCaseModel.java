@@ -54,6 +54,15 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 testSuiteId);
     }
 
+    public int delete(long suiteId, String testcaseName) {
+        String sql = String.format(
+                "DELETE FROM `%s` WHERE `%s`=? AND `%s` =?;",
+                TestSuiteTestCaseModel.TABLE,
+                TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
+                TestSuiteTestCaseModel.Fields.TEST_NAME);
+        return Db.update(sql, suiteId, testcaseName);
+    }
+
     public void deleteNonexistent(long projectId) {
         String sql = String.format(
                 "DELETE `ts-tc` FROM `%s` AS `ts-tc` LEFT JOIN `%s` AS `tc` ON `ts-tc`.`%s`=`tc`.`%s` WHERE `tc`.`%s`=? AND `tc`.`%s` IS NULL",

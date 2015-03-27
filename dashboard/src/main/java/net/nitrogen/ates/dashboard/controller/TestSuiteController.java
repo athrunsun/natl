@@ -35,6 +35,12 @@ public class TestSuiteController extends Controller {
         renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
     }
 
+    public void removeCaseFromSuite() {
+        long suiteId = getParaToLong("testsuiteId");
+        final String testcaseName = getPara("testcaseName");
+        renderText(String.valueOf(TestSuiteTestCaseModel.me.delete(suiteId, testcaseName)));
+    }
+
     public void fetchTestSuitesByProjectIdAsJson() {
         renderJson(TestSuiteModel.me.findTestSuites(getParaToLong("projectId")));
     }
