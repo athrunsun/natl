@@ -20,6 +20,8 @@
                                 <thead>
                                 <tr>
                                     <th class="text-left">Name</th>
+                                    <th class="text-left">Last Execution Result (todo)</th>
+                                    <th class="text-left">Parameters (todo)</th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -27,6 +29,8 @@
                                 <#list testsuiteList as testsuite>
                                     <tr>
                                         <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
+                                        <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td>
+                                        <td><a href="#">Pop up for editing</a></td>
                                         <td><button data-id="${testsuite.getId()}" class="button danger delete-testsuite">Delete</button></td>
                                     </tr>
                                 </#list>

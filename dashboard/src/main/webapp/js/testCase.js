@@ -104,7 +104,6 @@ $(document).ready(function () {
 
                         $("#add_case_to_suite_form").on("submit", function (event) {
                             var hasCheckedTestCase = false;
-                            var selectedTestCases = [];
 
                             $("#test_case_table .check-to-run-test-case").each(function (index, item) {
                                 if ($(item).is(":checked") === true) {

@@ -56,11 +56,7 @@
     <script id="add_case_to_suite_form_tpl" type="text/x-dot-template">
         <form id="add_case_to_suite_form" action="${CPATH}/testsuite/assignTestCases" method="post">
 			{{? it.array.length === 0}}
-            <label>Test Suite Name:</label>
-            <div class="input-control text">
-                <input name="suitename" type="text" placeholder="Enter new test suite name.">
-            </div>
-            <input class="button primary place-right" type="submit" value="Create Test Suite and Assign">
+            <label>Create a New Test Suite:</label>
 			{{??}}
             <label>Saved Suites</label>
             <div class="input-control text select">
@@ -74,8 +70,11 @@
                     {{~}}
                 </select>
             </div>
-            <input class="button primary place-right" type="submit" value="Assign to Test Suite">
 			{{?}}
+            <div class="input-control text">
+                <input name="suitename" type="text" placeholder="Enter new test suite name.">
+            </div>
+            <input class="button primary place-right" type="submit" value="Assign to Test Suite">
         </form>
     </script>
     <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
