@@ -68,10 +68,27 @@
                 return;
             }
 
+            // Reformat passrates map to an array
+            var execIdMapArray = Object.keys(passrates).map(function(elem, index, arr){
+                var execIdMap = {};
+                var firstCommaIndex = elem.indexOf(",");
+                var executionId = elem.substring(0, firstCommaIndex);
+                execIdMap["execId"] = executionId;
+                execIdMap["execIdAndName"] = elem;
+                return execIdMap;
+            });
+
+            // Sort the reformatted array by execution id DESC
+            execIdMapArray.sort(function(objA, objB) {
+                return objB["execId"] - objA["execId"];
+            });
+
             var chartIndex = 0;
             var $chartRow = undefined;
 
-            $.each(passrates, function(executionIdAndName, execResultCount) {
+            $.each(execIdMapArray, function(index, value) {
+                var executionIdAndName = execIdMapArray[index]["execIdAndName"];
+                var execResultCount = passrates[executionIdAndName];
                 var firstCommaIndex = executionIdAndName.indexOf(",");
                 var executionId = executionIdAndName.substring(0, firstCommaIndex);
                 var executionName = executionIdAndName.substring(firstCommaIndex + 1);
