@@ -40,6 +40,7 @@
 * Project
   * Project concurrency
   * Reload: reload all TestCase/TestGroup/TestSuite, call Jenkins job to do this, add a process bar on the webpage
+  * Project level execution parameters, user can decide whether to inherit them when creating test suite
 <br/>
 
 * TestResultDetail
