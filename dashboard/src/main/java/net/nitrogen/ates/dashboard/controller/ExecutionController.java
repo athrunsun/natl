@@ -3,6 +3,7 @@ package net.nitrogen.ates.dashboard.controller;
 import com.jfinal.core.Controller;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomEnvModel;
+import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.util.StringUtil;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class ExecutionController extends Controller {
     public void index() {
-        setAttr("executionList", ExecutionModel.me.findExecutions(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("executionListWithAdditionalInfo", ExecutionListFactory.me().createExecutionListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 

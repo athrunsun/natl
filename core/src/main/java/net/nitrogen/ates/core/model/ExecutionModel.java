@@ -1,9 +1,15 @@
 package net.nitrogen.ates.core.model;
 
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Record;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
+import net.nitrogen.ates.util.DateTimeUtil;
+import org.joda.time.DateTime;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class ExecutionModel extends Model<ExecutionModel> {
@@ -14,9 +20,25 @@ public class ExecutionModel extends Model<ExecutionModel> {
         public static final String ID = "id";
         public static final String NAME = "name";
         public static final String PROJECT_ID = "project_id";
+        public static final String CREATED_TIME = "created_time";
     }
 
     public static final ExecutionModel me = new ExecutionModel();
+
+    public static ExecutionModel createByResultSet(ResultSet rs) {
+        ExecutionModel execution = new ExecutionModel();
+
+        try {
+            execution.setId(rs.getLong(Fields.ID));
+            execution.setName(rs.getString(Fields.NAME));
+            execution.setProjectId(rs.getLong(Fields.PROJECT_ID));
+            execution.setCreatedTimestamp(rs.getTimestamp(Fields.CREATED_TIME));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return execution;
+    }
 
     public long getId() {
         return this.getLong(Fields.ID);
@@ -42,6 +64,23 @@ public class ExecutionModel extends Model<ExecutionModel> {
         this.set(Fields.PROJECT_ID, projectId);
     }
 
+    public Timestamp getCreatedTimestamp() {
+        return this.getTimestamp(Fields.CREATED_TIME);
+    }
+
+    public DateTime getCreatedTime() {
+        Timestamp createdTimestamp = this.getCreatedTimestamp();
+        return createdTimestamp == null ? null : DateTimeUtil.fromSqlTimestamp(createdTimestamp);
+    }
+
+    public void setCreatedTimestamp(Timestamp t) {
+        this.set(Fields.CREATED_TIME, t);
+    }
+
+    public void setCreatedTime(DateTime createdTime) {
+        this.setCreatedTimestamp(DateTimeUtil.toSqlTimestamp(createdTime));
+    }
+
     public List<ExecutionModel> findExecutions(long projectId) {
         return find(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID, Fields.ID),
@@ -50,9 +89,12 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
     public long createExecutionByTestCase(long projectId, String executionName, String env, String jvmOptions, String params, List<String> testCaseNames) {
         ExecutionModel newExecution = new ExecutionModel();
-        newExecution.set(Fields.NAME, executionName).set(Fields.PROJECT_ID, projectId).save();
+        newExecution.setName(executionName);
+        newExecution.setProjectId(projectId);
+        newExecution.setCreatedTime(DateTime.now());
+        newExecution.save();
         long newExecutionId = newExecution.get(Fields.ID);
-        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
+        List<QueueEntryModel> entries = new ArrayList<>();
 
         for(String testName : testCaseNames) {
             QueueEntryModel entry = new QueueEntryModel();
@@ -73,7 +115,10 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
     public long createExecutionByTestGroup(long projectId, String executionName, String env, String jvmOptions, String params, List<Long> testGroupIds) {
         ExecutionModel newExecution = new ExecutionModel();
-        newExecution.set(Fields.NAME, executionName).set(Fields.PROJECT_ID, projectId).save();
+        newExecution.setName(executionName);
+        newExecution.setProjectId(projectId);
+        newExecution.setCreatedTime(DateTime.now());
+        newExecution.save();
         long newExecutionId = newExecution.get(Fields.ID);
         Set<String> uniqueTestNames = new HashSet<String>();
 
@@ -111,7 +156,10 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
         ExecutionModel existingExecution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
         ExecutionModel newExecution = new ExecutionModel();
-        newExecution.set(Fields.NAME, String.format("%s_RerunALL", existingExecution.getName())).set(Fields.PROJECT_ID, existingExecution.getProjectId()).save();
+        newExecution.setName(String.format("%s_RerunALL", existingExecution.getName()));
+        newExecution.setProjectId(existingExecution.getProjectId());
+        newExecution.setCreatedTime(DateTime.now());
+        newExecution.save();
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
         for(QueueEntryModel entry : existingEntries) {
@@ -140,7 +188,10 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
         ExecutionModel existingExecution = findFirst(String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID), executionId);
         ExecutionModel newExecution = new ExecutionModel();
-        newExecution.set(Fields.NAME, String.format("%s_Rerun%s", existingExecution.getName(), execResult.toString())).set(Fields.PROJECT_ID, existingExecution.getProjectId()).save();
+        newExecution.setName(String.format("%s_Rerun%s", existingExecution.getName(), execResult.toString()));
+        newExecution.setProjectId(existingExecution.getProjectId());
+        newExecution.setCreatedTime(DateTime.now());
+        newExecution.save();
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
         for(QueueEntryModel entry : existingEntries) {
