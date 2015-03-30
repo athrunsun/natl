@@ -38,8 +38,12 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Executed During</td>
-                                            <td><span>${testResult.getStartTimeAsString()} ~ ${testResult.getEndTimeAsString()}</span></td>
+                                            <td>Duration</td>
+                                            <td><span>${testResult.getDuration()} seconds</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td><span>${testResult.getStartTimeAsString()}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -172,6 +172,10 @@ public class TestResultModel extends Model<TestResultModel> {
         this.set(Fields.ENV, env);
     }
 
+    public Long getDuration() {
+        return (getEndTime().getMillis() - getStartTime().getMillis()) / 1000;
+    }
+
     public TestResultModel findTestResult(long entryId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1",
