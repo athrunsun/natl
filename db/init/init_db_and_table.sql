@@ -29,7 +29,21 @@ CREATE TABLE IF NOT EXISTS `execution` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
+  `test_suite_id` INT,
   `created_time` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
+
+# `type` enum:
+# 0 - JVM
+# 1 - TESTNG
+CREATE TABLE IF NOT EXISTS `custom_parameter` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `key` VARCHAR(100) NOT NULL,
+  `value` VARCHAR(500) NOT NULL,
+  `domain_key` VARCHAR(100) NOT NULL,
+  `domain_value` VARCHAR(100) NOT NULL,
+  `type` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
