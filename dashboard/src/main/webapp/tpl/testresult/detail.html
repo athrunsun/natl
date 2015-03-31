@@ -29,21 +29,21 @@
                                     <tbody>
                                         <tr>
                                             <td>ENV</td>
-                                            <td><span>${testResult.getEnv()}</span></td>
+                                            <td><span>${testResult.getEnv()!}</span></td>
                                         </tr>
                                         <tr>
                                             <td>Execution</td>
                                             <td>
-                                                <a href="${CPATH}/execution/detail/${execution.getId()}">${execution.getName()}</a>
+                                                <a href="${CPATH}/execution/detail/${execution.getId()!}">${execution.getName()!}</a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Duration</td>
-                                            <td><span>${testResult.getDuration()} seconds</span></td>
+                                            <td><span>${testResult.getDuration()!} seconds</span></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
-                                            <td><span>${testResult.getStartTimeAsString()}</span></td>
+                                            <td><span>${testResult.getStartTimeAsString()!}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -57,12 +57,12 @@
                                                 <table class="table striped bordered hovered">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="span4">Execution ID</td>
-                                                            <td class="span8">${entry.getId()}</td>
+                                                            <td class="span4">Queue Entry ID</td>
+                                                            <td class="span8">${entry.getId()!}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Ran on Slave</td>
-                                                            <td>${testResult.getSlaveName()}</td>
+                                                            <td>${testResult.getSlaveName()!}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Execution Index</td>
@@ -70,11 +70,11 @@
                                                         </tr>
                                                         <tr>
                                                             <td>JVM Options</td>
-                                                            <td>${entry.getJvmOptions()}</td>
+                                                            <td>${entry.getJvmOptions()!}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>TestNG Params</td>
-                                                            <td>${entry.getParams()}</td>
+                                                            <td>${entry.getParams()!}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
