@@ -57,11 +57,7 @@
                                                 <table class="table striped bordered hovered">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="span4">Queue Entry ID</td>
-                                                            <td class="span8">${entry.getId()!}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Ran on Slave</td>
+                                                            <td>Test Machine</td>
                                                             <td>${testResult.getSlaveName()!}</td>
                                                         </tr>
                                                         <tr>
@@ -76,6 +72,10 @@
                                                             <td>TestNG Params</td>
                                                             <td>${entry.getParams()!}</td>
                                                         </tr>
+                                                        <tr>
+                                                            <td class="span4">Queue Entry ID</td>
+                                                            <td class="span8">${entry.getId()!}</td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </p>
@@ -88,11 +88,13 @@
                 </div>
             </div>
             <#if testResult.getMessage() != "">
-            <#assign url = testResult.getMessage().split("Current url:")[1]!>
+            <#assign text = testResult.getMessage().split(" ; Current url:")!>
+            <#assign url = text[1]!>
+            <#assign message = text[0]!>
             <div class="row">
                 <div class="accordion with-marker place-left span12" data-role="accordion" data-closeany="false">
                     <div class="accordion-frame">
-                        <a class="heading collapsed" href="#">${testResult.getMessage().replaceAll("\r\n","<br/>").replaceAll(" Current url:.*","")}</a>
+                        <a class="heading collapsed" href="#">${message.replaceAll("\r\n","<br/>")}</a>
                         <div class="content" style="display: none;">
                             <small>Current URL: 
                                 <a href="${url}" target="_blank">${url}</a>
