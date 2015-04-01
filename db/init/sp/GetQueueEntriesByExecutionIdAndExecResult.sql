@@ -1,3 +1,7 @@
+# This procedure is used to filter queue entries by specific execution result out of an existing execution
+# to create new execution (rerun all/failed/...),
+# but not used for displaying, so we don't need to paginate within this procedure.
+
 USE `nitrogenates`;
 
 DROP PROCEDURE IF EXISTS `GetQueueEntriesByExecutionIdAndExecResult`;

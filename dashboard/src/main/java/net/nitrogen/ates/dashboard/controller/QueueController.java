@@ -1,7 +1,8 @@
 package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.QueueEntryWithAdditionalInfo;
+import net.nitrogen.ates.core.model.QueueEntryListFactory;
+import net.nitrogen.ates.core.model.QueueEntryModel;
 
 public class QueueController extends Controller {
     public void index() {
@@ -9,10 +10,18 @@ public class QueueController extends Controller {
     }
 
     public void fetchAllQueueEntriesWithResultAsJson(){
-        renderJson(QueueEntryWithAdditionalInfo.createMapListForAllQueueEntries());
+        renderJson(QueueEntryListFactory.createMapListForAllQueueEntries(getParaToInt("pageNumber")));
     }
 
     public void fetchQueueEntriesWithResultByExecutionIdAsJson() {
-        renderJson(QueueEntryWithAdditionalInfo.createMapList(getParaToLong("executionId")));
+        renderJson(QueueEntryListFactory.createMapList(getParaToLong("executionId"), getParaToInt("pageNumber")));
+    }
+
+    public void fetchAllQueueEntriesTotalPageCountAJAX() {
+        renderText(String.format("%d", QueueEntryModel.me.allEntriesPageCount()));
+    }
+
+    public void fetchQueueEntriesTotalPageCountByExecutionIdAJAX() {
+        renderText(String.format("%d", QueueEntryModel.me.entriesPageCount(getParaToLong("executionId"))));
     }
 }

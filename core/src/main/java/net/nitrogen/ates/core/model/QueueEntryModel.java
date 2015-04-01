@@ -1,9 +1,6 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.*;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
@@ -15,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueueEntryModel extends Model<QueueEntryModel> {
+    public static final int DEFAULT_PAGE_SIZE = 5;
     public static final String TABLE = "queue_entry";
 
     public class Fields {
@@ -192,6 +190,24 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         this.set(Fields.PARAMS, params);
     }
 
+    public long allEntriesPageCount() {
+        return this.allEntriesPageCount(DEFAULT_PAGE_SIZE);
+    }
+
+    public long allEntriesPageCount(int pageSize) {
+        long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s`", Fields.ID, TABLE));
+        return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
+    }
+
+    public long entriesPageCount(long executionId) {
+        return this.entriesPageCount(executionId, DEFAULT_PAGE_SIZE);
+    }
+
+    public long entriesPageCount(long executionId, int pageSize) {
+        long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=?", Fields.ID, TABLE, Fields.EXECUTION_ID), executionId);
+        return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
+    }
+
     public List<QueueEntryModel> findAllEntries() {
         return find(String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
@@ -231,6 +247,27 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.ID);
 
         return find(sql, executionId);
+    }
+
+    public Page<QueueEntryModel> paginate(int pageNumber, int pageSize) {
+        String selectClause = String.format(
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
+                Fields.ID,
+                Fields.STATUS,
+                Fields.NAME,
+                Fields.SLAVE_NAME,
+                Fields.INDEX,
+                Fields.START_TIME,
+                Fields.END_TIME,
+                Fields.EXECUTION_ID,
+                Fields.PROJECT_ID,
+                Fields.ENV,
+                Fields.JVM_OPTIONS,
+                Fields.PARAMS);
+
+        String sqlExceptSelect = String.format("FROM `%s` ORDER BY `%s` DESC", TABLE, Fields.ID);
+
+        return paginate(pageNumber, pageSize, selectClause, sqlExceptSelect);
     }
 
     public List<QueueEntryModel> findEntries(long executionId, ExecResult execResult) {
@@ -291,52 +328,11 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     public QueueEntryModel fetchEntry(final String slaveName) {
         Long entryId = (Long) (Db.execute(new FetchQueueEntryCallback(slaveName)));
 
-        // For debugging purpose
-        // Connection dbConnection = null;
-        // dbConnection = getDBConnection();
-        // Long entryId = null;
-        //
-        // try {
-        // entryId = (Long)(new FetchQueueEntryCallback(slaveName).call(dbConnection));
-        // } catch (SQLException e) {
-        // System.out.println(e.getMessage());
-        // try {
-        // dbConnection.rollback();
-        // dbConnection.close();
-        // } catch (SQLException e1) {
-        // e1.printStackTrace();
-        // }
-        // }
-
         if (entryId != null && entryId.longValue() > 0) {
             return findById(entryId.longValue());
         } else {
             return null;
         }
-    }
-
-    // For debugging purpose
-    private static Connection getDBConnection() {
-        Connection dbConnection = null;
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            dbConnection = DriverManager.getConnection(
-                    "jdbc:mysql://127.0.0.1:3306/nitrogenates?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull",
-                    "nitrogenadmin",
-                    "@ctive123");
-            return dbConnection;
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return dbConnection;
     }
 
     public void markEntryAsFinished(long entryId) {
