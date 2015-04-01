@@ -1,0 +1,29 @@
+<#macro parameterTable>
+<div class="panel" resize="auto">
+    <div class="panel-content">
+    <table class="form-table" id="customFields">
+    <tr class="place-left">
+        <th scope="row"><label for="customFieldName">Custom Parameters</label></th>
+    </tr>
+    <tr class="text">
+        <td class="span4"><input type="text" id="customFieldName" name="customFieldName[]" value="" placeholder="Input Name" /> </td>
+        <td class="span4"><input type="text" id="customFieldValue" name="customFieldValue[]" value="" placeholder="Input Value" /> </td>
+        <td class="span2"><select class="">
+            <option>JVM</option>
+            <option>TestNG</option>
+        </select></td>
+        <td><a href="#" class="remPara icon-remove"></a></td>
+    </tr>
+</table>
+        <a href="#" class="addPara span2">+ Add new parameter</a>
+    </div>
+</div>
+</#macro>
+
+<#macro additionalParameterThs>
+    <!-- Custom table headers here -->
+</#macro>
+
+<#macro additionalParameterTds>
+    <!-- Custom table columns here -->
+</#macro>
