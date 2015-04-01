@@ -38,17 +38,17 @@ public class DBConfig {
     }
 
     private static void addActiveRecordPluginMapping(ActiveRecordPlugin arp) {
-        arp.addMapping("queue_entry", QueueEntryModel.class);
-        arp.addMapping("execution", ExecutionModel.class);
-        arp.addMapping("test_case", TestCaseModel.class);
-        arp.addMapping("test_group", TestGroupModel.class);
-        arp.addMapping("test_group-test_case", TestGroupTestCaseModel.class);
-        arp.addMapping("test_suite", TestSuiteModel.class);
-        arp.addMapping("test_suite-test_case", TestSuiteTestCaseModel.class);
-        arp.addMapping("test_result", TestResultModel.class);
-        arp.addMapping("slave", SlaveModel.class);
-        arp.addMapping("project", ProjectModel.class);
-        arp.addMapping("custom_env", CustomEnvModel.class);
-        arp.addMapping("custom_parameter", CustomParameterModel.class);
+        arp.addMapping(QueueEntryModel.TABLE, QueueEntryModel.class);
+        arp.addMapping(ExecutionModel.TABLE, ExecutionModel.class);
+        arp.addMapping(TestCaseModel.TABLE, TestCaseModel.class);
+        arp.addMapping(TestGroupModel.TABLE, TestGroupModel.class);
+        arp.addMapping(TestGroupTestCaseModel.TABLE, TestGroupTestCaseModel.class);
+        arp.addMapping(TestSuiteModel.TABLE, TestSuiteModel.class);
+        arp.addMapping(TestSuiteTestCaseModel.TABLE, TestSuiteTestCaseModel.class);
+        arp.addMapping(TestResultModel.TABLE, TestResultModel.class);
+        arp.addMapping(SlaveModel.TABLE, SlaveModel.class);
+        arp.addMapping(ProjectModel.TABLE, ProjectModel.class);
+        arp.addMapping(CustomEnvModel.TABLE, CustomEnvModel.class);
+        arp.addMapping(CustomParameterModel.TABLE, CustomParameterModel.class);
     }
 }
