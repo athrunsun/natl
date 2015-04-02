@@ -49,9 +49,13 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
 
     public List<CustomParameterModel> findExecutionParameters(long executionId, int type) {
         return find(String.format(
-                "SELECT `%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=%s AND `%s`=?",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=%s AND `%s`=?",
+                Fields.ID,
                 Fields.KEY,
                 Fields.VALUE,
+                Fields.DOMAIN_KEY,
+                Fields.DOMAIN_VALUE,
+                Fields.TYPE,
                 TABLE,
                 Fields.DOMAIN_KEY,
                 0,
@@ -59,6 +63,55 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
                 type,
                 Fields.DOMAIN_VALUE), executionId);
     }
+
+    public List<CustomParameterModel> findExecutionParameters(long executionId) {
+        return find(String.format(
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=?",
+                Fields.ID,
+                Fields.KEY,
+                Fields.VALUE,
+                Fields.DOMAIN_KEY,
+                Fields.DOMAIN_VALUE,
+                Fields.TYPE,
+                TABLE,
+                Fields.DOMAIN_KEY,
+                0,
+                Fields.DOMAIN_VALUE), executionId);
+    }
+
+    public void cloneExecutionParameters(long sourceExecutionId, long targetExecutionId) {
+        List<CustomParameterModel> paramModels = findExecutionParameters(sourceExecutionId);
+    }
+
+    // public void insertExecutionParameters(String[] keys, String[] values, long executionId, String[] types) {
+    // int[] intType = convertType2Int(types);
+    // final int INSERT_PARAMETER_TABLE_PARAM_SIZE = 5;
+    // final String insertParameterSql = String.format(
+    // "INSERT INTO `%s` (`%s`, `%s`, `%s`, `%s`, `%s`) VALUES (?,?,?,?,?);",
+    // TABLE,
+    // Fields.KEY,
+    // Fields.VALUE,
+    // Fields.DOMAIN_KEY,
+    // Fields.DOMAIN_VALUE,
+    // Fields.TYPE);
+    // final Object[][] insertParametersSqlParams = new Object[keys.length][INSERT_PARAMETER_TABLE_PARAM_SIZE];
+    //
+    // for (int i = 0; i < keys.length; i++) {
+    // insertParametersSqlParams[i][0] = keys[i];
+    // insertParametersSqlParams[i][1] = values[i];
+    // insertParametersSqlParams[i][2] = 0; // 0 for execution
+    // insertParametersSqlParams[i][3] = executionId;
+    // insertParametersSqlParams[i][4] = intType[i];
+    // }
+    //
+    // Db.tx(new IAtom() {
+    // @Override
+    // public boolean run() throws SQLException {
+    // Db.batch(insertParameterSql, insertParametersSqlParams, 500);
+    // return true;
+    // }
+    // });
+    // }
 
     public void insertExecutionParameters(String[] keys, String[] values, long executionId, String[] types) {
         int[] intType = convertType2Int(types);
