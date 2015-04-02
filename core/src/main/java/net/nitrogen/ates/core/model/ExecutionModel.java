@@ -182,6 +182,9 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setProjectId(existingExecution.getProjectId());
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
+
+        CustomParameterModel.me.cloneExecutionParameters(existingExecution.getId(), newExecution.getId());
+
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
         for (QueueEntryModel entry : existingEntries) {
@@ -216,6 +219,9 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setProjectId(existingExecution.getProjectId());
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
+
+        CustomParameterModel.me.cloneExecutionParameters(existingExecution.getId(), newExecution.getId());
+
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
         for (QueueEntryModel entry : existingEntries) {

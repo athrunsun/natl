@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `custom_parameter` (
   `key` VARCHAR(100) NOT NULL,
   `value` VARCHAR(500) NOT NULL,
   `domain_key` INT NOT NULL,
-  `domain_value` VARCHAR(100) NOT NULL,
+  `domain_value` INT NOT NULL,
   `type` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
