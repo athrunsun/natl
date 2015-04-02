@@ -30,12 +30,10 @@ $(document).ready(function () {
                     shadow: true,
                     overlay: false,
                     draggable: true,
-                    minHeight: "auto",
-                    height: "auto",
-                    show: "slide",
                     icon: false,
                     title: 'Create Execution',
                     width: 700,
+                    height: 400,
                     padding: 10,
                     content: '',
                     onShow: function () {
