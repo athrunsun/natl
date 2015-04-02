@@ -35,7 +35,10 @@ public class TestResultReporter {
         Properties props = PropertiesUtil.load("config.txt");
         DruidPlugin druidPlugin = DBConfig.createDruidPlugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"), 0, 0, 1);
         druidPlugin.start();
-        ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
+
+        String configName = String.format("ates_testresultreporter_arp_config_%d", DateTime.now().getMillis());
+        System.out.println("ConfigName:" + configName);
+        ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin, configName);
         arp.start();
         TestResultModel.me.insertTestResult(this.prepareTestResult(result, status));
         arp.stop();
