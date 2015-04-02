@@ -1,4 +1,5 @@
 <#include "/tpl/common/_master.html" />
+<#include "/tpl/parameter/_table.html" />
 
 <#macro customBody>
     <div class="top-offset">
@@ -8,8 +9,8 @@
                     <div class="sidebar sticky-sidebar">
                         <ul>
                             <li class="title">Control Panel</li>
-                            <li><a id="assign_to_test_suite" href="#">Assign to Test Suite</a></li>
                             <li><a id="run_selected_test_groups" href="#">Run Selected</a></li>
+                            <li><a id="assign_to_test_suite" href="#">Assign to Test Suite</a></li>
                         </ul>
                     </div>
                 </div>
@@ -59,29 +60,29 @@
             <div class="input-control text">
                 <input name="name" type="text">
             </div>
-            <label>JVM Options</label>
-            <div class="input-control text">
-                <input name="jvm_options" type="text">
-            </div>
-            <label>TestNG Parameters</label>
-            <div class="input-control text">
-                <input name="params" type="text">
-            </div>
-            <label>ENV</label>
-            <div class="input-control text select">
-                <select name="env">
-                    {{~it.array :value:index}}
-                    {{? index === 0 }}
-                    <option value="{{=value.id}}" selected="selected">{{=value.name}}</option>
-                    {{??}}
-                    <option value="{{=value.id}}">{{=value.name}}</option>
-                    {{?}}
-                    {{~}}
-                </select>
-            </div>
+			<@parameterTable/>
             <input id="selected_test_groups" name="selected_test_groups" type="hidden">
             <input class="button primary" type="submit" value="Create">
         </form>
+		<script type="text/javascript">
+    		$(document).ready(function(){
+        		$(".addPara").click(function(){
+            		$("#customFields tbody").append('
+        				<tr class="text">
+        					<td class="span4"><input type="text" name="customFieldName" value="" placeholder="Input Name" /> </td>
+        					<td class="span4"><input type="text" name="customFieldValue" value="" placeholder="Input Value" /> </td>
+        					<td class="span2"><select name="customFieldType" value="">
+            					<option>JVM</option>
+            					<option>TestNG</option>
+        						</select></td>
+							<td><a href="#" class="remPara icon-remove"></a></td>
+						</tr>');
+        		});
+        		$("#customFields").on('click','.remPara',function(){
+            		$(this).parent().parent().remove();
+        		});
+    		});
+    	</script>
     </script>
     <script id="add_group_to_suite_form_tpl" type="text/x-dot-template">
         <form id="add_group_to_suite_form" action="${CPATH}/testsuite/assignTestGroups" method="post">

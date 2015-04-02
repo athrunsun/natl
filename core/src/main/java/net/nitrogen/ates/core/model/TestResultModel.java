@@ -27,6 +27,7 @@ public class TestResultModel extends Model<TestResultModel> {
         public static final String SCREENSHOT_URL = "screenshot_url";
         public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
+        @Deprecated
         public static final String ENV = "env";
     }
 

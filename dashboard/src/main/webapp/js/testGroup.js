@@ -33,6 +33,7 @@ $(document).ready(function () {
                     icon: false,
                     title: 'Create Execution',
                     width: 700,
+                    height: 400,
                     padding: 10,
                     content: '',
                     onShow: function () {

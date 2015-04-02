@@ -1,15 +1,23 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
 import net.nitrogen.ates.util.StringUtil;
+
 import org.joda.time.DateTime;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 public class QueueEntryModel extends Model<QueueEntryModel> {
     public static final int DEFAULT_PAGE_SIZE = 5;
@@ -25,8 +33,11 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         public static final String END_TIME = "end_time";
         public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
+        @Deprecated
         public static final String ENV = "env";
+        @Deprecated
         public static final String JVM_OPTIONS = "jvm_options";
+        @Deprecated
         public static final String PARAMS = "params";
     }
 
@@ -175,17 +186,20 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     }
 
     public String getJvmOptions() {
-        return this.getStr(Fields.JVM_OPTIONS);
+        return CustomParameterModel.me.getJvmParametersForExecution(getExecutionId());
     }
 
+    @Deprecated
     public void setJvmOptions(String jvmOptions) {
         this.set(Fields.JVM_OPTIONS, jvmOptions);
     }
 
+    @Deprecated
     public String getParams() {
         return this.getStr(Fields.PARAMS);
     }
 
+    @Deprecated
     public void setParams(String params) {
         this.set(Fields.PARAMS, params);
     }

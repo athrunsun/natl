@@ -37,11 +37,16 @@ CREATE TABLE IF NOT EXISTS `execution` (
 # `type` enum:
 # 0 - JVM
 # 1 - TESTNG
+#
+# `domain_key` enum:
+# 0 - execution
+# 1 - testsuite
+# 2 - project
 CREATE TABLE IF NOT EXISTS `custom_parameter` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(100) NOT NULL,
   `value` VARCHAR(500) NOT NULL,
-  `domain_key` VARCHAR(100) NOT NULL,
+  `domain_key` INT NOT NULL,
   `domain_value` VARCHAR(100) NOT NULL,
   `type` INT NOT NULL,
   PRIMARY KEY (`id`)

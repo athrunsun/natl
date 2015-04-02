@@ -58,16 +58,22 @@ public class ExecutionController extends Controller {
 
     public void createByTestGroup() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
+        String selectedTestGroups = getPara("selected_test_groups");
+        String[] customFieldName = getParaValues("customFieldName");
+        String[] customFieldValue = getParaValues("customFieldValue");
+        String[] customFieldType = getParaValues("customFieldType");
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
+
+        // ***** to be deleted
         String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
         jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
         String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
         testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
         String envId = getPara(QueueEntryModel.Fields.ENV);
         String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
-        String selectedTestGroups = getPara("selected_test_groups");
-        List<Long> testGroupIds = new ArrayList<>();
+        // ***** end
 
+        List<Long> testGroupIds = new ArrayList<>();
         for (String testGroupIdAsString : selectedTestGroups.split(",")) {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
@@ -79,6 +85,8 @@ public class ExecutionController extends Controller {
                 jvmOptions,
                 testngParams,
                 testGroupIds);
+
+        CustomParameterModel.me.insertExecutionParameters(customFieldName, customFieldValue, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

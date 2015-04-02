@@ -1,6 +1,7 @@
 package net.nitrogen.ates.core.model;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
@@ -34,6 +35,31 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
      */
     public static final CustomParameterModel me = new CustomParameterModel();
 
+    public String getJvmParametersForExecution(long executionId) {
+        StringBuffer params = new StringBuffer();
+        for (CustomParameterModel model : findExecutionParameters(executionId, 0)) {
+            params.append("-D");
+            params.append(model.getKey());
+            params.append("=");
+            params.append(model.getValue());
+            params.append(" ");
+        }
+        return params.toString().trim();
+    }
+
+    public List<CustomParameterModel> findExecutionParameters(long executionId, int type) {
+        return find(String.format(
+                "SELECT `%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=%s AND `%s`=?",
+                Fields.KEY,
+                Fields.VALUE,
+                TABLE,
+                Fields.DOMAIN_KEY,
+                0,
+                Fields.TYPE,
+                type,
+                Fields.DOMAIN_VALUE), executionId);
+    }
+
     public void insertExecutionParameters(String[] keys, String[] values, long executionId, String[] types) {
         int[] intType = convertType2Int(types);
         final int INSERT_PARAMETER_TABLE_PARAM_SIZE = 5;
@@ -50,7 +76,7 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
         for (int i = 0; i < keys.length; i++) {
             insertParametersSqlParams[i][0] = keys[i];
             insertParametersSqlParams[i][1] = values[i];
-            insertParametersSqlParams[i][2] = ExecutionModel.TABLE;
+            insertParametersSqlParams[i][2] = 0; // 0 for execution
             insertParametersSqlParams[i][3] = executionId;
             insertParametersSqlParams[i][4] = intType[i];
         }
@@ -107,11 +133,11 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
         this.set(Fields.VALUE, value);
     }
 
-    public String getDomainKey() {
-        return this.getStr(Fields.DOMAIN_KEY);
+    public int getDomainKey() {
+        return this.getInt(Fields.DOMAIN_KEY);
     }
 
-    public void setDomainKey(String domainKey) {
+    public void setDomainKey(int domainKey) {
         this.set(Fields.DOMAIN_KEY, domainKey);
     }
 
