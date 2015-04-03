@@ -1,0 +1,21 @@
+<#macro parameterRow>
+    <div class="row">
+        <div class="input-control text span5">
+            <input type="text" name="customFieldName" value="" placeholder="Key">
+        </div>
+        <div class="input-control text span5">
+            <input type="text" name="customFieldValue" value="" placeholder="Value">
+        </div>
+        <div style="display:none;">
+            <div class="input-control select">
+                <select name="customFieldType" value="">
+                    <option>JVM</option>
+                    <option>TestNG</option>
+                </select>
+            </div>
+        </div>
+        <div class="input-control text span2">
+            <button class="button danger remPara"><i class="icon-remove"></i></button>
+        </div>
+    </div>
+</#macro>

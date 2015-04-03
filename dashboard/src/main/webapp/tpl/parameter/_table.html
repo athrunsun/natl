@@ -1,16 +1,10 @@
+<#include "/tpl/parameter/_row.html" />
+
 <#macro parameterTable>
-<div class="panel" resize="auto">
-    <div class="panel-content">
-        <table class="form-table" id="customFields">
-            <tr class="place-left">
-                <th scope="row"><label for="customFieldName">Custom Parameters</label></th>
-            </tr>
-            <@parameterDataRows/>
-            <@blankParameterRow/>
-        </table>
-        <a href="#" class="addPara span2">+ Add new parameter</a>
+    <label>Custom Parameters</label>
+    <div id="custom_params" class="grid fluid">
+        <@parameterRow/>
     </div>
-</div>
 </#macro>
 
 <#macro blankParameterRow>
