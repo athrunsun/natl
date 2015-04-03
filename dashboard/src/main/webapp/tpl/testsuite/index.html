@@ -17,7 +17,7 @@
                     <div class="panel">
                         <div class="panel-header bg-lightBlue fg-white">Test Suite List</div>
                         <div class="panel-content">
-                            <table id="testsuite_table" class="table striped bordered hovered">
+                            <table id="testsuite_table" class="table bordered hovered">
                                 <thead>
                                 <tr>
                                     <th class="text-left">Name</th>
@@ -31,7 +31,7 @@
                                     <tr>
                                         <td class="span2"><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
                                         <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
-                                        <td class="span9"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java ... ${testsuite.getJvmOptions()}</a></td>
+                                        <td class="span9"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptions()}</a></td>
                                         <td class="span1"><button data-id="${testsuite.getId()}" class="button danger delete-testsuite">Delete</button></td>
                                     </tr>
                                 </#list>
