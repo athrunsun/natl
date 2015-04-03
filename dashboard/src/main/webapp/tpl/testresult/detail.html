@@ -28,8 +28,8 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>ENV</td>
-                                            <td><span>${testResult.getEnv()!}</span></td>
+                                            <td>JVM Options</td>
+                                            <td>${entry.getJvmOptions().replaceAll(" ","<br/>")!}</td>
                                         </tr>
                                         <tr>
                                             <td>Execution</td>
@@ -63,14 +63,6 @@
                                                         <tr>
                                                             <td>Execution Index</td>
                                                             <td>${entry.getIndex()}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>JVM Options</td>
-                                                            <td>${entry.getJvmOptions()!}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>TestNG Params</td>
-                                                            <td>${entry.getParams()!}</td>
                                                         </tr>
                                                         <tr>
                                                             <td class="span4">Queue Entry ID</td>

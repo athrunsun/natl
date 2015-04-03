@@ -1,4 +1,5 @@
 <#include "/tpl/common/_master.html" />
+<#include "/tpl/parameter/_table.html" />
 
 <#macro customBody>
     <div class="top-offset">
@@ -16,22 +17,22 @@
                     <div class="panel">
                         <div class="panel-header bg-lightBlue fg-white">Test Suite List</div>
                         <div class="panel-content">
-                            <table id="testsuite_table" class="table">
+                            <table id="testsuite_table" class="table striped bordered hovered">
                                 <thead>
                                 <tr>
                                     <th class="text-left">Name</th>
-                                    <th class="text-left">Last Execution Result (todo)</th>
-                                    <th class="text-left">Parameters (todo)</th>
+                                    <!-- <th class="text-left">Last Execution Result (todo)</th> -->
+                                    <th class="text-left">JVM Options</th>
                                     <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <#list testsuiteList as testsuite>
                                     <tr>
-                                        <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
-                                        <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td>
-                                        <td><a href="#">Pop up for editing</a></td>
-                                        <td><button data-id="${testsuite.getId()}" class="button danger delete-testsuite">Delete</button></td>
+                                        <td class="span2"><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
+                                        <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
+                                        <td class="span9"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java ... ${testsuite.getJvmOptions()}</a></td>
+                                        <td class="span1"><button data-id="${testsuite.getId()}" class="button danger delete-testsuite">Delete</button></td>
                                     </tr>
                                 </#list>
                                 </tbody>
@@ -54,8 +55,36 @@
             <input class="button primary place-right" type="submit" value="Create">
         </form>
     </script>
+    <script id="edit_testsuite_jvm_parameter_form_tpl" type="text/x-dot-template">
+        <form action="${CPATH}/testsuite/updateJvmOptions" method="post">
+			<@parameterTable/>
+            <input class="button primary place-right" type="submit" value="Save">
+        </form>
+		<script type="text/javascript">
+    		$(document).ready(function(){
+        		$(".addPara").click(function(){
+            		$("#customFields tbody").append('
+        				<tr class="text">
+        					<td class="span4"><input type="text" name="customFieldName" value="" placeholder="Input Name" /> </td>
+        					<td class="span4"><input type="text" name="customFieldValue" value="" placeholder="Input Value" /> </td>
+        					<!-- <td class="span2"><select name="customFieldType" value="">
+            					<option>JVM</option>
+            					<option>TestNG</option>
+        						</select></td> -->
+							<td><a href="#" class="remPara icon-remove"></a></td>
+						</tr>');
+        		});
+        		$("#customFields").on('click','.remPara',function(){
+            		$(this).parent().parent().remove();
+        		});
+    		});
+    	</script>
+    </script>
     <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
     <script src="${CPATH}/js/testsuite.js" type="text/javascript"></script>
+</#macro>
+
+<#macro blankParameterRow>
 </#macro>
 
 <@master/>

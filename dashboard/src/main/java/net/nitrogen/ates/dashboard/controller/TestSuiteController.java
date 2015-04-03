@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.TestSuiteModel;
@@ -67,6 +68,30 @@ public class TestSuiteController extends Controller {
 
         TestSuiteTestCaseModel.me.insertTestSuiteTestCasesIfNotExists(testSuiteTestCases);
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
+    }
+
+    public void updateJvmOptions() {
+        Long testsuiteId = getParaToLong("testSuiteId");
+        String[] keys = getParaValues("customFieldName");
+        String[] values = getParaValues("customFieldValue");
+        String[] types = new String[] { "1", "0" }; // default to 0 as JVM
+
+        CustomParameterModel.me.overwriteTestSuiteParameters(keys, values, testsuiteId, types);
+        redirect("/testsuite/index");
+    }
+
+    public void fetchJvmOptionsBySuiteIdAsJson() {
+        renderJson(CustomParameterModel.me.findTestSuiteParameters(getParaToLong("testSuiteId"), 0));
+    }
+
+    public void fetchJvmOptions() {
+        Long testsuiteId = getParaToLong("testSuiteId");
+        String[] keys = getParaValues("customFieldName");
+        String[] values = getParaValues("customFieldValue");
+        String[] types = new String[] { "1", "0" }; // default to 0 as JVM
+
+        CustomParameterModel.me.overwriteTestSuiteParameters(keys, values, testsuiteId, types);
+        redirect("/testsuite/index");
     }
 
     public void assignTestGroups() {

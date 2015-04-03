@@ -27,6 +27,10 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
                 projectId);
     }
 
+    public String getJvmOptions() {
+        return CustomParameterModel.me.getJvmParametersForTestSuite(getId());
+    }
+
     public long getId() {
         return getLong(Fields.ID);
     }
