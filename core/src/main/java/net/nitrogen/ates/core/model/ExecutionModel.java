@@ -167,6 +167,38 @@ public class ExecutionModel extends Model<ExecutionModel> {
         return newExecutionId;
     }
 
+    public long createExecutionByTestSuite(long projectId, String executionName, long testSuiteId) {
+        ExecutionModel newExecution = new ExecutionModel();
+        newExecution.setName(executionName);
+        newExecution.setProjectId(projectId);
+        newExecution.setCreatedTime(DateTime.now());
+        newExecution.setTestSuiteId(testSuiteId);
+        newExecution.save();
+        long newExecutionId = newExecution.get(Fields.ID);
+        Set<String> uniqueTestNames = new HashSet<String>();
+        List<TestSuiteTestCaseModel> testCases = TestSuiteTestCaseModel.me.findTestSuiteTestCases(testSuiteId);
+        String suitePara = CustomParameterModel.me.getJvmParametersForTestSuite(testSuiteId);
+        CustomParameterModel.me.cloneExecutionParametersFromTestSuite(testSuiteId, newExecutionId);
+
+        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
+
+        for (TestSuiteTestCaseModel testCase : testCases) {
+            QueueEntryModel entry = new QueueEntryModel();
+            entry.setStatus(QueueEntryStatus.WAITING.getStatus());
+            entry.setName(testCase.getTestName());
+            entry.setSlaveName("");
+            entry.setExecutionId(newExecutionId);
+            entry.setProjectId(projectId);
+            entry.setEnv("");
+            entry.setJvmOptions(suitePara);
+            entry.setParams("");
+            entries.add(entry);
+        }
+
+        QueueEntryModel.me.insertEntries(entries);
+        return newExecutionId;
+    }
+
     public long cloneExecution(long executionId) {
         List<QueueEntryModel> existingEntries = QueueEntryModel.me.findEntries(executionId);
 

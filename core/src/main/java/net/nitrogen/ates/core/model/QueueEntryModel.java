@@ -177,10 +177,12 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         this.set(Fields.PROJECT_ID, projectId);
     }
 
+    @Deprecated
     public String getEnv() {
         return this.getStr(Fields.ENV);
     }
 
+    @Deprecated
     public void setEnv(String env) {
         this.set(Fields.ENV, env);
     }

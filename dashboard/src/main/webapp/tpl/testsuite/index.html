@@ -23,7 +23,7 @@
                                     <th class="text-left">Name</th>
                                     <!-- <th class="text-left">Last Execution Result (todo)</th> -->
                                     <th class="text-left">JVM Options</th>
-                                    <th></th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -31,8 +31,18 @@
                                     <tr>
                                         <td class="span2"><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
                                         <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
-                                        <td class="span9"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptions()}</a></td>
-                                        <td class="span1"><button data-id="${testsuite.getId()}" class="button danger delete-testsuite">Delete</button></td>
+                                        <td class="span7"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptions()}</a></td>
+                                        <td class="span3">
+                                            <div class="span2">
+                                                <a data-id="${testsuite.getId()}" class="delete-testsuite icon-remove" title="Delete this test suite"></a>
+                                            </div>
+                                            <div class="span10">
+                                                <form action="${CPATH}/execution/createByTestSuite" method="post">
+                                                    <input name="testSuiteId" value="${testsuite.getId()}" type="hidden"/>
+                                                    <input class="button place-right" type="submit" value="Execute Now"/>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </#list>
                                 </tbody>

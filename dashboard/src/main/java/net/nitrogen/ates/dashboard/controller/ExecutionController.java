@@ -90,6 +90,14 @@ public class ExecutionController extends Controller {
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
+    public void createByTestSuite() {
+        Long testSuiteId = getParaToLong("testSuiteId");
+        Long projectId = ControllerHelper.getProjectPrefFromCookie(this);
+
+        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, "suite name", testSuiteId);
+        redirect(String.format("/execution/detail/%d", newExecutionId));
+    }
+
     public void fecthPassrateAsJson() {
         renderJson(ExecutionModel.me.passrateOfExecution(getParaToLong("executionId")));
     }

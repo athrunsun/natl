@@ -120,6 +120,7 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
     public void cloneExecutionParametersFromTestSuite(long testSuiteId, long targetExecutionId) {
         List<CustomParameterModel> paramModels = findTestSuiteParameters(testSuiteId);
         for (CustomParameterModel model : paramModels) {
+            model.setDomainKey(0); // TODO
             model.setDomainValue(targetExecutionId);
         }
         insertParameters(paramModels);
