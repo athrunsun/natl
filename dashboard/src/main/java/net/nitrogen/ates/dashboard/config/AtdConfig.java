@@ -1,6 +1,7 @@
 package net.nitrogen.ates.dashboard.config;
 
 import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.dashboard.controller.AtesHelpController;
 import net.nitrogen.ates.dashboard.controller.ExecutionController;
 import net.nitrogen.ates.dashboard.controller.IndexController;
 import net.nitrogen.ates.dashboard.controller.ProjectController;
@@ -51,6 +52,7 @@ public class AtdConfig extends JFinalConfig {
         me.add("/admin/queue", AdminQueueController.class, "/tpl/admin/queue");
         me.add("/admin/project", AdminProjectController.class, "/tpl/admin/project");
         me.add("/admin/slave", AdminSlaveController.class, "/tpl/admin/slave");
+        me.add("/help", AtesHelpController.class, "/tpl/help");
     }
 
     @Override
