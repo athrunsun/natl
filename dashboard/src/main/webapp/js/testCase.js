@@ -37,7 +37,9 @@ $(document).ready(function () {
                         $("#test_case_table .check-to-run-test-case").each(function (index, item) {
                             if ($(item).is(":checked") === true) {
                                 hasCheckedTestCase = true;
-                                $("#create_execution_form").append("<input name=\"selected_test_cases\" type=\"hidden\" value=\"" + $(item).attr("data-id") + "\">");
+
+                                // NOTE: test case name is html encoded!
+                                $("#create_execution_form").append("<input name=\"selected_test_cases\" type=\"hidden\" value=\"" + $(item).attr("data-name") + "\">");
                             }
                         });
 
@@ -63,7 +65,6 @@ $(document).ready(function () {
                             evt.preventDefault();
                         });
 
-                        $.Dialog.autoResize();
                         event.preventDefault();
                     });
                 }

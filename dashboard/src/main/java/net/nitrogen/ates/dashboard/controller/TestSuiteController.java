@@ -14,6 +14,7 @@ import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class TestSuiteController extends Controller {
     public void index() {
@@ -27,6 +28,7 @@ public class TestSuiteController extends Controller {
         setAttr("testsuite", testSuite);
         ControllerHelper.setExecResultEnumAttr(this);
         setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfo(testSuite));
+        setAttr("customParameterList", CustomParameterModel.me.findParameters(CustomParameterDomainKey.TEST_SUITE, suiteId));
         render("detail.html");
     }
 
@@ -43,7 +45,7 @@ public class TestSuiteController extends Controller {
 
     public void removeCaseFromSuite() {
         long suiteId = getParaToLong("testsuiteId");
-        final String testcaseName = getPara("testcaseName");
+        final String testcaseName = StringEscapeUtils.unescapeHtml4(getPara("testcaseName"));
         TestSuiteTestCaseModel.me.delete(suiteId, testcaseName);
         redirect(String.format("/testsuite/detail/%d", suiteId));
     }

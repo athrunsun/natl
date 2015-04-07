@@ -1,17 +1,16 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.jfinal.core.Controller;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.util.StringUtil;
+import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.jfinal.core.Controller;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExecutionController extends Controller {
     public void index() {
@@ -29,7 +28,12 @@ public class ExecutionController extends Controller {
 
     public void createByTestCase() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
-        String[] selectedTestCaseNames = getParaValues("selected_test_cases");
+        List<String> selectedTestCaseNames = new ArrayList<>();
+
+        for (String testCaseNameHtmlEncoded : getParaValues("selected_test_cases")) {
+            selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
+        }
+
         String[] customFieldName = getParaValues("customFieldName");
         String[] customFieldValue = getParaValues("customFieldValue");
         String[] customFieldType = getParaValues("customFieldType");
@@ -38,7 +42,8 @@ public class ExecutionController extends Controller {
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
                 ControllerHelper.getProjectPrefFromCookie(this),
                 executionName,
-                Arrays.asList(selectedTestCaseNames));
+                selectedTestCaseNames);
+
         CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
