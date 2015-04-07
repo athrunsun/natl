@@ -22,7 +22,6 @@ public class ExecManager {
     public static final String EXEC_PARAM_KEY_ENTRY_INDEX = "nitrogen_ates_entryindex";
     public static final String EXEC_PARAM_KEY_EXECUTION_ID = "nitrogen_ates_executionid";
     public static final String EXEC_PARAM_KEY_PROJECT_ID = "nitrogen_ates_projectid";
-    public static final String EXEC_PARAM_KEY_ENV = "nitrogen_ates_env";
 
     public static final String TEST_RESULT_REPORTER_JAR_PATH = "C:\\ates\\lib\\ates-testresultreporter-jar-with-dependencies.jar";
     public static final String TEST_RESULT_REPORTER_CLASS_NAME = "net.nitrogen.ates.testresultreporter.TestResultListener";
@@ -35,7 +34,7 @@ public class ExecManager {
         QueueEntryModel entry = QueueEntryModel.me.fetchEntry(EnvParameter.machineName());
 
         if (entry != null) {
-            List<CustomParameterModel> rawJvmOptions = CustomParameterModel.me.findParameters(
+            List<CustomParameterModel> parameterModels = CustomParameterModel.me.findParameters(
                     CustomParameterDomainKey.EXECUTION,
                     entry.getExecutionId(),
                     CustomParameterType.JVM);
@@ -46,9 +45,8 @@ public class ExecManager {
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ENTRY_INDEX, String.valueOf(entry.getIndex())), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_EXECUTION_ID, String.valueOf(entry.getExecutionId())), false);
             cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_PROJECT_ID, String.valueOf(entry.getProjectId())), false);
-            cmdLine.addArgument(String.format("-D%s=%s", EXEC_PARAM_KEY_ENV, entry.getEnv()), false);
-            for (CustomParameterModel rawJvmOption : rawJvmOptions) {
-                cmdLine.addArgument(String.format("-D%s=%s", rawJvmOption.getKey(), rawJvmOption.getValue()), false);
+            for (CustomParameterModel parameterModel : parameterModels) {
+                cmdLine.addArgument(String.format("-D%s=%s", parameterModel.getKey(), parameterModel.getValue()), false);
             }
 
             cmdLine.addArgument("-cp", false);

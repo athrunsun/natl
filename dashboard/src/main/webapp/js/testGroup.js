@@ -19,51 +19,43 @@ $(document).ready(function () {
             $.Notify({style: {background: 'red', color: 'white'}, content: "You haven't select any test groups!"});
             e.preventDefault();
         } else {
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                //contentType: "application/json; charset=utf-8",
-                url: ates.contextPath + "/env/fetchEnvsByProjectIdAsJson",
-                data: "projectId=" + $.cookie(ates.cookieKeyProjectPref)
-            }).done(function(envList) {
-                $.Dialog({
-                    shadow: true,
-                    overlay: false,
-                    draggable: true,
-                    icon: false,
-                    title: 'Create Execution',
-                    width: 700,
-                    height: 400,
-                    padding: 10,
-                    content: '',
-                    onShow: function () {
-                        $.Dialog.content(ates.createExecutionFormTplFn({"array":envList}));
+            $.Dialog({
+                shadow: true,
+                overlay: false,
+                draggable: true,
+                icon: false,
+                title: 'Create Execution',
+                width: 700,
+                height: 400,
+                padding: 10,
+                content: '',
+                onShow: function () {
+                    $.Dialog.content(ates.createExecutionFormTplFn({"array":null})); // TODO temporally removed env array
 
-                        $("#create_execution_form").on("submit", function (event) {
-                            var hasCheckedTestGroup = false;
-                            var selectedTestGroups = [];
+                    $("#create_execution_form").on("submit", function (event) {
+                        var hasCheckedTestGroup = false;
+                        var selectedTestGroups = [];
 
-                            $("#test_group_table .check-to-run-test-group").each(function (index, item) {
-                                if ($(item).is(":checked") === true) {
-                                    hasCheckedTestGroup = true;
-                                    selectedTestGroups.push($(item).attr("data-id"));
-                                }
-                            });
-
-                            if (hasCheckedTestGroup === false) {
-                                $.Notify({
-                                    style: {background: 'red', color: 'white'},
-                                    content: "You haven't select any test groups!"
-                                });
-                                event.preventDefault();
-                            } else {
-                                // Submit selected test group ids as comma separated
-                                $(this).find("#selected_test_groups").val(selectedTestGroups.join(","));
-                                //$(this).submit();
+                        $("#test_group_table .check-to-run-test-group").each(function (index, item) {
+                            if ($(item).is(":checked") === true) {
+                                hasCheckedTestGroup = true;
+                                selectedTestGroups.push($(item).attr("data-id"));
                             }
                         });
-                    }
-                });
+
+                        if (hasCheckedTestGroup === false) {
+                            $.Notify({
+                                style: {background: 'red', color: 'white'},
+                                content: "You haven't select any test groups!"
+                            });
+                            event.preventDefault();
+                        } else {
+                            // Submit selected test group ids as comma separated
+                            $(this).find("#selected_test_groups").val(selectedTestGroups.join(","));
+                            //$(this).submit();
+                        }
+                    });
+                }
             });
         }
     });

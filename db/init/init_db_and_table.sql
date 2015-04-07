@@ -19,9 +19,6 @@ CREATE TABLE IF NOT EXISTS `queue_entry` (
   `end_time` DATETIME,
   `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
-  `env` VARCHAR(200) NOT NULL,
-  `jvm_options` VARCHAR(500) NOT NULL,
-  `params` VARCHAR(500) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -104,7 +101,6 @@ CREATE TABLE IF NOT EXISTS `test_result` (
   `screenshot_url` VARCHAR(500) NOT NULL,
   `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
-  `env` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -123,12 +119,5 @@ CREATE TABLE IF NOT EXISTS `project` (
   `jar_with_dependency_name` VARCHAR(500) NOT NULL,
   `git_url` VARCHAR(500) NOT NULL,
   `total_test_case_count` INT NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `custom_env` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(200) NOT NULL,
-  `project_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;

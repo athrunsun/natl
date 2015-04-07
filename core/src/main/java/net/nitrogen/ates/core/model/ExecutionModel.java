@@ -108,7 +108,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
                 Fields.ID), projectId);
     }
 
-    public long createExecutionByTestCase(long projectId, String executionName, String env, String jvmOptions, String params, List<String> testCaseNames) {
+    public long createExecutionByTestCase(long projectId, String executionName, List<String> testCaseNames) {
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.setName(executionName);
         newExecution.setProjectId(projectId);
@@ -124,9 +124,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
-            entry.setEnv(env);
-            entry.setJvmOptions(jvmOptions);
-            entry.setParams(params);
             entries.add(entry);
         }
 
@@ -134,7 +131,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         return newExecutionId;
     }
 
-    public long createExecutionByTestGroup(long projectId, String executionName, String env, String jvmOptions, String params, List<Long> testGroupIds) {
+    public long createExecutionByTestGroup(long projectId, String executionName, List<Long> testGroupIds) {
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.setName(executionName);
         newExecution.setProjectId(projectId);
@@ -158,9 +155,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
-            entry.setEnv(env);
-            entry.setJvmOptions(jvmOptions);
-            entry.setParams(params);
             entries.add(entry);
         }
 
@@ -178,7 +172,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
         long newExecutionId = newExecution.get(Fields.ID);
         Set<String> uniqueTestNames = new HashSet<String>();
         List<TestSuiteTestCaseModel> testCases = TestSuiteTestCaseModel.me.findTestSuiteTestCases(testSuiteId);
-        String suitePara = CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.TEST_SUITE, testSuiteId);
         CustomParameterModel.me.cloneParameters(CustomParameterDomainKey.TEST_SUITE, testSuiteId, newExecutionId);
 
         List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
@@ -190,9 +183,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
-            entry.setEnv("");
-            entry.setJvmOptions(suitePara);
-            entry.setParams("");
             entries.add(entry);
         }
 
@@ -227,9 +217,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
             newEntry.setSlaveName("");
             newEntry.setExecutionId(newExecution.getId());
             newEntry.setProjectId(existingExecution.getProjectId());
-            newEntry.setEnv(entry.getEnv());
-            newEntry.setJvmOptions(entry.getJvmOptions());
-            newEntry.setParams(entry.getParams());
             newEntries.add(newEntry);
         }
 
@@ -264,9 +251,6 @@ public class ExecutionModel extends Model<ExecutionModel> {
             newEntry.setSlaveName("");
             newEntry.setExecutionId(newExecution.getId());
             newEntry.setProjectId(existingExecution.getProjectId());
-            newEntry.setEnv(entry.getEnv());
-            newEntry.setJvmOptions(entry.getJvmOptions());
-            newEntry.setParams(entry.getParams());
             newEntries.add(newEntry);
         }
 

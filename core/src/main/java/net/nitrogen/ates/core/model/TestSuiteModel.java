@@ -29,7 +29,7 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
                 projectId);
     }
 
-    public String getJvmOptions() {
+    public String getJvmOptionsAsString() {
         return CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.TEST_SUITE, getId());
     }
 

@@ -27,8 +27,6 @@ public class TestResultModel extends Model<TestResultModel> {
         public static final String SCREENSHOT_URL = "screenshot_url";
         public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
-        @Deprecated
-        public static final String ENV = "env";
     }
 
     public static final TestResultModel me = new TestResultModel();
@@ -165,21 +163,13 @@ public class TestResultModel extends Model<TestResultModel> {
         this.set(Fields.PROJECT_ID, projectId);
     }
 
-    public String getEnv() {
-        return getStr(Fields.ENV);
-    }
-
-    public void setEnv(String env) {
-        this.set(Fields.ENV, env);
-    }
-
     public Long getDuration() {
         return (getEndTime().getMillis() - getStartTime().getMillis()) / 1000;
     }
 
     public TestResultModel findTestResult(long entryId) {
         String sql = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1",
                 Fields.ID,
                 Fields.ENTRY_ID,
                 Fields.TEST_NAME,
@@ -192,7 +182,6 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.SCREENSHOT_URL,
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
-                Fields.ENV,
                 TABLE,
                 Fields.ENTRY_ID);
 
@@ -201,7 +190,7 @@ public class TestResultModel extends Model<TestResultModel> {
 
     public List<TestResultModel> findTestResults(long projectId) {
         String sql = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.ENTRY_ID,
                 Fields.TEST_NAME,
@@ -214,7 +203,6 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.SCREENSHOT_URL,
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
-                Fields.ENV,
                 TABLE,
                 Fields.PROJECT_ID,
                 Fields.ID);
@@ -236,7 +224,6 @@ public class TestResultModel extends Model<TestResultModel> {
         m.setScreenshotUrl(testResult.getScreenshotUrl());
         m.setExecutionId(testResult.getExecutionId());
         m.setProjectId(testResult.getProjectId());
-        m.setEnv(testResult.getEnv());
         m.save();
 
         return m.getLong(Fields.ID);
@@ -244,7 +231,7 @@ public class TestResultModel extends Model<TestResultModel> {
 
     public List<TestResultModel> findTestResultsByCaseName(String testName, int limittedNum) {
         String sql = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY '%s' DESC LIMIT %s",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY '%s' DESC LIMIT %s",
                 Fields.ID,
                 Fields.ENTRY_ID,
                 Fields.TEST_NAME,
@@ -257,7 +244,6 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.SCREENSHOT_URL,
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
-                Fields.ENV,
                 TABLE,
                 Fields.TEST_NAME,
                 Fields.ID,

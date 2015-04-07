@@ -76,7 +76,7 @@ public class TestSuiteController extends Controller {
         Long testsuiteId = getParaToLong("testSuiteId");
         String[] keys = getParaValues("customFieldName");
         String[] values = getParaValues("customFieldValue");
-        String[] types = new String[] { "1", "0" }; // default to 0 as JVM
+        String[] types = null;
 
         CustomParameterModel.me.overwriteTestSuiteParameters(keys, values, testsuiteId, types);
         redirect("/testsuite/index");
