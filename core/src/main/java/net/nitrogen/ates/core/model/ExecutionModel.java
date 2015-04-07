@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
@@ -177,8 +178,8 @@ public class ExecutionModel extends Model<ExecutionModel> {
         long newExecutionId = newExecution.get(Fields.ID);
         Set<String> uniqueTestNames = new HashSet<String>();
         List<TestSuiteTestCaseModel> testCases = TestSuiteTestCaseModel.me.findTestSuiteTestCases(testSuiteId);
-        String suitePara = CustomParameterModel.me.getJvmParametersForTestSuite(testSuiteId);
-        CustomParameterModel.me.cloneExecutionParametersFromTestSuite(testSuiteId, newExecutionId);
+        String suitePara = CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.TEST_SUITE, testSuiteId);
+        CustomParameterModel.me.cloneParameters(CustomParameterDomainKey.TEST_SUITE, testSuiteId, newExecutionId);
 
         List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
 
@@ -215,7 +216,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
 
-        CustomParameterModel.me.cloneExecutionParameters(existingExecution.getId(), newExecution.getId());
+        CustomParameterModel.me.cloneParameters(CustomParameterDomainKey.EXECUTION, existingExecution.getId(), newExecution.getId());
 
         List<QueueEntryModel> newEntries = new ArrayList<>();
 
@@ -252,7 +253,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
 
-        CustomParameterModel.me.cloneExecutionParameters(existingExecution.getId(), newExecution.getId());
+        CustomParameterModel.me.cloneParameters(CustomParameterDomainKey.EXECUTION, existingExecution.getId(), newExecution.getId());
 
         List<QueueEntryModel> newEntries = new ArrayList<>();
 

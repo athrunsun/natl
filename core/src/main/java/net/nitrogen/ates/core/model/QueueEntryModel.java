@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
@@ -188,7 +189,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     }
 
     public String getJvmOptions() {
-        return CustomParameterModel.me.getJvmParametersForExecution(getExecutionId());
+        return CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.EXECUTION, getExecutionId());
     }
 
     @Deprecated

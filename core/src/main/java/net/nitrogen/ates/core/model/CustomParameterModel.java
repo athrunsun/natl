@@ -1,7 +1,11 @@
 package net.nitrogen.ates.core.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
@@ -21,9 +25,9 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
 
     public static final CustomParameterModel me = new CustomParameterModel();
 
-    public String getJvmParametersForExecution(long executionId) {
+    public String getJvmParametersAsString(CustomParameterDomainKey domainKey, long domainValue) {
         StringBuffer params = new StringBuffer();
-        for (CustomParameterModel model : findExecutionParameters(executionId, 0)) {
+        for (CustomParameterModel model : findParameters(domainKey, domainValue, CustomParameterType.JVM)) {
             params.append("-D");
             params.append(model.getKey());
             params.append("=");
@@ -33,19 +37,7 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
         return params.toString().trim();
     }
 
-    public String getJvmParametersForTestSuite(long testsuiteId) {
-        StringBuffer params = new StringBuffer();
-        for (CustomParameterModel model : findTestSuiteParameters(testsuiteId, 0)) {
-            params.append("-D");
-            params.append(model.getKey());
-            params.append("=");
-            params.append(model.getValue());
-            params.append(" ");
-        }
-        return params.toString().trim();
-    }
-
-    public List<CustomParameterModel> findExecutionParameters(long executionId, int type) {
+    public List<CustomParameterModel> findParameters(CustomParameterDomainKey key, long domainValue, CustomParameterType type) {
         return find(String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=%s AND `%s`=?",
                 Fields.ID,
@@ -56,30 +48,13 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
                 Fields.TYPE,
                 TABLE,
                 Fields.DOMAIN_KEY,
-                0,
+                key.getValue(),
                 Fields.TYPE,
-                type,
-                Fields.DOMAIN_VALUE), executionId);
+                type.getValue(),
+                Fields.DOMAIN_VALUE), domainValue);
     }
 
-    public List<CustomParameterModel> findTestSuiteParameters(long testsuiteId, int type) {
-        return find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=%s AND `%s`=?",
-                Fields.ID,
-                Fields.KEY,
-                Fields.VALUE,
-                Fields.DOMAIN_KEY,
-                Fields.DOMAIN_VALUE,
-                Fields.TYPE,
-                TABLE,
-                Fields.DOMAIN_KEY,
-                1,
-                Fields.TYPE,
-                type,
-                Fields.DOMAIN_VALUE), testsuiteId);
-    }
-
-    public List<CustomParameterModel> findExecutionParameters(long executionId) {
+    public List<CustomParameterModel> findParameters(CustomParameterDomainKey key, long domainValue) {
         return find(String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=?",
                 Fields.ID,
@@ -90,37 +65,14 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
                 Fields.TYPE,
                 TABLE,
                 Fields.DOMAIN_KEY,
-                0,
-                Fields.DOMAIN_VALUE), executionId);
+                key.getValue(),
+                Fields.DOMAIN_VALUE), domainValue);
     }
 
-    public List<CustomParameterModel> findTestSuiteParameters(long testSuiteId) {
-        return find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=%s AND `%s`=?",
-                Fields.ID,
-                Fields.KEY,
-                Fields.VALUE,
-                Fields.DOMAIN_KEY,
-                Fields.DOMAIN_VALUE,
-                Fields.TYPE,
-                TABLE,
-                Fields.DOMAIN_KEY,
-                1,
-                Fields.DOMAIN_VALUE), testSuiteId);
-    }
-
-    public void cloneExecutionParameters(long sourceExecutionId, long targetExecutionId) {
-        List<CustomParameterModel> paramModels = findExecutionParameters(sourceExecutionId);
+    public void cloneParameters(CustomParameterDomainKey sourceDomainKey, long sourceDomainValue, long targetExecutionId) {
+        List<CustomParameterModel> paramModels = findParameters(sourceDomainKey, sourceDomainValue);
         for (CustomParameterModel model : paramModels) {
-            model.setDomainValue(targetExecutionId);
-        }
-        insertParameters(paramModels);
-    }
-
-    public void cloneExecutionParametersFromTestSuite(long testSuiteId, long targetExecutionId) {
-        List<CustomParameterModel> paramModels = findTestSuiteParameters(testSuiteId);
-        for (CustomParameterModel model : paramModels) {
-            model.setDomainKey(0); // TODO
+            model.setDomainKey(CustomParameterDomainKey.EXECUTION.getValue()); // Target is always an execution
             model.setDomainValue(targetExecutionId);
         }
         insertParameters(paramModels);
@@ -143,7 +95,7 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
             insertParametersSqlParams[i][1] = models.get(i).getValue();
             insertParametersSqlParams[i][2] = models.get(i).getDomainKey();
             insertParametersSqlParams[i][3] = models.get(i).getDomainValue();
-            insertParametersSqlParams[i][4] = 0; // TODO for now, default type value as 0=JVM
+            insertParametersSqlParams[i][4] = models.get(i).getType();
         }
 
         Db.tx(new IAtom() {
@@ -155,91 +107,65 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
         });
     }
 
-    public void insertExecutionParameters(String[] keys, String[] values, long executionId, String[] types) {
-        int[] intType = convertType2Int(types);
-        final int INSERT_PARAMETER_TABLE_PARAM_SIZE = 5;
-        final String insertParameterSql = String.format(
-                "INSERT INTO `%s` (`%s`, `%s`, `%s`, `%s`, `%s`) VALUES (?,?,?,?,?);",
-                TABLE,
-                Fields.KEY,
-                Fields.VALUE,
-                Fields.DOMAIN_KEY,
-                Fields.DOMAIN_VALUE,
-                Fields.TYPE);
-        final Object[][] insertParametersSqlParams = new Object[keys.length][INSERT_PARAMETER_TABLE_PARAM_SIZE];
+    public void insertParameters(String[] keys, String[] values, CustomParameterDomainKey domainKey, long domainValue, String[] types) {
+        insertParameters(initModels(keys, values, domainKey, domainValue, types));
+    }
+
+    private List<CustomParameterModel> initModels(String[] keys, String[] values, CustomParameterDomainKey domainKey, long domainValue, String[] types) {
+        List<CustomParameterModel> customParameterModels = new ArrayList<CustomParameterModel>();
+        CustomParameterType[] type = convertType2Enum(types);
 
         for (int i = 0; i < keys.length; i++) {
-            insertParametersSqlParams[i][0] = keys[i];
-            insertParametersSqlParams[i][1] = values[i];
-            insertParametersSqlParams[i][2] = 0; // 0 for execution
-            insertParametersSqlParams[i][3] = executionId;
-            insertParametersSqlParams[i][4] = 0; // TODO for now, default type value as 0=JVM
+            CustomParameterModel model = new CustomParameterModel();
+            model.setDomainKey(domainKey.getValue());
+            model.setDomainValue(domainValue);
+            // model.setType(type[i].getValue());
+            model.setType(CustomParameterType.JVM.getValue()); // TODO default to JVM
+            model.setKey(keys[i]);
+            model.setValue(values[i]);
+            customParameterModels.add(model);
         }
-
-        Db.tx(new IAtom() {
-            @Override
-            public boolean run() throws SQLException {
-                Db.batch(insertParameterSql, insertParametersSqlParams, 500);
-                return true;
-            }
-        });
+        return customParameterModels;
     }
 
     public void overwriteTestSuiteParameters(String[] keys, String[] values, final long testsuiteId, String[] types) {
-        final String deleteSql = String.format("DELETE FROM `%s` WHERE `%s`=%s AND `%s`=?", TABLE, Fields.DOMAIN_KEY, 1, // 1 for test suite
-                Fields.DOMAIN_VALUE);
-
-        int[] intType = convertType2Int(types);
-        final int INSERT_PARAMETER_TABLE_PARAM_SIZE = 5;
-        final String insertParameterSql = String.format(
-                "INSERT INTO `%s` (`%s`, `%s`, `%s`, `%s`, `%s`) VALUES (?,?,?,?,?);",
+        final String deleteSql = String.format(
+                "DELETE FROM `%s` WHERE `%s`=%s AND `%s`=?",
                 TABLE,
-                Fields.KEY,
-                Fields.VALUE,
                 Fields.DOMAIN_KEY,
-                Fields.DOMAIN_VALUE,
-                Fields.TYPE);
-        final Object[][] insertParametersSqlParams = new Object[keys.length][INSERT_PARAMETER_TABLE_PARAM_SIZE];
-
-        for (int i = 0; i < keys.length; i++) {
-            insertParametersSqlParams[i][0] = keys[i];
-            insertParametersSqlParams[i][1] = values[i];
-            insertParametersSqlParams[i][2] = 1; // 1 for 'test suite'
-            insertParametersSqlParams[i][3] = testsuiteId;
-            insertParametersSqlParams[i][4] = 0; // TODO for now, default type value as 0=JVM
-        }
-
+                CustomParameterDomainKey.TEST_SUITE.getValue(),
+                Fields.DOMAIN_VALUE);
         Db.tx(new IAtom() {
             @Override
             public boolean run() throws SQLException {
                 Db.update(deleteSql, testsuiteId);
-                Db.batch(insertParameterSql, insertParametersSqlParams, 500);
                 return true;
             }
         });
 
+        insertParameters(keys, values, CustomParameterDomainKey.TEST_SUITE, testsuiteId, types);
     }
 
-    private int[] convertType2Int(String[] type) {
+    private CustomParameterType[] convertType2Enum(String[] type) {
         if (type == null) {
             return null;
         }
-        int[] intType = new int[type.length];
+        CustomParameterType[] types = new CustomParameterType[type.length];
         for (int i = 0; i < type.length; i++) {
             String typeValue = type[i].toLowerCase();
             switch (typeValue) {
             case "jvm":
-                intType[i] = 0;
+                types[i] = CustomParameterType.JVM;
                 break;
             case "testng":
-                intType[i] = 1;
+                types[i] = CustomParameterType.TESTNG;
                 break;
             default:
-                intType[i] = 0;
+                types[i] = CustomParameterType.JVM;
             }
 
         }
-        return intType;
+        return types;
     }
 
     public long getId() {

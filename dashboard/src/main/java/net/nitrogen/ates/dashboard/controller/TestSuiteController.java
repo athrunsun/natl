@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
@@ -81,17 +83,7 @@ public class TestSuiteController extends Controller {
     }
 
     public void fetchJvmOptionsBySuiteIdAsJson() {
-        renderJson(CustomParameterModel.me.findTestSuiteParameters(getParaToLong("testSuiteId"), 0));
-    }
-
-    public void fetchJvmOptions() {
-        Long testsuiteId = getParaToLong("testSuiteId");
-        String[] keys = getParaValues("customFieldName");
-        String[] values = getParaValues("customFieldValue");
-        String[] types = new String[] { "1", "0" }; // default to 0 as JVM
-
-        CustomParameterModel.me.overwriteTestSuiteParameters(keys, values, testsuiteId, types);
-        redirect("/testsuite/index");
+        renderJson(CustomParameterModel.me.findParameters(CustomParameterDomainKey.TEST_SUITE, getParaToLong("testSuiteId"), CustomParameterType.JVM));
     }
 
     public void assignTestGroups() {

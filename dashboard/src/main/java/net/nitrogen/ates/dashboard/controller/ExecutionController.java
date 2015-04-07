@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.CustomParameterModel;
@@ -52,7 +53,7 @@ public class ExecutionController extends Controller {
                 jvmOptions,
                 testngParams,
                 Arrays.asList(selectedTestCaseNames));
-        CustomParameterModel.me.insertExecutionParameters(customFieldName, customFieldValue, newExecutionId, customFieldType);
+        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
@@ -86,7 +87,7 @@ public class ExecutionController extends Controller {
                 testngParams,
                 testGroupIds);
 
-        CustomParameterModel.me.insertExecutionParameters(customFieldName, customFieldValue, newExecutionId, customFieldType);
+        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
