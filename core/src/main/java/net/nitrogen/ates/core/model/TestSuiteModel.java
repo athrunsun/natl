@@ -2,6 +2,8 @@ package net.nitrogen.ates.core.model;
 
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+
 import com.jfinal.plugin.activerecord.Model;
 
 public class TestSuiteModel extends Model<TestSuiteModel> {
@@ -27,8 +29,8 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
                 projectId);
     }
 
-    public String getJvmOptions() {
-        return CustomParameterModel.me.getJvmParametersForTestSuite(getId());
+    public String getJvmOptionsAsString() {
+        return CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.TEST_SUITE, getId());
     }
 
     public long getId() {

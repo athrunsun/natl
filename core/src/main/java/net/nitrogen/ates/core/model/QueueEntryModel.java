@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
@@ -33,12 +34,6 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         public static final String END_TIME = "end_time";
         public static final String EXECUTION_ID = "execution_id";
         public static final String PROJECT_ID = "project_id";
-        @Deprecated
-        public static final String ENV = "env";
-        @Deprecated
-        public static final String JVM_OPTIONS = "jvm_options";
-        @Deprecated
-        public static final String PARAMS = "params";
     }
 
     public static final QueueEntryModel me = new QueueEntryModel();
@@ -54,9 +49,6 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         entry.setEndTimestamp(record.getTimestamp(Fields.END_TIME));
         entry.setExecutionId(record.getLong(Fields.EXECUTION_ID));
         entry.setProjectId(record.getLong(Fields.PROJECT_ID));
-        entry.setEnv(record.getStr(Fields.ENV));
-        entry.setJvmOptions(record.getStr(Fields.JVM_OPTIONS));
-        entry.setParams(record.getStr(Fields.PARAMS));
         return entry;
     }
 
@@ -73,9 +65,6 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
             entry.setEndTimestamp(rs.getTimestamp(Fields.END_TIME));
             entry.setExecutionId(rs.getLong(Fields.EXECUTION_ID));
             entry.setProjectId(rs.getLong(Fields.PROJECT_ID));
-            entry.setEnv(rs.getString(Fields.ENV));
-            entry.setJvmOptions(rs.getString(Fields.JVM_OPTIONS));
-            entry.setParams(rs.getString(Fields.PARAMS));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -177,33 +166,8 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         this.set(Fields.PROJECT_ID, projectId);
     }
 
-    @Deprecated
-    public String getEnv() {
-        return this.getStr(Fields.ENV);
-    }
-
-    @Deprecated
-    public void setEnv(String env) {
-        this.set(Fields.ENV, env);
-    }
-
-    public String getJvmOptions() {
-        return CustomParameterModel.me.getJvmParametersForExecution(getExecutionId());
-    }
-
-    @Deprecated
-    public void setJvmOptions(String jvmOptions) {
-        this.set(Fields.JVM_OPTIONS, jvmOptions);
-    }
-
-    @Deprecated
-    public String getParams() {
-        return this.getStr(Fields.PARAMS);
-    }
-
-    @Deprecated
-    public void setParams(String params) {
-        this.set(Fields.PARAMS, params);
+    public String getJvmOptionsAsString() {
+        return CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.EXECUTION, getExecutionId());
     }
 
     public long allEntriesPageCount() {
@@ -226,7 +190,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
     public List<QueueEntryModel> findAllEntries() {
         return find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
                 Fields.NAME,
@@ -236,16 +200,13 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.END_TIME,
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
-                Fields.ENV,
-                Fields.JVM_OPTIONS,
-                Fields.PARAMS,
                 TABLE,
                 Fields.ID));
     }
 
     public List<QueueEntryModel> findEntries(long executionId) {
         String sql = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
                 Fields.NAME,
@@ -255,9 +216,6 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.END_TIME,
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
-                Fields.ENV,
-                Fields.JVM_OPTIONS,
-                Fields.PARAMS,
                 TABLE,
                 Fields.EXECUTION_ID,
                 Fields.ID);
@@ -267,7 +225,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
     public Page<QueueEntryModel> paginate(int pageNumber, int pageSize) {
         String selectClause = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
                 Fields.NAME,
@@ -276,10 +234,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.START_TIME,
                 Fields.END_TIME,
                 Fields.EXECUTION_ID,
-                Fields.PROJECT_ID,
-                Fields.ENV,
-                Fields.JVM_OPTIONS,
-                Fields.PARAMS);
+                Fields.PROJECT_ID);
 
         String sqlExceptSelect = String.format("FROM `%s` ORDER BY `%s` DESC", TABLE, Fields.ID);
 
@@ -303,20 +258,17 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
             }
         }
 
-        final int PARAMS_SIZE = 8;
+        final int PARAMS_SIZE = 5;
 
         if (foundEntries.size() > 0) {
             final String sql = String.format(
-                    "INSERT INTO `%s`(`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`) VALUES(?,?,?,?,?,?,?,?)",
+                    "INSERT INTO `%s`(`%s`,`%s`,`%s`,`%s`,`%s`) VALUES(?,?,?,?,?)",
                     TABLE,
                     Fields.STATUS,
                     Fields.NAME,
                     Fields.SLAVE_NAME,
                     Fields.EXECUTION_ID,
-                    Fields.PROJECT_ID,
-                    Fields.ENV,
-                    Fields.JVM_OPTIONS,
-                    Fields.PARAMS);
+                    Fields.PROJECT_ID);
 
             final Object[][] params = new Object[foundEntries.size()][PARAMS_SIZE];
 
@@ -326,9 +278,6 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 params[i][2] = foundEntries.get(i).getSlaveName();
                 params[i][3] = foundEntries.get(i).getExecutionId();
                 params[i][4] = foundEntries.get(i).getProjectId();
-                params[i][5] = foundEntries.get(i).getEnv();
-                params[i][6] = foundEntries.get(i).getJvmOptions();
-                params[i][7] = foundEntries.get(i).getParams();
             }
 
             Db.tx(new IAtom() {

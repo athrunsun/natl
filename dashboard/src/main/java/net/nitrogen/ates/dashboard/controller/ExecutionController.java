@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.ExecutionModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
@@ -36,23 +35,11 @@ public class ExecutionController extends Controller {
         String[] customFieldType = getParaValues("customFieldType");
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
 
-        // ***** to be deleted
-        String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
-        jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
-        String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
-        testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
-        String envId = getPara(QueueEntryModel.Fields.ENV);
-        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
-        // ***** end
-
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
                 ControllerHelper.getProjectPrefFromCookie(this),
                 executionName,
-                env,
-                jvmOptions,
-                testngParams,
                 Arrays.asList(selectedTestCaseNames));
-        CustomParameterModel.me.insertExecutionParameters(customFieldName, customFieldValue, newExecutionId, customFieldType);
+        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
@@ -64,29 +51,13 @@ public class ExecutionController extends Controller {
         String[] customFieldType = getParaValues("customFieldType");
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
 
-        // ***** to be deleted
-        String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
-        jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
-        String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
-        testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
-        String envId = getPara(QueueEntryModel.Fields.ENV);
-        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
-        // ***** end
-
         List<Long> testGroupIds = new ArrayList<>();
         for (String testGroupIdAsString : selectedTestGroups.split(",")) {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(
-                ControllerHelper.getProjectPrefFromCookie(this),
-                executionName,
-                env,
-                jvmOptions,
-                testngParams,
-                testGroupIds);
-
-        CustomParameterModel.me.insertExecutionParameters(customFieldName, customFieldValue, newExecutionId, customFieldType);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, testGroupIds);
+        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

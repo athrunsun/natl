@@ -1,6 +1,5 @@
 package net.nitrogen.ates.core.config;
 
-import net.nitrogen.ates.core.model.CustomEnvModel;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.ProjectModel;
@@ -48,7 +47,6 @@ public class DBConfig {
         arp.addMapping(TestResultModel.TABLE, TestResultModel.class);
         arp.addMapping(SlaveModel.TABLE, SlaveModel.class);
         arp.addMapping(ProjectModel.TABLE, ProjectModel.class);
-        arp.addMapping(CustomEnvModel.TABLE, CustomEnvModel.class);
         arp.addMapping(CustomParameterModel.TABLE, CustomParameterModel.class);
     }
 }

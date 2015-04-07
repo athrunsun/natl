@@ -125,8 +125,6 @@
                 start_time: item.start_time,
                 end_time: item.end_time,
                 execution_id: item.execution_id,
-                jvm_options: item.jvm_options,
-                params: item.params,
                 exec_result: execResultTDContent
             });
         });

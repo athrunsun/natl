@@ -31,7 +31,7 @@
                                     <tr>
                                         <td class="span2"><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
                                         <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
-                                        <td class="span7"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptions()}</a></td>
+                                        <td class="span7"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptionsAsString()}</a></td>
                                         <td class="span3">
                                             <a class="button primary" href="${CPATH}/execution/createByTestSuite/${testsuite.getId()}">Execute</a>
                                             <a class="button danger" href="${CPATH}/testsuite/delete/${testsuite.getId()}"><i class="icon-remove"></i> Delete</a>

@@ -1,7 +1,6 @@
 package net.nitrogen.ates.dashboard.config;
 
 import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.dashboard.controller.EnvController;
 import net.nitrogen.ates.dashboard.controller.ExecutionController;
 import net.nitrogen.ates.dashboard.controller.IndexController;
 import net.nitrogen.ates.dashboard.controller.ProjectController;
@@ -47,7 +46,6 @@ public class AtdConfig extends JFinalConfig {
         me.add("/testsuite", TestSuiteController.class, "/tpl/testsuite");
         me.add("/testgroup", TestGroupController.class, "/tpl/testgroup");
         me.add("/project", ProjectController.class, "/tpl/project");
-        me.add("/env", EnvController.class, "/tpl/env");
         me.add("/testresult", TestResultController.class, "/tpl/testresult");
         me.add("/admin", AdminIndexController.class);
         me.add("/admin/queue", AdminQueueController.class, "/tpl/admin/queue");

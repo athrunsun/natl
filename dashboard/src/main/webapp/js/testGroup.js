@@ -53,15 +53,15 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#custom_params .remPara").on('click', function(evt){
+                    $("#custom_params .remPara").on('click', function (evt) {
                         $(this).parent().parent().remove();
                         evt.preventDefault();
                     });
 
-                    $("#create_execution_form .addPara").on('click', function(event){
+                    $("#create_execution_form .addPara").on('click', function (event) {
                         $("#custom_params").append(ates.customParameterRowTplFn({}));
 
-                        $("#custom_params .remPara").on('click', function(evt){
+                        $("#custom_params .remPara").on('click', function (evt) {
                             $(this).parent().parent().remove();
                             evt.preventDefault();
                         });
@@ -92,7 +92,7 @@ $(document).ready(function () {
                 dataType: "json",
                 url: ates.contextPath + "/testsuite/fetchTestSuitesByProjectIdAsJson",
                 data: "projectId=" + $.cookie(ates.cookieKeyProjectPref)
-            }).done(function(suiteList) {
+            }).done(function (suiteList) {
                 $.Dialog({
                     shadow: true,
                     overlay: false,
@@ -103,7 +103,7 @@ $(document).ready(function () {
                     padding: 10,
                     content: '',
                     onShow: function () {
-                        $.Dialog.content(ates.addGroupToSuiteFormTplFn({"array":suiteList}));
+                        $.Dialog.content(ates.addGroupToSuiteFormTplFn({"array": suiteList}));
 
                         $("#add_group_to_suite_form").on("submit", function (event) {
                             var hasCheckedTestGroup = false;
@@ -121,7 +121,6 @@ $(document).ready(function () {
                                     content: "You haven't select any test groups!"
                                 });
                                 event.preventDefault();
-                            } else {
                             }
                         });
                     }
