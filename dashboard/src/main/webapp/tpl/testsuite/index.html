@@ -17,13 +17,13 @@
                     <div class="panel">
                         <div class="panel-header bg-lightBlue fg-white">Test Suite List</div>
                         <div class="panel-content">
-                            <table id="testsuite_table" class="table bordered hovered">
+                            <table id="testsuite_table" class="table hovered">
                                 <thead>
                                 <tr>
                                     <th class="text-left">Name</th>
                                     <!-- <th class="text-left">Last Execution Result (todo)</th> -->
-                                    <th class="text-left">JVM Options</th>
-                                    <th>Actions</th>
+                                    <th class="text-left">Custom Parameters</th>
+                                    <th class="text-left">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -33,15 +33,8 @@
                                         <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
                                         <td class="span7"><a class="icon-pencil span1" data-id="${testsuite.getId()}" title="Edit JVM Options"/><a class="span11 code">~>java [commands] ${testsuite.getJvmOptions()}</a></td>
                                         <td class="span3">
-                                            <div class="span2">
-                                                <a data-id="${testsuite.getId()}" class="delete-testsuite icon-remove" title="Delete this test suite"></a>
-                                            </div>
-                                            <div class="span10">
-                                                <form action="${CPATH}/execution/createByTestSuite" method="post">
-                                                    <input name="testSuiteId" value="${testsuite.getId()}" type="hidden"/>
-                                                    <input class="button place-right" type="submit" value="Execute Now"/>
-                                                </form>
-                                            </div>
+                                            <a class="button primary" href="${CPATH}/execution/createByTestSuite/${testsuite.getId()}">Execute</a>
+                                            <a class="button danger" href="${CPATH}/testsuite/delete/${testsuite.getId()}"><i class="icon-remove"></i> Delete</a>
                                         </td>
                                     </tr>
                                 </#list>
@@ -62,13 +55,13 @@
             <div class="input-control text">
                 <input name="name" type="text">
             </div>
-            <input class="button primary place-right" type="submit" value="Create">
+            <input class="button primary" type="submit" value="Create">
         </form>
     </script>
     <script id="edit_testsuite_jvm_parameter_form_tpl" type="text/x-dot-template">
         <form action="${CPATH}/testsuite/updateJvmOptions" method="post">
-			<@parameterTable/>
-            <input class="button primary place-right" type="submit" value="Save">
+            <@parameterTable/>
+            <input class="button primary" type="submit" value="Save">
         </form>
 		<script type="text/javascript">
     		$(document).ready(function(){

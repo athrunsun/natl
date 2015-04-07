@@ -35,13 +35,15 @@ public class TestSuiteController extends Controller {
     }
 
     public void delete() {
-        renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
+        TestSuiteModel.me.deleteById(getParaToLong(0));
+        redirect("/testsuite");
     }
 
     public void removeCaseFromSuite() {
         long suiteId = getParaToLong("testsuiteId");
         final String testcaseName = getPara("testcaseName");
-        renderText(String.valueOf(TestSuiteTestCaseModel.me.delete(suiteId, testcaseName)));
+        TestSuiteTestCaseModel.me.delete(suiteId, testcaseName);
+        redirect(String.format("/testsuite/detail/%d", suiteId));
     }
 
     public void fetchTestSuitesByProjectIdAsJson() {

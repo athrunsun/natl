@@ -91,7 +91,7 @@ public class ExecutionController extends Controller {
     }
 
     public void createByTestSuite() {
-        Long testSuiteId = getParaToLong("testSuiteId");
+        Long testSuiteId = getParaToLong(0);
         Long projectId = ControllerHelper.getProjectPrefFromCookie(this);
 
         long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, "suite name", testSuiteId);
