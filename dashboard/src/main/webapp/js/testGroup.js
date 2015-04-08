@@ -1,11 +1,10 @@
 (function (ates, $, undefined) {
-    ates.createExecutionFormTplFn = null;
+    ates.createExecutionFormTplFn = doT.template($('#create_execution_form_tpl').text(), undefined, undefined);
+    ates.addGroupToSuiteFormTplFn = doT.template($('#add_group_to_suite_form_tpl').text(), undefined, undefined);
+    ates.customParameterRowTplFn = doT.template($('#custom_parameter_row_tpl').text(), undefined, undefined);
 })(window.ates = window.ates || {}, jQuery)
 
 $(document).ready(function () {
-    ates.createExecutionFormTplFn = doT.template($('#create_execution_form_tpl').text(), undefined, undefined);
-    ates.addGroupToSuiteFormTplFn = doT.template($('#add_group_to_suite_form_tpl').text(), undefined, undefined);
-
     $("#run_selected_test_groups").on('click', function (e) {
         var hasCheckedTestGroup = false;
 
@@ -26,11 +25,10 @@ $(document).ready(function () {
                 icon: false,
                 title: 'Create Execution',
                 width: 700,
-                height: 400,
                 padding: 10,
                 content: '',
                 onShow: function () {
-                    $.Dialog.content(ates.createExecutionFormTplFn({"array":null})); // TODO temporally removed env array
+                    $.Dialog.content(ates.createExecutionFormTplFn({}));
 
                     $("#create_execution_form").on("submit", function (event) {
                         var hasCheckedTestGroup = false;
@@ -52,14 +50,29 @@ $(document).ready(function () {
                         } else {
                             // Submit selected test group ids as comma separated
                             $(this).find("#selected_test_groups").val(selectedTestGroups.join(","));
-                            //$(this).submit();
                         }
+                    });
+
+                    $("#custom_params .remPara").on('click', function (evt) {
+                        $(this).parent().parent().remove();
+                        evt.preventDefault();
+                    });
+
+                    $("#create_execution_form .addPara").on('click', function (event) {
+                        $("#custom_params").append(ates.customParameterRowTplFn({}));
+
+                        $("#custom_params .remPara").on('click', function (evt) {
+                            $(this).parent().parent().remove();
+                            evt.preventDefault();
+                        });
+
+                        $.Dialog.autoResize();
+                        event.preventDefault();
                     });
                 }
             });
         }
     });
-    
 
     $("#assign_to_test_suite").on('click', function (e) {
         var hasCheckedTestGroup = false;
@@ -79,7 +92,7 @@ $(document).ready(function () {
                 dataType: "json",
                 url: ates.contextPath + "/testsuite/fetchTestSuitesByProjectIdAsJson",
                 data: "projectId=" + $.cookie(ates.cookieKeyProjectPref)
-            }).done(function(suiteList) {
+            }).done(function (suiteList) {
                 $.Dialog({
                     shadow: true,
                     overlay: false,
@@ -90,7 +103,7 @@ $(document).ready(function () {
                     padding: 10,
                     content: '',
                     onShow: function () {
-                        $.Dialog.content(ates.addGroupToSuiteFormTplFn({"array":suiteList}));
+                        $.Dialog.content(ates.addGroupToSuiteFormTplFn({"array": suiteList}));
 
                         $("#add_group_to_suite_form").on("submit", function (event) {
                             var hasCheckedTestGroup = false;
@@ -108,7 +121,6 @@ $(document).ready(function () {
                                     content: "You haven't select any test groups!"
                                 });
                                 event.preventDefault();
-                            } else {
                             }
                         });
                     }
@@ -116,5 +128,4 @@ $(document).ready(function () {
             });
         }
     });
-    
 });

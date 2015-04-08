@@ -1,11 +1,13 @@
-<#macro table>
+<#macro table showCheckbox="true">
 <div class="panel">
     <div class="panel-header bg-lightBlue fg-white">Test Cases</div>
     <div class="panel-content">
         <table id="test_case_table" class="table">
             <thead>
             <tr>
-                <th class="text-left"></th>
+                <#if showCheckbox == "true">
+                    <th class="text-left"></th>
+                </#if>
                 <th class="text-left">Name</th>
                 <!--<th class="text-left">MappingId</th> -->
                 <th class="text-left">Latest Result</th>
@@ -17,14 +19,16 @@
                 <#assign testCase=testCaseWithAdditionalInfo.getTestCase()>
                 <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
                 <tr>
-                    <td>
-                        <div class="input-control checkbox">
-                            <label>
-                                <input data-id="${testCase.getName()}" type="checkbox" class="check-to-run-test-case"/>
-                                <span class="check"></span>
-                            </label>
-                        </div>
-                    </td>
+                    <#if showCheckbox == "true">
+                        <td>
+                            <div class="input-control checkbox">
+                                <label>
+                                    <input data-id="${testCase.getName()}" data-name="${testCase.getHtmlEncodedName()}" type="checkbox" class="check-to-run-test-case"/>
+                                    <span class="check"></span>
+                                </label>
+                            </div>
+                        </td>
+                    </#if>
                     <td>
                         <span title="${testCase.getName()}">${testCase.getShortName()}</span>
                     </td>

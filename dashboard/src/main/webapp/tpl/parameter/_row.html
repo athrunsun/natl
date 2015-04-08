@@ -1,10 +1,10 @@
-<#macro parameterRow>
+<#macro parameterRow paramKey="" paramValue="" paramType="">
     <div class="row">
         <div class="input-control text span5">
-            <input type="text" name="customFieldName" value="" placeholder="Key">
+            <input type="text" name="customFieldName" value="${paramKey}" placeholder="Key">
         </div>
         <div class="input-control text span5">
-            <input type="text" name="customFieldValue" value="" placeholder="Value">
+            <input type="text" name="customFieldValue" value="${paramValue}" placeholder="Value">
         </div>
         <div style="display:none;">
             <div class="input-control select">
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="input-control text span2">
-            <button class="button danger remPara"><i class="icon-remove"></i></button>
+            <button class="button danger remPara">Remove</button>
         </div>
     </div>
 </#macro>
