@@ -2,6 +2,7 @@ package net.nitrogen.ates.core.config;
 
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionModel;
+import net.nitrogen.ates.core.model.FeedbackModel;
 import net.nitrogen.ates.core.model.ProjectModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
 import net.nitrogen.ates.core.model.SlaveModel;
@@ -48,5 +49,6 @@ public class DBConfig {
         arp.addMapping(SlaveModel.TABLE, SlaveModel.class);
         arp.addMapping(ProjectModel.TABLE, ProjectModel.class);
         arp.addMapping(CustomParameterModel.TABLE, CustomParameterModel.class);
+        arp.addMapping(FeedbackModel.TABLE, FeedbackModel.class);
     }
 }

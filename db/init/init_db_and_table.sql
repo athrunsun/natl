@@ -121,3 +121,17 @@ CREATE TABLE IF NOT EXISTS `project` (
   `total_test_case_count` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
+
+# `type` enum:
+# 0 - Comment
+# 1 - Bug
+# 2 - Suggestion
+# 3 - Question
+CREATE TABLE IF NOT EXISTS `feedback` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `message` VARCHAR(12000) NOT NULL,
+  `contact_info` VARCHAR(100),
+  `create_date` DATETIME NOT NULL,
+  `type` INT NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
