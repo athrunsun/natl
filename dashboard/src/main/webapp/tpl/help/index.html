@@ -31,57 +31,83 @@
                 <br/>
                 <h2 id="_howitworks">How It Works</h2>
                 <div class="description">
-                    <p>ATES(Automation Test Echo System) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
+                    <p>To be added. Chart1: basic set up. 2: test case navigation 3: test suite and execution 4 reports 5. Queue </p>
                     <br/>
-                    <p>The system enables you to:
-                        <ul>
-                            <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
-                            <li>Trouble shoot test failures with detailed test reports</li>
-                            <li>Oversee the automation coverage with historical execution results</li>
-                        </ul>
-                    </p>
                 </div>
                 <br/>
-                
+
                 <h2 id="_integrationrequirement">Integration Requirements</h2>
                 <div class="description">
-                    <p>ATES(Automation Test Echo System) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
-                    <br/>
-                    <p>The system enables you to:
+                    <p>To make full use of the system, we need to make sure following items are ready:</p>
+                    <div class="panel">
                         <ul>
-                            <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
-                            <li>Trouble shoot test failures with detailed test reports</li>
-                            <li>Oversee the automation coverage with historical execution results</li>
+                            <li>The automation code is written in <strong>JAVA</strong></li>
+                            <li>The automation code is annotated by <strong>TestNG</strong></li>
+                            <li>The source is integrated with <strong>MAVEN</strong>, and it's preferred that the project source structure follows MAVEN recommendations.</li>
                         </ul>
-                    </p>
+                    </div>
                 </div>
                 <br/>
                 
                 <h2 id="_faq">FAQ</h2>
-                <div class="description">
-                    <p>ATES(Automation Test Echo System) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
+                <div class="panel padding10">
+                    <div class="panel" data-role="panel">
+                        <div class="panel-header">
+                            Can we run cases with JUnit annotations?
+                        </div>
+                        <div class="panel-content">
+                            <p>No. </p> 
+                            <p>TestNG is the only framework supported so far. Please make sure the annotations are converted to TestNG. You can refer to <a href="#">this link</a> for more information.</p>
+                        </div>
+                    </div>
                     <br/>
-                    <p>The system enables you to:
-                        <ul>
-                            <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
-                            <li>Trouble shoot test failures with detailed test reports</li>
-                            <li>Oversee the automation coverage with historical execution results</li>
-                        </ul>
-                    </p>
+                    
+                    <div class="panel" data-role="panel">
+                        <div class="panel-header">
+                            How do we pass in Testng.xml parameters to our test case?
+                        </div>
+                        <div class="panel-content">
+                            <p>For example, we had a testng.xml defined as below:</p>
+                            <p class="prettyprinted code">
+                                <span>code
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <br/>
+                    
+                    <div class="panel" data-role="panel">
+                        <div class="panel-header">Question Name</div>
+                        <div class="panel-content" style="display: block;">
+                            Answer body.
+                        </div>
+                    </div>
+                    <br/>
                 </div>
                 <br/>
                 
                 <h2 id="_feedback">Feedback</h2>
-                <div class="description">
-                    <p>ATES(Automation Test Echo System) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
-                    <br/>
-                    <p>The system enables you to:
-                        <ul>
-                            <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
-                            <li>Trouble shoot test failures with detailed test reports</li>
-                            <li>Oversee the automation coverage with historical execution results</li>
-                        </ul>
-                    </p>
+                <div class="panel padding10">
+                    <form action="${CPATH}/help/feedback" method="post">
+                        <label>Your Comment *</label>
+                        <div class="input-control textarea">
+                            <textarea data-transform="input-control" placeholder="message content (maximum 12000 characters)" name="feedbackContent"></textarea>
+                        </div>
+                        <label>This is a:</label>
+                        <div class="input-control select">
+                            <select name="feedbackType">
+                                <option>Comment</option>
+                                <option>Bug</option>
+                                <option>Suggestion</option>
+                                <option>Question</option>
+                            </select>
+                        </div>
+                        <label>Your Email <small>(Optional)</small></label>
+                        <div class="input-control text">
+                            <input name="feedbackEmail" type="text" placeholder="email address"/>
+                        </div>
+                        <input class="button primary place-right" type="submit" value="Send Feedback"/>
+                    </form>
                 </div>
                 <br/>
             </div>
