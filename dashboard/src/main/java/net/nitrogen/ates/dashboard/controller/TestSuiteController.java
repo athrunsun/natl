@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import com.jfinal.aop.Before;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.model.CustomParameterModel;
@@ -11,6 +12,7 @@ import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.TestSuiteModel;
 import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
@@ -76,14 +78,12 @@ public class TestSuiteController extends Controller {
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
     }
 
-    public void updateJvmOptions() {
+    @Before(RawCustomParameterHandlingInterceptor.class)
+    public void updateCustomParameters() {
         Long testsuiteId = getParaToLong("testSuiteId");
-        String[] keys = getParaValues("customFieldName");
-        String[] values = getParaValues("customFieldValue");
-        String[] types = null;
 
-        CustomParameterModel.me.overwriteTestSuiteParameters(keys, values, testsuiteId, types);
-        redirect("/testsuite/index");
+        CustomParameterModel.me.overwriteTestSuiteParameters(ControllerHelper.getRawCustomParameterMap(this), testsuiteId);
+        redirect(String.format("/testsuite/detail/%d", testsuiteId));
     }
 
     public void fetchJvmOptionsBySuiteIdAsJson() {

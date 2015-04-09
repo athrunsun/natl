@@ -21,7 +21,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 
 public class QueueEntryModel extends Model<QueueEntryModel> {
-    public static final int DEFAULT_PAGE_SIZE = 5;
+    public static final int DEFAULT_PAGE_SIZE = 20;
     public static final String TABLE = "queue_entry";
 
     public class Fields {

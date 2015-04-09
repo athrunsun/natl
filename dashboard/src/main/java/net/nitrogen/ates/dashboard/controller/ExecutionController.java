@@ -1,11 +1,13 @@
 package net.nitrogen.ates.dashboard.controller;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.ExecutionModel;
+import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -23,9 +25,11 @@ public class ExecutionController extends Controller {
     public void detail() {
         long executionId = getParaToLong(0);
         setAttr("execution", ExecutionModel.me.findById(executionId));
+        setAttr("customParameterList", CustomParameterModel.me.findParameters(CustomParameterDomainKey.EXECUTION, executionId));
         render("detail.html");
     }
 
+    @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestCase() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
         List<String> selectedTestCaseNames = new ArrayList<>();
@@ -34,9 +38,9 @@ public class ExecutionController extends Controller {
             selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
         }
 
-        String[] customFieldName = getParaValues("customFieldName");
-        String[] customFieldValue = getParaValues("customFieldValue");
-        String[] customFieldType = getParaValues("customFieldType");
+//        String[] customFieldName = getParaValues("customFieldName");
+//        String[] customFieldValue = getParaValues("customFieldValue");
+//        String[] customFieldType = getParaValues("customFieldType");
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
 
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
@@ -44,16 +48,21 @@ public class ExecutionController extends Controller {
                 executionName,
                 selectedTestCaseNames);
 
-        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
+        CustomParameterModel.me.insertParameters(
+                ControllerHelper.getRawCustomParameterMap(this),
+                CustomParameterDomainKey.EXECUTION,
+                newExecutionId);
+
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
+    @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestGroup() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
         String selectedTestGroups = getPara("selected_test_groups");
-        String[] customFieldName = getParaValues("customFieldName");
-        String[] customFieldValue = getParaValues("customFieldValue");
-        String[] customFieldType = getParaValues("customFieldType");
+//        String[] customFieldName = getParaValues("customFieldName");
+//        String[] customFieldValue = getParaValues("customFieldValue");
+//        String[] customFieldType = getParaValues("customFieldType");
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
 
         List<Long> testGroupIds = new ArrayList<>();
@@ -61,8 +70,16 @@ public class ExecutionController extends Controller {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, testGroupIds);
-        CustomParameterModel.me.insertParameters(customFieldName, customFieldValue, CustomParameterDomainKey.EXECUTION, newExecutionId, customFieldType);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(
+                ControllerHelper.getProjectPrefFromCookie(this),
+                executionName,
+                testGroupIds);
+
+        CustomParameterModel.me.insertParameters(
+                ControllerHelper.getRawCustomParameterMap(this),
+                CustomParameterDomainKey.EXECUTION,
+                newExecutionId);
+
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

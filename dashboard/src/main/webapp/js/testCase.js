@@ -52,19 +52,12 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#custom_params .remPara").on('click', function(evt){
-                        $(this).parent().parent().remove();
-                        evt.preventDefault();
-                    });
+                    ates.bindRemoveParaOnClickEventHandler();
 
                     $("#create_execution_form .addPara").on('click', function(event){
                         $("#custom_params").append(ates.customParameterRowTplFn({}));
-
-                        $("#custom_params .remPara").on('click', function(evt){
-                            $(this).parent().parent().remove();
-                            evt.preventDefault();
-                        });
-
+                        ates.bindRemoveParaOnClickEventHandler();
+                        $.Dialog.autoResize();
                         event.preventDefault();
                     });
                 }

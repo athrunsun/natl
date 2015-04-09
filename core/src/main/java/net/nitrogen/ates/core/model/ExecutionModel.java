@@ -89,6 +89,10 @@ public class ExecutionModel extends Model<ExecutionModel> {
         return createdTimestamp == null ? null : DateTimeUtil.fromSqlTimestamp(createdTimestamp);
     }
 
+    public String getCreatedTimeAsString() {
+        return this.getCreatedTime() == null ? "" : DateTimeUtil.toStringWithDefaultFormat(this.getCreatedTime());
+    }
+
     public void setCreatedTimestamp(Timestamp t) {
         this.set(Fields.CREATED_TIME, t);
     }

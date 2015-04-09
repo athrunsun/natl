@@ -20,7 +20,7 @@
                 <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
                 <tr>
                     <#if showCheckbox == "true">
-                        <td>
+                        <td class="span1">
                             <div class="input-control checkbox">
                                 <label>
                                     <input data-id="${testCase.getName()}" data-name="${testCase.getHtmlEncodedName()}" type="checkbox" class="check-to-run-test-case"/>
@@ -29,11 +29,11 @@
                             </div>
                         </td>
                     </#if>
-                    <td>
+                    <td class="span9">
                         <span title="${testCase.getName()}">${testCase.getShortName()}</span>
                     </td>
                     <!--<td>${testCase.getMappingId()}</td> -->
-                    <td>
+                    <td class="span2">
                         <#if testResult == "">
                             <span class="label">UNKNOWN</span>
                         <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>

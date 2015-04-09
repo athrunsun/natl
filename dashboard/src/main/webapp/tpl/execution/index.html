@@ -12,15 +12,19 @@
                                 <tr>
                                     <th class="text-left">ID</th>
                                     <th class="text-left">Name</th>
+                                    <th class="text-left">Created Time</th>
                                     <th class="text-left">Queue Entry Count</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <#list executionListWithAdditionalInfo as executionWithAdditionalInfo>
                                     <tr>
-                                        <td>${executionWithAdditionalInfo.getExecution().getId()}</td>
-                                        <td><a href="${CPATH}/execution/detail/${executionWithAdditionalInfo.getExecution().getId()}">${executionWithAdditionalInfo.getExecution().getName()}<sub class="fg-black"> ${executionWithAdditionalInfo.getExecution().getCreatedTimestamp()}</sub></a></td>
-                                        <td>${executionWithAdditionalInfo.getQueueEntryCount()}</td>
+                                        <td class="span1">${executionWithAdditionalInfo.getExecution().getId()}</td>
+                                        <td class="span7">
+                                            <a href="${CPATH}/execution/detail/${executionWithAdditionalInfo.getExecution().getId()}">${executionWithAdditionalInfo.getExecution().getName()}</a>
+                                        </td>
+                                        <td class="span2">${executionWithAdditionalInfo.getExecution().getCreatedTimeAsString()}</td>
+                                        <td class="span2">${executionWithAdditionalInfo.getQueueEntryCount()}</td>
                                     </tr>
                                 </#list>
                                 </tbody>
