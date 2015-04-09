@@ -19,7 +19,7 @@
                                 <#list executionListWithAdditionalInfo as executionWithAdditionalInfo>
                                     <tr>
                                         <td>${executionWithAdditionalInfo.getExecution().getId()}</td>
-                                        <td><a href="${CPATH}/execution/detail/${executionWithAdditionalInfo.getExecution().getId()}">${executionWithAdditionalInfo.getExecution().getName()}</a></td>
+                                        <td><a href="${CPATH}/execution/detail/${executionWithAdditionalInfo.getExecution().getId()}">${executionWithAdditionalInfo.getExecution().getName()}<sub class="fg-black"> ${executionWithAdditionalInfo.getExecution().getCreatedTimestamp()}</sub></a></td>
                                         <td>${executionWithAdditionalInfo.getQueueEntryCount()}</td>
                                     </tr>
                                 </#list>
