@@ -1,8 +1,13 @@
 package net.nitrogen.ates.core.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 
 import com.jfinal.plugin.activerecord.Model;
+import net.nitrogen.ates.core.enumeration.ExecResult;
 
 public class TestSuiteModel extends Model<TestSuiteModel> {
     public static final String TABLE = "test_suite";
@@ -25,6 +30,47 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
         return this.find(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.PROJECT_ID),
                 projectId);
+    }
+
+    public String getJvmOptionsAsString() {
+        return CustomParameterModel.me.getJvmParametersAsString(CustomParameterDomainKey.TEST_SUITE, getId());
+    }
+
+    public Map<String, Integer> passrate(long testSuiteId) {
+        List<TestCaseWithAdditionalInfo> testCaseWithAdditionalInfoList = TestCaseListFactory.me().createTestCaseListWithAdditionalInfoForTestSuite(testSuiteId);
+        Map<String, Integer> execResultCount = new HashMap<>();
+
+        int total = testCaseWithAdditionalInfoList.size();
+        int passed = 0;
+        int failed = 0;
+        int skipped = 0;
+        int unknown = 0;
+
+        for(TestCaseWithAdditionalInfo testCaseWithAdditionalInfo : testCaseWithAdditionalInfoList) {
+            TestResultModel result = testCaseWithAdditionalInfo.getLatestTestResult();
+
+            if (result == null) {
+                unknown += 1;
+            } else {
+                if (result.getExecResult() == ExecResult.PASSED.getValue()) {
+                    passed += 1;
+                } else if (result.getExecResult() == ExecResult.FAILED.getValue()) {
+                    failed += 1;
+                } else if (result.getExecResult() == ExecResult.SKIPPED.getValue()) {
+                    skipped += 1;
+                } else {
+                    unknown += 1;
+                }
+            }
+        }
+
+        execResultCount.put(ExecResult.PASSED.toString(), passed);
+        execResultCount.put(ExecResult.FAILED.toString(), failed);
+        execResultCount.put(ExecResult.SKIPPED.toString(), skipped);
+        execResultCount.put(ExecResult.UNKNOWN.toString(), unknown);
+        execResultCount.put(ExecutionModel.EXEC_RESULT_COUNT_MAP_KEY_TOTAL, total);
+
+        return execResultCount;
     }
 
     public long getId() {

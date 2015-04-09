@@ -9,6 +9,7 @@ import net.nitrogen.ates.util.StringUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class TestCaseModel extends Model<TestCaseModel> {
     public static final int MAX_TEST_NAME_LENGTH = 80;
@@ -58,6 +59,10 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public String getShortName() {
         return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
+    }
+
+    public String getHtmlEncodedName() {
+        return StringEscapeUtils.escapeHtml4(this.getName());
     }
 
     public void setName(String name) {

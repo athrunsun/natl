@@ -15,7 +15,7 @@ public class TestGroupController extends Controller {
         final TestGroupModel testGroup = TestGroupModel.me.findTestGroup(getParaToLong(0));
         ControllerHelper.setExecResultEnumAttr(this);
         setAttr("testGroup", testGroup);
-        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfo(testGroup));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfoForTestGroup(testGroup.getId()));
         render("detail.html");
     }
 

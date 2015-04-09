@@ -1,10 +1,8 @@
 (function (ates, $, undefined) {
-    ates.createTestSuiteFormTplFn = undefined;
+    ates.createTestSuiteFormTplFn = doT.template($('#create_testsuite_form_tpl').text(), undefined, undefined);
 })(window.ates = window.ates || {}, jQuery)
 
 $(document).ready(function () {
-    ates.createTestSuiteFormTplFn = doT.template($('#create_testsuite_form_tpl').text(), undefined, undefined);
-
     $("#create_testsuite").on('click', function () {
         $.Dialog({
             shadow: true,
@@ -20,34 +18,4 @@ $(document).ready(function () {
             }
         });
     });
-
-    $("#testsuite_table .delete-testsuite").on("click", function(event) {
-        event.preventDefault();
-        var testsuiteId = $(this).attr("data-id");
-
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: ates.contextPath + "/testsuite/delete",
-            data: "testsuiteId=" + testsuiteId,
-            success: function(result) {
-                window.location.replace(window.location.href);
-            }
-        });
-    });
-
-    $("#test_case_table .remove-from-testsuite").on("click", function(event) {
-        event.preventDefault();
-
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: ates.contextPath + "/testsuite/removeCaseFromSuite",
-            data: {testcaseName:$(this).attr("data-name"),testsuiteId:$(this).attr("data-id")},
-            success: function(result) {
-                window.location.replace(window.location.href);
-            }
-        });
-    });
-    
 });

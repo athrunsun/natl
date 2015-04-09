@@ -1,15 +1,15 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.ICallback;
-import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.util.DateTimeUtil;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.nitrogen.ates.core.enumeration.ExecResult;
+
+import com.jfinal.plugin.activerecord.ICallback;
 
 public class FindQueueEntriesByExecResultCallback implements ICallback {
     private long executionId;
@@ -46,9 +46,6 @@ public class FindQueueEntriesByExecResultCallback implements ICallback {
                     entry.setEndTimestamp(rs.getTimestamp(QueueEntryModel.Fields.END_TIME));
                     entry.setExecutionId(rs.getLong(QueueEntryModel.Fields.EXECUTION_ID));
                     entry.setProjectId(rs.getLong(QueueEntryModel.Fields.PROJECT_ID));
-                    entry.setEnv(rs.getString(QueueEntryModel.Fields.ENV));
-                    entry.setJvmOptions(rs.getString(QueueEntryModel.Fields.JVM_OPTIONS));
-                    entry.setParams(rs.getString(QueueEntryModel.Fields.PARAMS));
                     entries.add(entry);
                 }
 

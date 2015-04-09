@@ -1,59 +1,88 @@
 package net.nitrogen.ates.dashboard.controller;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.model.CustomEnvModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
+import net.nitrogen.ates.core.model.CustomParameterModel;
+import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.ExecutionModel;
+import net.nitrogen.ates.core.model.TestSuiteModel;
+import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ExecutionController extends Controller {
     public void index() {
-        setAttr("executionList", ExecutionModel.me.findExecutions(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr(
+                "executionListWithAdditionalInfo",
+                ExecutionListFactory.me().createExecutionListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 
     public void detail() {
         long executionId = getParaToLong(0);
         setAttr("execution", ExecutionModel.me.findById(executionId));
+        setAttr("customParameterList", CustomParameterModel.me.findParameters(CustomParameterDomainKey.EXECUTION, executionId));
         render("detail.html");
     }
 
+    @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestCase() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
-        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
-        String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
-        jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
-        String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
-        testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
-        String envId = getPara(QueueEntryModel.Fields.ENV);
-        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
-        String[] selectedTestCaseNames = getParaValues("selected_test_cases");
-        long newExecutionId = ExecutionModel.me.createExecutionByTestCase(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, Arrays.asList(selectedTestCaseNames));
+        List<String> selectedTestCaseNames = new ArrayList<>();
+
+        for (String testCaseNameHtmlEncoded : getParaValues("selected_test_cases")) {
+            selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
+        }
+
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
+
+        long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
+                ControllerHelper.getProjectPrefFromCookie(this),
+                executionName,
+                selectedTestCaseNames);
+
+        CustomParameterModel.me.insertParameters(
+                ControllerHelper.getRawCustomParameterMap(this),
+                CustomParameterDomainKey.EXECUTION,
+                newExecutionId);
+
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
+    @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestGroup() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
-        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
-        String jvmOptions = getPara(QueueEntryModel.Fields.JVM_OPTIONS);
-        jvmOptions = StringUtil.isNullOrWhiteSpace(jvmOptions) ? "" : jvmOptions;
-        String testngParams = getPara(QueueEntryModel.Fields.PARAMS);
-        testngParams = StringUtil.isNullOrWhiteSpace(testngParams) ? "" : testngParams;
-        String envId = getPara(QueueEntryModel.Fields.ENV);
-        String env = StringUtil.isNullOrWhiteSpace(envId) ? "" : CustomEnvModel.me.findById(Long.parseLong(envId)).getName();
         String selectedTestGroups = getPara("selected_test_groups");
-        List<Long> testGroupIds = new ArrayList<>();
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
 
+        List<Long> testGroupIds = new ArrayList<>();
         for (String testGroupIdAsString : selectedTestGroups.split(",")) {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, env, jvmOptions, testngParams, testGroupIds);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(
+                ControllerHelper.getProjectPrefFromCookie(this),
+                executionName,
+                testGroupIds);
+
+        CustomParameterModel.me.insertParameters(
+                ControllerHelper.getRawCustomParameterMap(this),
+                CustomParameterDomainKey.EXECUTION,
+                newExecutionId);
+
+        redirect(String.format("/execution/detail/%d", newExecutionId));
+    }
+
+    public void createByTestSuite() {
+        Long testSuiteId = getParaToLong(0);
+        Long projectId = ControllerHelper.getProjectPrefFromCookie(this);
+
+        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, String.format("CreatedFromSuite_%s", TestSuiteModel.me.findById(testSuiteId).getName()), testSuiteId);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

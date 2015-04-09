@@ -28,22 +28,22 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>ENV</td>
-                                            <td><span>${testResult.getEnv()}</span></td>
+                                            <td>JVM Options</td>
+                                            <td>${entry.getJvmOptionsAsString().replaceAll(" ","<br/>")!}</td>
                                         </tr>
                                         <tr>
                                             <td>Execution</td>
                                             <td>
-                                                <a href="${CPATH}/execution/detail/${execution.getId()}">${execution.getName()}</a>
+                                                <a href="${CPATH}/execution/detail/${execution.getId()!}">${execution.getName()!}<sub class="fg-black"> ${execution.getCreatedTimestamp()}</sub></a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Duration</td>
-                                            <td><span>${testResult.getDuration()} seconds</span></td>
+                                            <td><span>${testResult.getDuration()!} seconds</span></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
-                                            <td><span>${testResult.getStartTimeAsString()}</span></td>
+                                            <td><span>${testResult.getStartTimeAsString()!}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -57,24 +57,16 @@
                                                 <table class="table striped bordered hovered">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="span4">Execution ID</td>
-                                                            <td class="span8">${entry.getId()}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Ran on Slave</td>
-                                                            <td>${testResult.getSlaveName()}</td>
+                                                            <td>Test Machine</td>
+                                                            <td>${testResult.getSlaveName()!}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>Execution Index</td>
                                                             <td>${entry.getIndex()}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>JVM Options</td>
-                                                            <td>${entry.getJvmOptions()}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>TestNG Params</td>
-                                                            <td>${entry.getParams()}</td>
+                                                            <td class="span4">Queue Entry ID</td>
+                                                            <td class="span8">${entry.getId()!}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -88,11 +80,13 @@
                 </div>
             </div>
             <#if testResult.getMessage() != "">
-            <#assign url = testResult.getMessage().split("Current url:")[1]!>
+            <#assign text = testResult.getMessage().split(" ; Current url:")!>
+            <#assign url = text[1]!>
+            <#assign message = text[0]!>
             <div class="row">
                 <div class="accordion with-marker place-left span12" data-role="accordion" data-closeany="false">
                     <div class="accordion-frame">
-                        <a class="heading collapsed" href="#">${testResult.getMessage().replaceAll("\r\n","<br/>").replaceAll(" Current url:.*","")}</a>
+                        <a class="heading collapsed" href="#">${message.replaceAll("\r\n","<br/>")}</a>
                         <div class="content" style="display: none;">
                             <small>Current URL: 
                                 <a href="${url}" target="_blank">${url}</a>

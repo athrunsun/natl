@@ -1,0 +1,39 @@
+<#macro queuePagination>
+    <script id="queue_pagination_tpl" type="text/x-dot-template">
+        <div class="pagination">
+            <ul class="place-right">
+                {{? it.totalPageCount === 1 || it.currentPageNumber === 1}}
+                    <li class="first disabled"><a href="#"><i class="icon-first-2"></i></a></li>
+                    <li class="prev disabled"><a href="#"><i class="icon-previous"></i></a></li>
+                {{??}}
+                    <li class="first"><a href="#"><i class="icon-first-2"></i></a></li>
+                    <li class="prev"><a href="#"><i class="icon-previous"></i></a></li>
+                {{?}}
+                {{ var startingPageNumber = it.currentPageNumber - 4; }}
+                {{ if(startingPageNumber < 1){startingPageNumber = 1;} }}
+                {{ var endingPageNumber = it.currentPageNumber + 4; }}
+                {{ if(endingPageNumber > it.totalPageCount){endingPageNumber = it.totalPageCount;} }}
+                {{? startingPageNumber > 1}}
+                    <li class="spaces"><a>...</a></li>
+                {{?}}
+                {{ for(var i = startingPageNumber; i < it.currentPageNumber; i++) { }}
+                    <li class="number"><a href="#" data-id="{{=i}}">{{=i}}</a></li>
+                {{ } }}
+                <li class="number active"><a href="#" data-id="{{=it.currentPageNumber}}">{{=it.currentPageNumber}}</a></li>
+                {{ for(var i = it.currentPageNumber + 1; i <= endingPageNumber; i++) { }}
+                    <li class="number"><a href="#" data-id="{{=i}}">{{=i}}</a></li>
+                {{ } }}
+                {{? endingPageNumber < it.totalPageCount}}
+                    <li class="spaces"><a>...</a></li>
+                {{?}}
+                {{? it.totalPageCount === 1 || it.currentPageNumber === it.totalPageCount}}
+                    <li class="next disabled"><a href="#"><i class="icon-next"></i></a></li>
+                    <li class="last disabled"><a href="#"><i class="icon-last-2"></i></a></li>
+                {{??}}
+                    <li class="next"><a href="#"><i class="icon-next"></i></a></li>
+                    <li class="last"><a href="#"><i class="icon-last-2"></i></a></li>
+                {{?}}
+            </ul>
+        </div>
+    </script>
+</#macro>

@@ -19,9 +19,6 @@ CREATE TABLE IF NOT EXISTS `queue_entry` (
   `end_time` DATETIME,
   `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
-  `env` VARCHAR(200) NOT NULL,
-  `jvm_options` VARCHAR(500) NOT NULL,
-  `params` VARCHAR(500) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -29,6 +26,26 @@ CREATE TABLE IF NOT EXISTS `execution` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
+  `test_suite_id` INT,
+  `created_time` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
+
+# `type` enum:
+# 0 - JVM
+# 1 - TESTNG
+#
+# `domain_key` enum:
+# 0 - execution
+# 1 - testsuite
+# 2 - project
+CREATE TABLE IF NOT EXISTS `custom_parameter` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `key` VARCHAR(100) NOT NULL,
+  `value` VARCHAR(500) NOT NULL,
+  `domain_key` INT NOT NULL,
+  `domain_value` INT NOT NULL,
+  `type` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -84,7 +101,6 @@ CREATE TABLE IF NOT EXISTS `test_result` (
   `screenshot_url` VARCHAR(500) NOT NULL,
   `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
-  `env` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -106,9 +122,16 @@ CREATE TABLE IF NOT EXISTS `project` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `custom_env` (
+# `type` enum:
+# 0 - Comment
+# 1 - Bug
+# 2 - Suggestion
+# 3 - Question
+CREATE TABLE IF NOT EXISTS `feedback` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(200) NOT NULL,
-  `project_id` INT UNSIGNED NOT NULL,
+  `message` VARCHAR(12000) NOT NULL,
+  `contact_info` VARCHAR(100),
+  `create_date` DATETIME NOT NULL,
+  `type` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;

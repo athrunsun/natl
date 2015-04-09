@@ -9,3 +9,4 @@
 /test-output/
 nitrogen_ates_full_build_local_C.bat
 nitrogen_ates_core_build.bat
+/db/init/commonUsed.sql

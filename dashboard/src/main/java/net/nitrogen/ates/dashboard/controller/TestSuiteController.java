@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import com.jfinal.aop.Before;
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
+import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.TestCaseListFactory;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.TestSuiteModel;
 import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
 import com.jfinal.core.Controller;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class TestSuiteController extends Controller {
     public void index() {
@@ -23,7 +29,8 @@ public class TestSuiteController extends Controller {
         final TestSuiteModel testSuite = TestSuiteModel.me.findById(suiteId);
         setAttr("testsuite", testSuite);
         ControllerHelper.setExecResultEnumAttr(this);
-        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfo(testSuite));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfoForTestSuite(testSuite.getId()));
+        setAttr("customParameterList", CustomParameterModel.me.findParameters(CustomParameterDomainKey.TEST_SUITE, suiteId));
         render("detail.html");
     }
 
@@ -34,13 +41,20 @@ public class TestSuiteController extends Controller {
     }
 
     public void delete() {
-        renderText(String.valueOf(TestSuiteModel.me.deleteById(getParaToLong("testsuiteId"))));
+        TestSuiteModel.me.deleteById(getParaToLong(0));
+        redirect("/testsuite");
+    }
+
+    public void passrateAJAX() {
+        long testSuiteId = getParaToLong("testSuiteId");
+        renderJson(TestSuiteModel.me.passrate(testSuiteId));
     }
 
     public void removeCaseFromSuite() {
         long suiteId = getParaToLong("testsuiteId");
-        final String testcaseName = getPara("testcaseName");
-        renderText(String.valueOf(TestSuiteTestCaseModel.me.delete(suiteId, testcaseName)));
+        final String testcaseName = StringEscapeUtils.unescapeHtml4(getPara("testcaseName"));
+        TestSuiteTestCaseModel.me.delete(suiteId, testcaseName);
+        redirect(String.format("/testsuite/detail/%d", suiteId));
     }
 
     public void fetchTestSuitesByProjectIdAsJson() {
@@ -67,6 +81,17 @@ public class TestSuiteController extends Controller {
 
         TestSuiteTestCaseModel.me.insertTestSuiteTestCasesIfNotExists(testSuiteTestCases);
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
+    }
+
+    @Before(RawCustomParameterHandlingInterceptor.class)
+    public void updateCustomParameters() {
+        Long testsuiteId = getParaToLong("testSuiteId");
+        CustomParameterModel.me.overwriteTestSuiteParameters(ControllerHelper.getRawCustomParameterMap(this), testsuiteId);
+        redirect(String.format("/testsuite/detail/%d", testsuiteId));
+    }
+
+    public void fetchJvmOptionsBySuiteIdAsJson() {
+        renderJson(CustomParameterModel.me.findParameters(CustomParameterDomainKey.TEST_SUITE, getParaToLong("testSuiteId"), CustomParameterType.JVM));
     }
 
     public void assignTestGroups() {

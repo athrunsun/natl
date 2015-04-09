@@ -1,8 +1,108 @@
 (function(ates, $, undefined){
-    ates.queueTableRowTplFn = undefined;
+    ates.queueEntryTableRefreshInterval = 5000;
+    ates.currentQueuePageNumber = 1;
+    ates.refreshQueueIntervalId = null;
+    ates.refreshQueueByExecutionIdIntervalId = null;
+    ates.queuePaginationTplFn = doT.template($('#queue_pagination_tpl').text(), undefined, undefined);
+    ates.queueTableRowTplFn = doT.template($('#queue_table_row_tpl').text(), undefined, undefined);
+    ates.queueEntryTableLocator = null;
+    ates.queueEntryTableRefreshExecutionId = null;
 
-    ates.refreshQueueSuccessHandler = function($entryTable, result) {
-        $entryTable.find("> tbody > tr").remove();
+    ates.reloadQueuePaginationThenEntries = function(pageType, pageNumber, executionId) {
+        var requestPath = "/queue/fetchQueueEntriesTotalPageCountByExecutionIdAJAX";
+        var requestData = "executionId=" + ates.queueEntryTableRefreshExecutionId;
+
+        if(executionId === undefined || executionId === null) {
+            requestPath = "/queue/fetchAllQueueEntriesTotalPageCountAJAX";
+            requestData = null;
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: "text",
+            //contentType: "application/json; charset=utf-8",
+            url: ates.contextPath + requestPath,
+            data: requestData,
+            success: function(result) {
+                var $queueEntryTable = $(ates.queueEntryTableLocator);
+                var $paginationContainer = $queueEntryTable.find("> tfoot > tr > td");
+                var $pagination = $paginationContainer.find(".pagination");
+                var totalPage = parseInt(result, 10);
+
+                if(pageType === "num") {
+                    ates.currentQueuePageNumber = pageNumber;
+                }else if(pageType === "first" || pageType === "prev" || pageType === "next" || pageType === "last") {
+                    if($pagination.find("> ul > li." + pageType).hasClass("disabled") === true) {
+                        return;
+                    }
+
+                    if(pageType === "first") {
+                        ates.currentQueuePageNumber = 1;
+                    }else if(pageType === "prev") {
+                        ates.currentQueuePageNumber = ates.currentQueuePageNumber - 1;
+                    }else if(pageType === "next") {
+                        ates.currentQueuePageNumber = ates.currentQueuePageNumber + 1;
+                    }else if(pageType === "last") {
+                        ates.currentQueuePageNumber = totalPage;
+                    }
+                }else {
+                    return;
+                }
+
+                if(ates.currentQueuePageNumber < 1) {
+                    ates.currentQueuePageNumber = 1;
+                }
+
+                if(ates.currentQueuePageNumber > totalPage) {
+                    ates.currentQueuePageNumber = totalPage;
+                }
+
+                $pagination.remove();
+
+                $paginationContainer.append(ates.queuePaginationTplFn({
+                    totalPageCount:totalPage,
+                    currentPageNumber:ates.currentQueuePageNumber}));
+
+                var $pagination = $paginationContainer.find(".pagination");
+
+                $pagination.find("> ul > li.first > a").on("click", function() {
+                    ates.reloadQueuePaginationThenEntries("first", null, ates.queueEntryTableRefreshExecutionId);
+                });
+
+                $pagination.find("> ul > li.prev > a").on("click", function() {
+                    ates.reloadQueuePaginationThenEntries("prev", null, ates.queueEntryTableRefreshExecutionId);
+                });
+
+                $pagination.find("> ul > li.number > a").on("click", function() {
+                    ates.reloadQueuePaginationThenEntries("num", parseInt($(this).attr("data-id"), 10), ates.queueEntryTableRefreshExecutionId);
+                });
+
+                $pagination.find("> ul > li.next > a").on("click", function() {
+                    ates.reloadQueuePaginationThenEntries("next", null, ates.queueEntryTableRefreshExecutionId);
+                });
+
+                $pagination.find("> ul > li.last > a").on("click", function() {
+                    ates.reloadQueuePaginationThenEntries("last", null, ates.queueEntryTableRefreshExecutionId);
+                });
+
+                if(ates.refreshQueueIntervalId !== null) {
+                    clearInterval(ates.refreshQueueIntervalId);
+                }
+
+                if(executionId === undefined || executionId === null) {
+                    ates.refreshQueue();
+                    ates.refreshQueueIntervalId = setInterval("ates.refreshQueue()", ates.queueEntryTableRefreshInterval);
+                }else {
+                    ates.refreshQueueByExecutionId();
+                    ates.refreshQueueByExecutionIdIntervalId = setInterval("ates.refreshQueueByExecutionId()", ates.queueEntryTableRefreshInterval);
+                }
+            }
+        });
+    }
+
+    ates.refreshQueueSuccessHandler = function(result) {
+        var $queueEntryTable = $(ates.queueEntryTableLocator);
+        $queueEntryTable.find("> tbody > tr").remove();
         var tbody = "";
 
         $.each(result, function (index, item) {
@@ -25,37 +125,35 @@
                 start_time: item.start_time,
                 end_time: item.end_time,
                 execution_id: item.execution_id,
-                jvm_options: item.jvm_options,
-                params: item.params,
                 exec_result: execResultTDContent
             });
         });
 
-        $entryTable.find("> tbody").append(tbody);
+        $queueEntryTable.find("> tbody").append(tbody);
     }
 
-    ates.refreshQueue = function($entryTable){
+    ates.refreshQueue = function(){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
             url: ates.contextPath + "/queue/fetchAllQueueEntriesWithResultAsJson",
-            //data: "{}",
+            data: "pageNumber=" + ates.currentQueuePageNumber,
             success: function(result) {
-                ates.refreshQueueSuccessHandler($entryTable, result);
+                ates.refreshQueueSuccessHandler(result);
             }
         });
     }
 
-    ates.refreshQueueByExecutionId = function($entryTable, executionId){
+    ates.refreshQueueByExecutionId = function(){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
             url: ates.contextPath + "/queue/fetchQueueEntriesWithResultByExecutionIdAsJson",
-            data: "executionId=" + executionId,
+            data: "executionId=" + ates.queueEntryTableRefreshExecutionId + "&pageNumber=" + ates.currentQueuePageNumber,
             success: function(result) {
-                ates.refreshQueueSuccessHandler($entryTable, result);
+                ates.refreshQueueSuccessHandler(result);
             }
         });
     }

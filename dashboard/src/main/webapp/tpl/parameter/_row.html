@@ -1,0 +1,35 @@
+<#macro parameterRow paramKey="" paramValue="" paramType="" removeEnabled="true">
+    <div class="row">
+        <#if removeEnabled == "true">
+            <div class="input-control text span5">
+                <input type="text" name="customFieldName" value="${paramKey}" placeholder="Key">
+            </div>
+        <#else>
+            <div class="input-control text span6">
+                <input type="text" name="customFieldName" value="${paramKey}" disabled="disabled">
+            </div>
+        </#if>
+        <#if removeEnabled == "true">
+            <div class="input-control text span5">
+                <input type="text" name="customFieldValue" value="${paramValue}" placeholder="Value">
+            </div>
+        <#else>
+            <div class="input-control text span6">
+                <input type="text" name="customFieldValue" value="${paramValue}" disabled="disabled">
+            </div>
+        </#if>
+        <div style="display:none;">
+            <div class="input-control select">
+                <select name="customFieldType">
+                    <option value="0" selected="selected">JVM</option>
+                    <option value="1">TestNG</option>
+                </select>
+            </div>
+        </div>
+        <#if removeEnabled == "true">
+            <div class="input-control text span2">
+                <button class="button danger remPara">Remove</button>
+            </div>
+        </#if>
+    </div>
+</#macro>
