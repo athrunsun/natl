@@ -29,7 +29,7 @@ public class TestSuiteController extends Controller {
         final TestSuiteModel testSuite = TestSuiteModel.me.findById(suiteId);
         setAttr("testsuite", testSuite);
         ControllerHelper.setExecResultEnumAttr(this);
-        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfo(testSuite));
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me().createTestCaseListWithAdditionalInfoForTestSuite(testSuite.getId()));
         setAttr("customParameterList", CustomParameterModel.me.findParameters(CustomParameterDomainKey.TEST_SUITE, suiteId));
         render("detail.html");
     }
@@ -43,6 +43,11 @@ public class TestSuiteController extends Controller {
     public void delete() {
         TestSuiteModel.me.deleteById(getParaToLong(0));
         redirect("/testsuite");
+    }
+
+    public void passrateAJAX() {
+        long testSuiteId = getParaToLong("testSuiteId");
+        renderJson(TestSuiteModel.me.passrate(testSuiteId));
     }
 
     public void removeCaseFromSuite() {
@@ -81,7 +86,6 @@ public class TestSuiteController extends Controller {
     @Before(RawCustomParameterHandlingInterceptor.class)
     public void updateCustomParameters() {
         Long testsuiteId = getParaToLong("testSuiteId");
-
         CustomParameterModel.me.overwriteTestSuiteParameters(ControllerHelper.getRawCustomParameterMap(this), testsuiteId);
         redirect(String.format("/testsuite/detail/%d", testsuiteId));
     }

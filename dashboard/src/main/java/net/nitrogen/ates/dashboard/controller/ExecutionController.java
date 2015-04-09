@@ -7,6 +7,7 @@ import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomParameterModel;
 import net.nitrogen.ates.core.model.ExecutionListFactory;
 import net.nitrogen.ates.core.model.ExecutionModel;
+import net.nitrogen.ates.core.model.TestSuiteModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -38,10 +39,7 @@ public class ExecutionController extends Controller {
             selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
         }
 
-//        String[] customFieldName = getParaValues("customFieldName");
-//        String[] customFieldValue = getParaValues("customFieldValue");
-//        String[] customFieldType = getParaValues("customFieldType");
-        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
 
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
                 ControllerHelper.getProjectPrefFromCookie(this),
@@ -60,10 +58,7 @@ public class ExecutionController extends Controller {
     public void createByTestGroup() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
         String selectedTestGroups = getPara("selected_test_groups");
-//        String[] customFieldName = getParaValues("customFieldName");
-//        String[] customFieldValue = getParaValues("customFieldValue");
-//        String[] customFieldType = getParaValues("customFieldType");
-        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? "" : executionName;
+        executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
 
         List<Long> testGroupIds = new ArrayList<>();
         for (String testGroupIdAsString : selectedTestGroups.split(",")) {
@@ -87,7 +82,7 @@ public class ExecutionController extends Controller {
         Long testSuiteId = getParaToLong(0);
         Long projectId = ControllerHelper.getProjectPrefFromCookie(this);
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, "suite name", testSuiteId);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, String.format("CreatedFromSuite_%s", TestSuiteModel.me.findById(testSuiteId).getName()), testSuiteId);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

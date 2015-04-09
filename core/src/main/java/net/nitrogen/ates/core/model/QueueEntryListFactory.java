@@ -25,28 +25,28 @@ public class QueueEntryListFactory {
         return queueEntryListFactory;
     }
 
-    public static List<Map<String, Object>> createMapListForAllQueueEntries(int pageNumber) {
-        return createMapListForAllQueueEntries(pageNumber, QueueEntryModel.DEFAULT_PAGE_SIZE);
+    public static List<Map<String, Object>> createMapListForAllQueueEntriesWithPaging(int pageNumber) {
+        return createMapListForAllQueueEntriesWithPaging(pageNumber, QueueEntryModel.DEFAULT_PAGE_SIZE);
     }
 
-    public static List<Map<String, Object>> createMapListForAllQueueEntries(int pageNumber, int pageSize) {
+    public static List<Map<String, Object>> createMapListForAllQueueEntriesWithPaging(int pageNumber, int pageSize) {
         List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (QueueEntryWithAdditionalInfo entryWithResult : createListForAllQueueEntries(pageNumber, pageSize)) {
+        for (QueueEntryWithAdditionalInfo entryWithResult : createListForAllQueueEntriesWithPaging(pageNumber, pageSize)) {
             mapList.add(entryWithResult.toMap());
         }
 
         return mapList;
     }
 
-    public static List<Map<String, Object>> createMapList(long executionId, int pageNumber) {
-        return createMapList(executionId, pageNumber, QueueEntryModel.DEFAULT_PAGE_SIZE);
+    public static List<Map<String, Object>> createMapListWithPaging(long executionId, int pageNumber) {
+        return createMapListWithPaging(executionId, pageNumber, QueueEntryModel.DEFAULT_PAGE_SIZE);
     }
 
-    public static List<Map<String, Object>> createMapList(long executionId, int pageNumber, int pageSize) {
+    public static List<Map<String, Object>> createMapListWithPaging(long executionId, int pageNumber, int pageSize) {
         List<Map<String, Object>> mapList = new ArrayList<>();
 
-        for (QueueEntryWithAdditionalInfo entryWithResult : createListByExecution(executionId, pageNumber, pageSize)) {
+        for (QueueEntryWithAdditionalInfo entryWithResult : createListForExecutionWithPaging(executionId, pageNumber, pageSize)) {
             mapList.add(entryWithResult.toMap());
         }
 
@@ -54,7 +54,7 @@ public class QueueEntryListFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<QueueEntryWithAdditionalInfo> createListForAllQueueEntries(final int pageNumber, final int pageSize) {
+    public static List<QueueEntryWithAdditionalInfo> createListForExecution(final long executionId) {
         return (List<QueueEntryWithAdditionalInfo>) Db.execute(new ICallback() {
             @Override
             public Object call(Connection conn) throws SQLException {
@@ -62,7 +62,49 @@ public class QueueEntryListFactory {
                 List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetAllQueueEntriesWithAdditionalInfo(?,?)}");
+                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionId(?)}");
+                    callSP.setLong(1, executionId);
+                    boolean hadResults = callSP.execute();
+
+                    if (hadResults) {
+                        ResultSet rs = callSP.getResultSet();
+                        rs.beforeFirst();
+
+                        while (rs.next()) {
+                            QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
+                            entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
+                            TestResultModel result = new TestResultModel();
+                            result.setId(rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_RESULT_ID));
+                            result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
+                            entryWithResult.setTestResultModel(result);
+                            entriesWithResult.add(entryWithResult);
+                        }
+
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (callSP != null) {
+                        callSP.close();
+                    }
+                }
+
+                return entriesWithResult;
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<QueueEntryWithAdditionalInfo> createListForAllQueueEntriesWithPaging(final int pageNumber, final int pageSize) {
+        return (List<QueueEntryWithAdditionalInfo>) Db.execute(new ICallback() {
+            @Override
+            public Object call(Connection conn) throws SQLException {
+                CallableStatement callSP = null;
+                List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
+
+                try {
+                    callSP = conn.prepareCall("{CALL GetAllQueueEntriesWithAdditionalInfoWithPaging(?,?)}");
                     callSP.setInt(1, pageNumber);
                     callSP.setInt(2, pageSize);
                     boolean hadResults = callSP.execute();
@@ -97,7 +139,7 @@ public class QueueEntryListFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<QueueEntryWithAdditionalInfo> createListByExecution(final long executionId, final int pageNumber, final int pageSize) {
+    private static List<QueueEntryWithAdditionalInfo> createListForExecutionWithPaging(final long executionId, final int pageNumber, final int pageSize) {
         return (List<QueueEntryWithAdditionalInfo>)Db.execute(new ICallback() {
             @Override
             public Object call(Connection conn) throws SQLException {
@@ -105,7 +147,7 @@ public class QueueEntryListFactory {
                 List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionId(?,?,?)}");
+                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionIdWithPaging(?,?,?)}");
                     callSP.setLong(1, executionId);
                     callSP.setInt(2, pageNumber);
                     callSP.setInt(3, pageSize);

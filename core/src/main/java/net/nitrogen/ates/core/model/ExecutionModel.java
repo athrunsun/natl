@@ -20,7 +20,8 @@ import org.joda.time.DateTime;
 import com.jfinal.plugin.activerecord.Model;
 
 public class ExecutionModel extends Model<ExecutionModel> {
-    public static final String EXECUTION_COUNT_MAP_KEY_TOTAL = "TOTAL";
+    public static final String EXEC_RESULT_COUNT_MAP_KEY_TOTAL = "TOTAL";
+    public static final String DEFAULT_EXECUTION_NAME = "Unnamed";
     public static final String TABLE = "execution";
 
     public class Fields {
@@ -267,7 +268,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID),
                 executionId);
         Map<String, Map<String, Integer>> passrates = new HashMap<>();
-        passrates.put(String.format("%d,%s", execution.getId(), execution.getName()), this.executionCountByExecResult(execution.getId()));
+        passrates.put(String.format("%d,%s", execution.getId(), execution.getName()), this.execResultCount(execution.getId()));
         return passrates;
     }
 
@@ -290,15 +291,15 @@ public class ExecutionModel extends Model<ExecutionModel> {
         Map<String, Map<String, Integer>> passrates = new HashMap<>();
 
         for (ExecutionModel exec : recentExecutions) {
-            passrates.put(String.format("%d,%s", exec.getId(), exec.getName()), this.executionCountByExecResult(exec.getId()));
+            passrates.put(String.format("%d,%s", exec.getId(), exec.getName()), this.execResultCount(exec.getId()));
         }
 
         return passrates;
     }
 
-    private Map<String, Integer> executionCountByExecResult(long executionId) {
-        Map<String, Integer> executionCountByExecResult = new HashMap<>();
-        List<QueueEntryModel> entries = QueueEntryModel.me.findEntries(executionId);
+    private Map<String, Integer> execResultCount(long executionId) {
+        Map<String, Integer> execResultCount = new HashMap<>();
+        List<QueueEntryWithAdditionalInfo> entries = QueueEntryListFactory.createListForExecution(executionId);
 
         int total = entries.size();
         int passed = 0;
@@ -306,8 +307,8 @@ public class ExecutionModel extends Model<ExecutionModel> {
         int skipped = 0;
         int unknown = 0;
 
-        for (QueueEntryModel entry : entries) {
-            TestResultModel result = TestResultModel.me.findTestResult(entry.getId());
+        for (QueueEntryWithAdditionalInfo queueEntryWithAdditionalInfo : entries) {
+            TestResultModel result = queueEntryWithAdditionalInfo.getTestResultModel();
 
             if (result == null) {
                 unknown += 1;
@@ -324,12 +325,12 @@ public class ExecutionModel extends Model<ExecutionModel> {
             }
         }
 
-        executionCountByExecResult.put(ExecResult.PASSED.toString(), passed);
-        executionCountByExecResult.put(ExecResult.FAILED.toString(), failed);
-        executionCountByExecResult.put(ExecResult.SKIPPED.toString(), skipped);
-        executionCountByExecResult.put(ExecResult.UNKNOWN.toString(), unknown);
-        executionCountByExecResult.put(EXECUTION_COUNT_MAP_KEY_TOTAL, total);
+        execResultCount.put(ExecResult.PASSED.toString(), passed);
+        execResultCount.put(ExecResult.FAILED.toString(), failed);
+        execResultCount.put(ExecResult.SKIPPED.toString(), skipped);
+        execResultCount.put(ExecResult.UNKNOWN.toString(), unknown);
+        execResultCount.put(EXEC_RESULT_COUNT_MAP_KEY_TOTAL, total);
 
-        return executionCountByExecResult;
+        return execResultCount;
     }
 }

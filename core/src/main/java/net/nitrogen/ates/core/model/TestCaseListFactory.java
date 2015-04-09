@@ -11,7 +11,6 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.ICallback;
 
 public class TestCaseListFactory {
-    private List<TestCaseWithAdditionalInfo> testcaseList;
     private static TestCaseListFactory testCaseListFactory;
 
     private TestCaseListFactory() {
@@ -24,17 +23,17 @@ public class TestCaseListFactory {
         return testCaseListFactory;
     }
 
-    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfo(final long projectId) {
+    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForProject(final long projectId) {
         return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForProjectWithAdditionalInfo(?)}", projectId);
     }
 
-    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfo(final TestGroupModel testGroup) {
-        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestGroupWithAdditionalInfo(?)}", testGroup.getId());
+    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForTestGroup(final long testGroupId) {
+        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestGroupWithAdditionalInfo(?)}", testGroupId);
     }
 
     @SuppressWarnings("unchecked")
-    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfo(final TestSuiteModel testSuite) {
-        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestSuiteWithAdditionalInfo(?)}", testSuite.getId());
+    public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForTestSuite(final long testSuiteId) {
+        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestSuiteWithAdditionalInfo(?)}", testSuiteId);
     }
 
     @SuppressWarnings("unchecked")
@@ -76,5 +75,4 @@ public class TestCaseListFactory {
             }
         });
     }
-
 }

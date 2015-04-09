@@ -10,11 +10,11 @@ public class QueueController extends Controller {
     }
 
     public void fetchAllQueueEntriesWithResultAsJson(){
-        renderJson(QueueEntryListFactory.createMapListForAllQueueEntries(getParaToInt("pageNumber")));
+        renderJson(QueueEntryListFactory.createMapListForAllQueueEntriesWithPaging(getParaToInt("pageNumber")));
     }
 
     public void fetchQueueEntriesWithResultByExecutionIdAsJson() {
-        renderJson(QueueEntryListFactory.createMapList(getParaToLong("executionId"), getParaToInt("pageNumber")));
+        renderJson(QueueEntryListFactory.createMapListWithPaging(getParaToLong("executionId"), getParaToInt("pageNumber")));
     }
 
     public void fetchAllQueueEntriesTotalPageCountAJAX() {

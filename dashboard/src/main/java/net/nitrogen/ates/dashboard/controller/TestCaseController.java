@@ -8,7 +8,7 @@ public class TestCaseController extends Controller {
     public void index() {
         ControllerHelper.setExecResultEnumAttr(this);
         setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me()
-                .createTestCaseListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
+                .createTestCaseListWithAdditionalInfoForProject(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 }

@@ -5,17 +5,17 @@ import java.util.List;
 public class TestCaseWithAdditionalInfo {
     private TestCaseModel testCase;
     private TestResultModel latestTestResult;
-    private List<TestResultModel> testResults;
+//    private List<TestResultModel> testResults;
 
     public TestCaseWithAdditionalInfo() {
     }
 
-    public TestCaseWithAdditionalInfo(TestCaseModel testCase) {
-        this.testCase = testCase;
-        // Default test result number, 5
-        this.testResults = TestResultModel.me.findTestResultsByCaseName(testCase.getName(), 5);
-        this.latestTestResult = (this.testResults == null || this.testResults.size() < 1) ? null : testResults.get(0);
-    }
+//    public TestCaseWithAdditionalInfo(TestCaseModel testCase) {
+//        this.testCase = testCase;
+//        // Default test result number, 5
+//        this.testResults = TestResultModel.me.findTestResultsByCaseName(testCase.getName(), 5);
+//        this.latestTestResult = (this.testResults == null || this.testResults.size() < 1) ? null : testResults.get(0);
+//    }
 
     public TestResultModel getLatestTestResult() {
         return latestTestResult;
@@ -31,9 +31,9 @@ public class TestCaseWithAdditionalInfo {
     /**
      * @return the testResults
      */
-    public List<TestResultModel> getTestResults() {
-        return testResults;
-    }
+//    public List<TestResultModel> getTestResults() {
+//        return testResults;
+//    }
 
     /**
      * @param testCase
@@ -55,7 +55,7 @@ public class TestCaseWithAdditionalInfo {
      * @param testResults
      *            the testResults to set
      */
-    public void setTestResults(List<TestResultModel> testResults) {
-        this.testResults = testResults;
-    }
+//    public void setTestResults(List<TestResultModel> testResults) {
+//        this.testResults = testResults;
+//    }
 }

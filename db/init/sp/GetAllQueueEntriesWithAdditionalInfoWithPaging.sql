@@ -1,10 +1,10 @@
 USE `nitrogenates`;
 
-DROP PROCEDURE IF EXISTS `GetAllQueueEntriesWithAdditionalInfo`;
+DROP PROCEDURE IF EXISTS `GetAllQueueEntriesWithAdditionalInfoWithPaging`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `GetAllQueueEntriesWithAdditionalInfo`(
+CREATE PROCEDURE `GetAllQueueEntriesWithAdditionalInfoWithPaging`(
   IN PageNumber INT,
   IN PageSize INT)
 BEGIN
