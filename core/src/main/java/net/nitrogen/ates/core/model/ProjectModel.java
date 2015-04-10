@@ -91,4 +91,15 @@ public class ProjectModel extends Model<ProjectModel> {
             return coverageData;
         }
     }
+
+    public Map<String, Object> projectDetailsAsMap(long projectId) {
+        Map<String, Object> projectDetailsMap = new HashMap<>();
+        ProjectModel project = findById(projectId);
+        projectDetailsMap.put(Fields.ID, project.getId());
+        projectDetailsMap.put(Fields.NAME, project.getName());
+        projectDetailsMap.put(Fields.GIT_URL, project.getGitUrl());
+        projectDetailsMap.put(Fields.JAR_WITH_DEPENDENCY_NAME, project.getJarWithDependencyName());
+        projectDetailsMap.put(Fields.TOTAL_TEST_CASE_COUNT, project.getTotalTestCaseCount());
+        return projectDetailsMap;
+    }
 }

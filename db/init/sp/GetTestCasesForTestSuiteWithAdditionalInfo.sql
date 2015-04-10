@@ -7,14 +7,19 @@ DELIMITER $$
 CREATE PROCEDURE `GetTestCasesForTestSuiteWithAdditionalInfo`(
   IN SuiteId INT UNSIGNED)
 BEGIN
-  SELECT `tc`.`project_id`,`tc`.`name`,`tc`.`mapping_id`,`tr`.`id`,`tr`.`exec_result` 
+  DECLARE LatestExecutionId INT UNSIGNED;
+
+  SELECT `id` FROM `execution` WHERE `test_suite_id` = SuiteId ORDER BY `id` DESC LIMIT 1 INTO LatestExecutionId;
+
+  SELECT `tc`.`id`,`tc`.`name`,`tc`.`project_id`,`tc`.`mapping_id`,`tr`.`id` AS `test_result_id`,`tr`.`exec_result` 
   FROM 
+    # Join 4 tables may be another choice (including `queue_entry`)
     `test_suite-test_case` AS `ts`
-    LEFT JOIN `test_case` AS `tc`  ON `tc`.`name` = `ts`.`test_name`
-    LEFT JOIN `test_result` AS `tr` ON `tc`.`name` = `tr`.`test_name`
+    JOIN `test_case` AS `tc`  ON `tc`.`id` = `ts`.`test_case_id`
+    LEFT JOIN `test_result` AS `tr` ON `tc`.`id` = `tr`.`test_case_id`
   WHERE
-    `ts`.`test_suite_id` = SuiteId AND
-    NOT EXISTS(SELECT `id` FROM `test_result` WHERE `test_name` = `tc`.`name` AND `id` > `tr`.`id` LIMIT 1);
+    `tr`.`execution_id` = LatestExecutionId AND
+    NOT EXISTS(SELECT `id` FROM `test_result` WHERE `test_case_id` = `tc`.`id` AND `id` > `tr`.`id` LIMIT 1);
 END $$
 
 DELIMITER ;

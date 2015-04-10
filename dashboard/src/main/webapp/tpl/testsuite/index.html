@@ -29,10 +29,10 @@
                                 <tbody>
                                 <#list testsuiteList as testsuite>
                                     <tr>
-                                        <td class="span3"><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
+                                        <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
                                         <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
-                                        <td class="span7"><a class="span12 code">~>java [commands] ${testsuite.getJvmOptionsAsString()}</a></td>
-                                        <td class="span2">
+                                        <td><a class="span12 code">~>java [commands] ${testsuite.getJvmOptionsAsString()}</a></td>
+                                        <td>
                                             <a class="button primary" href="${CPATH}/execution/createByTestSuite/${testsuite.getId()}">Execute</a>
                                             <a class="button danger" href="${CPATH}/testsuite/delete/${testsuite.getId()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Delete</a>
                                         </td>

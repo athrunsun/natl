@@ -1,5 +1,6 @@
 (function(ates, $, undefined){
     ates.contextPath = "/ates";
+    ates.jenkinsUrl = "http://10.136.4.133:8080/jenkins";
     ates.cookieKeyProjectPref = "ates_project_pref";
     ates.maxTestNameLength = 80;
 
