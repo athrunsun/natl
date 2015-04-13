@@ -147,7 +147,8 @@ public class ExecutionModel extends Model<ExecutionModel> {
 
         for (Long testGroupId : testGroupIds) {
             for (TestGroupTestCaseModel tg_tc : TestGroupTestCaseModel.me.findTestGroupTestCases(testGroupId.longValue())) {
-                uniqueTestNames.add(tg_tc.getTestName());
+                // uniqueTestNames.add(tg_tc.getTestCaseId());
+                // TODO to be fixed.
             }
         }
 
@@ -184,7 +185,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         for (TestSuiteTestCaseModel testCase : testCases) {
             QueueEntryModel entry = new QueueEntryModel();
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            entry.setName(testCase.getTestName());
+            entry.setName(testCase.getTestCaseId());
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);

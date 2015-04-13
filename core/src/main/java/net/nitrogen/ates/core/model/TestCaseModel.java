@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.nitrogen.ates.util.StringUtil;
 
@@ -20,6 +22,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
     public static final String TABLE = "test_case";
 
     public class Fields {
+        public static final String ID = "id";
         public static final String PROJECT_ID = "project_id";
         public static final String NAME = "name";
         public static final String VERSION = "version";
@@ -41,6 +44,14 @@ public class TestCaseModel extends Model<TestCaseModel> {
         }
 
         return testCaseModel;
+    }
+
+    public long getId() {
+        return getLong(Fields.ID);
+    }
+
+    public void setId(long id) {
+        this.set(Fields.ID, id);
     }
 
     public long getProjectId() {
@@ -85,7 +96,8 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public TestCaseModel findFirstTestCase(long projectId, String name) {
         return this.findFirst(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1",
+                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1",
+                Fields.ID,
                 Fields.PROJECT_ID,
                 Fields.MAPPING_ID,
                 Fields.NAME,
@@ -97,7 +109,8 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public List<TestCaseModel> findTestCases(long projectId) {
         String sql = String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
+                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
+                Fields.ID,
                 Fields.PROJECT_ID,
                 Fields.NAME,
                 Fields.VERSION,
@@ -131,14 +144,14 @@ public class TestCaseModel extends Model<TestCaseModel> {
         final int UPDATE_PARAMS_SIZE = 4;
         final int INSERT_PARAMS_SIZE = 4;
         final String updateSql = String.format(
-                "UPDATE `%s` SET `%s`=?, `%s`=? WHERE `%s`='?' AND `%s`=?;",
+                "UPDATE `%s` SET `%s`=?, `%s`=? WHERE `%s`=? AND `%s`=?;",
                 TABLE,
                 Fields.VERSION,
                 Fields.MAPPING_ID,
                 Fields.NAME,
                 Fields.PROJECT_ID);
         final String insertSql = String.format(
-                "INSERT `%s`(`%s`,`%s`,`%s`, `%s`) VALUES(?,?,?,?)",
+                "INSERT INTO `%s` (`%s`, `%s`, `%s`, `%s`) VALUES (?, ?, ?, ?)",
                 TABLE,
                 Fields.VERSION,
                 Fields.MAPPING_ID,
@@ -160,10 +173,10 @@ public class TestCaseModel extends Model<TestCaseModel> {
                 caseNumToBeUpdated++;
             } else {
                 // No test case with the same name, insert it.
-                tmpInsertParams[caseNumToBeUpdated][0] = version;
-                tmpInsertParams[caseNumToBeUpdated][1] = testcase.getMappingId();
-                tmpInsertParams[caseNumToBeUpdated][2] = testcase.getName();
-                tmpInsertParams[caseNumToBeUpdated][3] = projectId;
+                tmpInsertParams[caseNumToBeInserted][0] = version;
+                tmpInsertParams[caseNumToBeInserted][1] = testcase.getMappingId();
+                tmpInsertParams[caseNumToBeInserted][2] = testcase.getName();
+                tmpInsertParams[caseNumToBeInserted][3] = projectId;
                 caseNumToBeInserted++;
             }
         }
@@ -171,21 +184,35 @@ public class TestCaseModel extends Model<TestCaseModel> {
         final Object[][] updateParams = Arrays.copyOfRange(tmpUpdateParams, 0, caseNumToBeUpdated);
         final Object[][] insertParams = Arrays.copyOfRange(tmpInsertParams, 0, caseNumToBeInserted);
 
-        final int updateNum = caseNumToBeUpdated;
-        final int insertNum = caseNumToBeInserted;
-        System.out.println("The number of test cases to be updated: " + updateNum);
-        System.out.println("The number of test cases to be inserted: " + insertNum);
-        Db.tx(new IAtom() {
-            @Override
-            public boolean run() throws SQLException {
-                if (updateNum != 0) {
+        System.out.println("The version is: " + version);
+        System.out.println("The number of test cases to be updated: " + updateParams.length);
+        System.out.println("The number of test cases to be inserted: " + insertParams.length);
+        if (caseNumToBeUpdated != 0) {
+            Db.tx(new IAtom() {
+                @Override
+                public boolean run() throws SQLException {
                     Db.batch(updateSql, updateParams, 500);
+                    return true;
                 }
-                if (insertNum != 0) {
+            });
+        }
+        if (caseNumToBeInserted != 0) {
+            Db.tx(new IAtom() {
+                @Override
+                public boolean run() throws SQLException {
                     Db.batch(insertSql, insertParams, 500);
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
+        }
+    }
+
+    public Map<String, String> findCaseIdByNames(long projectId) {
+        Map<String, String> map = new HashMap<String, String>();
+        List<TestCaseModel> testCases = findTestCases(projectId);
+        for (TestCaseModel model : testCases) {
+            map.put(model.getName(), model.getId() + "");
+        }
+        return map;
     }
 }

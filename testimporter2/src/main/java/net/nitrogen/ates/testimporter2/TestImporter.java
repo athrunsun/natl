@@ -1,17 +1,22 @@
 package net.nitrogen.ates.testimporter2;
 
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestGroupModel;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.PropertiesUtil;
+
 import org.testng.ITestNGMethod;
 
-import java.lang.reflect.Method;
-import java.util.*;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
 
 public class TestImporter {
     private static final String TEST_CLASS_TEST_METHOD_DELIMITER = ".";
@@ -26,7 +31,13 @@ public class TestImporter {
 
     public void composeAndImport(List<ITestNGMethod> allTestMethods) {
         Properties props = PropertiesUtil.load("config.txt");
-        DruidPlugin druidPlugin = DBConfig.createDruidPlugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"), 0, 0, 10);
+        DruidPlugin druidPlugin = DBConfig.createDruidPlugin(
+                props.getProperty("jdbcUrl"),
+                props.getProperty("dbuser"),
+                props.getProperty("dbpassword"),
+                0,
+                0,
+                10);
         druidPlugin.start();
         ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
         arp.start();
@@ -124,8 +135,10 @@ public class TestImporter {
         }
     }
 
-    private void doImport(List<TestCaseModel> testCasesToReload, List<TestGroupModel> testGroupsToReload, Map<String, List<String>> rawTestGroupTestCasesToReload) {
+    private void doImport(List<TestCaseModel> testCasesToReload, List<TestGroupModel> testGroupsToReload,
+            Map<String, List<String>> rawTestGroupTestCasesToReload) {
         TestCaseModel.me.reloadTestCases(this.projectId, testCasesToReload);
+        Map<String, String> caseNameIdMap = TestCaseModel.me.findCaseIdByNames(projectId);
         TestGroupModel.me.deleteTestGroupsAndRespectiveTestGroupTestCases(this.projectId);
         TestGroupModel.me.insertTestGroups(testGroupsToReload);
         List<TestGroupModel> testGroups = TestGroupModel.me.findTestGroups(this.projectId);
@@ -137,13 +150,13 @@ public class TestImporter {
             for (String testName : rawTestGroupTestCase.getValue()) {
                 TestGroupTestCaseModel tg_tc = new TestGroupTestCaseModel();
                 tg_tc.setTestGroupId(targetTestGroup.getId());
-                tg_tc.setTestName(testName);
+                tg_tc.setTestCaseId(Long.parseLong(caseNameIdMap.get(testName)));
                 testGroupTestCases.add(tg_tc);
             }
         }
 
         TestGroupTestCaseModel.me.insertTestGroupTestCases(testGroupTestCases);
-        TestSuiteTestCaseModel.me.deleteNonexistent(this.projectId);
+        // TestSuiteTestCaseModel.me.deleteNonexistent(this.projectId); TODO to be fixed
     }
 
     private TestGroupModel searchTestGroup(List<TestGroupModel> testGroups, String name) {

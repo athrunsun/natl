@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import com.jfinal.aop.Before;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.model.CustomParameterModel;
@@ -15,8 +14,10 @@ import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
-import com.jfinal.core.Controller;
 import org.apache.commons.lang3.StringEscapeUtils;
+
+import com.jfinal.aop.Before;
+import com.jfinal.core.Controller;
 
 public class TestSuiteController extends Controller {
     public void index() {
@@ -108,7 +109,8 @@ public class TestSuiteController extends Controller {
         for (String selectedTestGroupId : selectedTestGroupIds) {
             List<TestGroupTestCaseModel> testcases = TestGroupTestCaseModel.me.findTestGroupTestCases(Long.parseLong(selectedTestGroupId));
             for (TestGroupTestCaseModel caseModel : testcases) {
-                caseNamesToBeAssigned.add(caseModel.getTestName());
+                // caseNamesToBeAssigned.add(caseModel.getTestCaseId());
+                // TODO to be fixed
             }
         }
         List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(caseNamesToBeAssigned.size());

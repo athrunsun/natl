@@ -15,7 +15,7 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
     public class Fields {
         public static final String ID = "id";
         public static final String TEST_SUITE_ID = "test_suite_id";
-        public static final String TEST_NAME = "test_name";
+        public static final String TEST_CASE_ID = "test_case_id";
     }
 
     public static final TestSuiteTestCaseModel me = new TestSuiteTestCaseModel();
@@ -36,22 +36,28 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
         this.set(Fields.TEST_SUITE_ID, testSuiteId);
     }
 
-    public String getTestName() {
-        return getStr(Fields.TEST_NAME);
+    // TODO schema change
+    @Deprecated
+    public String getTestCaseId() {
+        return getStr(Fields.TEST_CASE_ID);
     }
 
     public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
+        return StringUtil.shortenString(this.getTestCaseId(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
     }
 
     public void setTestName(String testName) {
-        this.set(Fields.TEST_NAME, testName);
+        this.set(Fields.TEST_CASE_ID, testName);
     }
 
     public List<TestSuiteTestCaseModel> findTestSuiteTestCases(long testSuiteId) {
-        return find(
-                String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.TEST_SUITE_ID, Fields.TEST_NAME, TABLE, Fields.TEST_SUITE_ID),
-                testSuiteId);
+        return find(String.format(
+                "SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
+                Fields.ID,
+                Fields.TEST_SUITE_ID,
+                Fields.TEST_CASE_ID,
+                TABLE,
+                Fields.TEST_SUITE_ID), testSuiteId);
     }
 
     public int delete(long suiteId, String testcaseName) {
@@ -59,7 +65,7 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 "DELETE FROM `%s` WHERE `%s`=? AND `%s` =?;",
                 TestSuiteTestCaseModel.TABLE,
                 TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
-                TestSuiteTestCaseModel.Fields.TEST_NAME);
+                TestSuiteTestCaseModel.Fields.TEST_CASE_ID);
         return Db.update(sql, suiteId, testcaseName);
     }
 
@@ -68,7 +74,7 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 "DELETE `ts-tc` FROM `%s` AS `ts-tc` LEFT JOIN `%s` AS `tc` ON `ts-tc`.`%s`=`tc`.`%s` WHERE `tc`.`%s`=? AND `tc`.`%s` IS NULL",
                 TestSuiteTestCaseModel.TABLE,
                 TestCaseModel.TABLE,
-                TestSuiteTestCaseModel.Fields.TEST_NAME,
+                TestSuiteTestCaseModel.Fields.TEST_CASE_ID,
                 TestCaseModel.Fields.NAME,
                 TestCaseModel.Fields.PROJECT_ID,
                 TestCaseModel.Fields.NAME);
@@ -82,19 +88,19 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 "INSERT INTO `%s` (`%s`,`%s`) SELECT ?, ? FROM dual WHERE ",
                 TestSuiteTestCaseModel.TABLE,
                 TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
-                TestSuiteTestCaseModel.Fields.TEST_NAME)
+                TestSuiteTestCaseModel.Fields.TEST_CASE_ID)
                 + String.format(
                         "NOT EXISTS(SELECT * FROM `%s` WHERE `%s`=? AND `%s`=?);",
                         TestSuiteTestCaseModel.TABLE,
                         TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
-                        TestSuiteTestCaseModel.Fields.TEST_NAME);
+                        TestSuiteTestCaseModel.Fields.TEST_CASE_ID);
         final Object[][] insertTestSuiteTestCaseParams = new Object[testSuiteTestCases.size()][INSERT_TEST_SUITE_TEST_CASE_PARAMS_SIZE];
 
         for (int i = 0; i < testSuiteTestCases.size(); i++) {
             insertTestSuiteTestCaseParams[i][0] = testSuiteTestCases.get(i).getTestSuiteId();
-            insertTestSuiteTestCaseParams[i][1] = testSuiteTestCases.get(i).getTestName();
+            insertTestSuiteTestCaseParams[i][1] = testSuiteTestCases.get(i).getTestCaseId();
             insertTestSuiteTestCaseParams[i][2] = testSuiteTestCases.get(i).getTestSuiteId();
-            insertTestSuiteTestCaseParams[i][3] = testSuiteTestCases.get(i).getTestName();
+            insertTestSuiteTestCaseParams[i][3] = testSuiteTestCases.get(i).getTestCaseId();
         }
 
         Db.tx(new IAtom() {
