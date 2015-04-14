@@ -11,6 +11,7 @@ import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestGroupModel;
 import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
 import org.testng.ITestNGMethod;
@@ -157,7 +158,7 @@ public class TestImporter {
         }
 
         TestGroupTestCaseModel.me.insertTestGroupTestCases(testGroupTestCases);
-        // TestSuiteTestCaseModel.me.deleteNonexistent(this.projectId); TODO to be fixed
+        TestSuiteTestCaseModel.me.deleteNonexistent(this.projectId);
     }
 
     private TestGroupModel searchTestGroup(List<TestGroupModel> testGroups, String name) {

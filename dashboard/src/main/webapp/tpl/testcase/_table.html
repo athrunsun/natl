@@ -23,7 +23,7 @@
                         <td class="span1">
                             <div class="input-control checkbox">
                                 <label>
-                                    <input data-id="${testCase.getName()}" data-name="${testCase.getHtmlEncodedName()}" type="checkbox" class="check-to-run-test-case"/>
+                                    <input data-id="${testCase.getId()}" data-name="${testCase.getId()}" type="checkbox" class="check-to-run-test-case"/>
                                     <span class="check"></span>
                                 </label>
                             </div>
@@ -32,7 +32,7 @@
                     <td class="span9">
                         <span title="${testCase.getName()}">${testCase.getShortName()}</span>
                     </td>
-                    <!--<td>${testCase.getMappingId()}</td> -->
+                    <!--<td>${testCase.getMappingId()!}</td> -->
                     <td class="span2">
                         <#if testResult == "">
                             <span class="label">UNKNOWN</span>

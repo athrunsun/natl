@@ -3,8 +3,6 @@ package net.nitrogen.ates.core.model;
 import java.sql.SQLException;
 import java.util.List;
 
-import net.nitrogen.ates.util.StringUtil;
-
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
@@ -65,16 +63,16 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
     }
 
     public void deleteNonexistent(long projectId) {
+        long caseVersion = ProjectModel.me.findLatestTestCaseVersionForProject(projectId);
         String sql = String.format(
-                "DELETE `ts-tc` FROM `%s` AS `ts-tc` LEFT JOIN `%s` AS `tc` ON `ts-tc`.`%s`=`tc`.`%s` WHERE `tc`.`%s`=? AND `tc`.`%s` IS NULL",
+                "DELETE `ts-tc` FROM `%s` AS `ts-tc` LEFT JOIN `%s` AS `tc` ON `ts-tc`.`%s`=`tc`.`%s` WHERE `tc`.`%s`=? AND `tc`.`%s`<>?",
                 TestSuiteTestCaseModel.TABLE,
                 TestCaseModel.TABLE,
                 TestSuiteTestCaseModel.Fields.TEST_CASE_ID,
-                TestCaseModel.Fields.NAME,
+                TestCaseModel.Fields.ID,
                 TestCaseModel.Fields.PROJECT_ID,
-                TestCaseModel.Fields.NAME);
-
-        Db.update(sql, projectId);
+                TestCaseModel.Fields.VERSION);
+        Db.update(sql, projectId, caseVersion);
     }
 
     public void insertTestSuiteTestCasesIfNotExists(List<TestSuiteTestCaseModel> testSuiteTestCases) {

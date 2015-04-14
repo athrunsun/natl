@@ -116,8 +116,9 @@ public class ExecutionModel extends Model<ExecutionModel> {
     public long createExecutionByTestCase(long projectId, String executionName, List<Long> testCaseIds) {
         List<Long> validTestCaseIds = new ArrayList<>();
 
-        for(long testCaseId : testCaseIds) {
-            if(TestCaseModel.me.isTestCaseValid(testCaseId)) {
+        for (long testCaseId : testCaseIds) {
+            if (TestCaseModel.me.isTestCaseValid(testCaseId)) {
+                // ToBeFixed: performance issue
                 validTestCaseIds.add(testCaseId);
             }
         }

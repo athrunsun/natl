@@ -18,6 +18,7 @@ BEGIN
     `tc`.`name`,
     `tc`.`project_id`,
     `tc`.`mapping_id`,
+    `tc`.`version`,
     `tr`.`id` AS `test_result_id`,
     `tr`.`exec_result` 
   FROM 

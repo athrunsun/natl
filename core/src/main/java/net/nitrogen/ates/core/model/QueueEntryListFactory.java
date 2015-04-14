@@ -1,8 +1,5 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.ICallback;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.ICallback;
 
 public class QueueEntryListFactory {
     private static QueueEntryListFactory queueEntryListFactory;
@@ -76,7 +76,7 @@ public class QueueEntryListFactory {
 
                             TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
                                     entryWithResult.getEntryModel().getProjectId(),
-                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+                                    rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
 
@@ -126,7 +126,7 @@ public class QueueEntryListFactory {
 
                             TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
                                     entryWithResult.getEntryModel().getProjectId(),
-                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+                                    rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
 
@@ -154,7 +154,7 @@ public class QueueEntryListFactory {
 
     @SuppressWarnings("unchecked")
     private static List<QueueEntryWithAdditionalInfo> createListForExecutionWithPaging(final long executionId, final int pageNumber, final int pageSize) {
-        return (List<QueueEntryWithAdditionalInfo>)Db.execute(new ICallback() {
+        return (List<QueueEntryWithAdditionalInfo>) Db.execute(new ICallback() {
             @Override
             public Object call(Connection conn) throws SQLException {
                 CallableStatement callSP = null;
@@ -177,7 +177,7 @@ public class QueueEntryListFactory {
 
                             TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
                                     entryWithResult.getEntryModel().getProjectId(),
-                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+                                    rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
 

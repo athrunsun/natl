@@ -1,9 +1,9 @@
 package net.nitrogen.ates.core.model;
 
-import net.nitrogen.ates.core.enumeration.ExecResult;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import net.nitrogen.ates.core.enumeration.ExecResult;
 
 public class QueueEntryWithAdditionalInfo {
     public class Fields {

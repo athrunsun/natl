@@ -115,6 +115,21 @@ public class TestCaseModel extends Model<TestCaseModel> {
         return this.findFirst(sql, testCaseId, ProjectModel.me.findLatestTestCaseVersionForProject(projectId));
     }
 
+    public TestCaseModel findValidTestCase(long projectId, String testCaseName) {
+        String sql = String.format(
+                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1",
+                Fields.ID,
+                Fields.NAME,
+                Fields.PROJECT_ID,
+                Fields.MAPPING_ID,
+                Fields.VERSION,
+                TABLE,
+                Fields.NAME,
+                Fields.PROJECT_ID);
+
+        return this.findFirst(sql, testCaseName, projectId);
+    }
+
     public List<TestCaseModel> findValidTestCases(long projectId) {
         String sql = String.format(
                 "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=?",

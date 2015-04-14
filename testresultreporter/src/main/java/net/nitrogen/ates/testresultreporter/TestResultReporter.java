@@ -11,6 +11,7 @@ import java.util.Properties;
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.env.EnvParameter;
+import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestResultModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
@@ -55,8 +56,8 @@ public class TestResultReporter {
     private TestResultModel prepareTestResult(ITestResult result, ExecResult status) throws UnknownHostException {
         TestResultModel testResult = new TestResultModel();
         testResult.setEntryId(EnvParameter.entryId());
-        // testResult.setTestName(String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName()));
-        // TODO to be fixed
+        final String caseName = String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName());
+        testResult.setTestCaseId(TestCaseModel.me.findValidTestCase(EnvParameter.projectId(), caseName).getId());
         testResult.setSlaveName(EnvParameter.machineName());
         testResult.setStartTime(new DateTime(result.getStartMillis()));
         testResult.setEndTime(new DateTime(result.getEndMillis()));

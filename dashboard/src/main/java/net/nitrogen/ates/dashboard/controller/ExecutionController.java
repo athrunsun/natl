@@ -12,8 +12,6 @@ import net.nitrogen.ates.core.model.TestSuiteModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 
@@ -35,17 +33,14 @@ public class ExecutionController extends Controller {
     @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestCase() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
-        List<String> selectedTestCaseNames = new ArrayList<>(); // TODO to be fixed
         List<Long> selectedTestCaseIds = new ArrayList<>();
 
         for (String testCaseNameHtmlEncoded : getParaValues("selected_test_cases")) {
-            selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
+            selectedTestCaseIds.add(Long.parseLong(testCaseNameHtmlEncoded));
         }
 
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
-
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(ControllerHelper.getProjectPrefFromCookie(this), executionName, selectedTestCaseIds);
-
         CustomParameterModel.me.insertParameters(ControllerHelper.getRawCustomParameterMap(this), CustomParameterDomainKey.EXECUTION, newExecutionId);
 
         redirect(String.format("/execution/detail/%d", newExecutionId));
