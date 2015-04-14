@@ -126,20 +126,9 @@ public class TestCaseModel extends Model<TestCaseModel> {
         return (testResults == null || testResults.size() < 1) ? null : testResults.get(0);
     }
 
-    private String getCaseNamesStringSeperatedBySemicolon(long projectId) {
-        StringBuffer sb = new StringBuffer();
-        final String div = ";";
-        sb.append(div);
-        List<TestCaseModel> cases = findTestCases(projectId);
-        for (TestCaseModel caseModel : cases) {
-            sb.append(caseModel.getName()).append(div);
-        }
-        return sb.toString();
-    }
-
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
         Long version = Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime())); // 10 digital like: 1504101719
-        String caseNamesStringSeperatedBySemicolon = getCaseNamesStringSeperatedBySemicolon(projectId);
+        Map<String, String> existingCases = findCaseIdByNames(projectId);
 
         final int UPDATE_PARAMS_SIZE = 4;
         final int INSERT_PARAMS_SIZE = 4;
@@ -164,7 +153,8 @@ public class TestCaseModel extends Model<TestCaseModel> {
         int caseNumToBeInserted = 0;
 
         for (TestCaseModel testcase : testCases) {
-            if (caseNamesStringSeperatedBySemicolon.indexOf(testcase.getName()) > 0) {
+            final String idStr = existingCases.get(testcase.getName());
+            if (idStr != null || !idStr.isEmpty()) {
                 // There is an existing entry for this case, update it.
                 tmpUpdateParams[caseNumToBeUpdated][0] = version;
                 tmpUpdateParams[caseNumToBeUpdated][1] = testcase.getMappingId();
