@@ -55,7 +55,8 @@ public class TestResultReporter {
     private TestResultModel prepareTestResult(ITestResult result, ExecResult status) throws UnknownHostException {
         TestResultModel testResult = new TestResultModel();
         testResult.setEntryId(EnvParameter.entryId());
-        testResult.setTestName(String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName()));
+        // testResult.setTestName(String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName()));
+        // TODO to be fixed
         testResult.setSlaveName(EnvParameter.machineName());
         testResult.setStartTime(new DateTime(result.getStartMillis()));
         testResult.setEndTime(new DateTime(result.getEndMillis()));

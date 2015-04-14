@@ -139,7 +139,7 @@ public class TestImporter {
     private void doImport(List<TestCaseModel> testCasesToReload, List<TestGroupModel> testGroupsToReload,
             Map<String, List<String>> rawTestGroupTestCasesToReload) {
         TestCaseModel.me.reloadTestCases(this.projectId, testCasesToReload);
-        Map<String, String> caseNameIdMap = TestCaseModel.me.findCaseIdByNames(projectId);
+        Map<String, String> caseNameIdMap = TestCaseModel.me.findAllCaseNameIdMap(projectId);
         TestGroupModel.me.deleteTestGroupsAndRespectiveTestGroupTestCases(this.projectId);
         TestGroupModel.me.insertTestGroups(testGroupsToReload);
         List<TestGroupModel> testGroups = TestGroupModel.me.findTestGroups(this.projectId);

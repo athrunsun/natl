@@ -88,12 +88,13 @@ public class ProjectModel extends Model<ProjectModel> {
 
     public List<ProjectModel> findAllProjects() {
         return this.find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
                 Fields.NAME,
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
                 Fields.TOTAL_TEST_CASE_COUNT,
+                Fields.LATEST_TEST_CASE_VERSION,
                 TABLE));
     }
 
@@ -119,6 +120,7 @@ public class ProjectModel extends Model<ProjectModel> {
         projectDetailsMap.put(Fields.GIT_URL, project.getGitUrl());
         projectDetailsMap.put(Fields.JAR_WITH_DEPENDENCY_NAME, project.getJarWithDependencyName());
         projectDetailsMap.put(Fields.TOTAL_TEST_CASE_COUNT, project.getTotalTestCaseCount());
+        projectDetailsMap.put(Fields.LATEST_TEST_CASE_VERSION, project.getLatestTestCaseVersion());
         return projectDetailsMap;
     }
 }

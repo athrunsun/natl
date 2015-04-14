@@ -132,7 +132,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
         Long version = Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime())); // 10 digital like: 1504101719
-        Map<String, String> existingCases = findCaseIdByNames(projectId);
+        Map<String, String> existingCases = findAllCaseNameIdMap(projectId);
         ProjectModel.me.updateLatestTestCaseVersionForProject(projectId, version);
 
         final int UPDATE_PARAMS_SIZE = 4;
@@ -159,20 +159,20 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
         for (TestCaseModel testcase : testCases) {
             final String idStr = existingCases.get(testcase.getName());
-            if (idStr != null || !idStr.isEmpty()) {
-                // There is an existing entry for this case, update it.
-                tmpUpdateParams[caseNumToBeUpdated][0] = version;
-                tmpUpdateParams[caseNumToBeUpdated][1] = testcase.getMappingId();
-                tmpUpdateParams[caseNumToBeUpdated][2] = testcase.getName();
-                tmpUpdateParams[caseNumToBeUpdated][3] = projectId;
-                caseNumToBeUpdated++;
-            } else {
+            if (idStr == null || idStr.isEmpty()) {
                 // No test case with the same name, insert it.
                 tmpInsertParams[caseNumToBeInserted][0] = version;
                 tmpInsertParams[caseNumToBeInserted][1] = testcase.getMappingId();
                 tmpInsertParams[caseNumToBeInserted][2] = testcase.getName();
                 tmpInsertParams[caseNumToBeInserted][3] = projectId;
                 caseNumToBeInserted++;
+            } else {
+                // There is an existing entry for this case, update it.
+                tmpUpdateParams[caseNumToBeUpdated][0] = version;
+                tmpUpdateParams[caseNumToBeUpdated][1] = testcase.getMappingId();
+                tmpUpdateParams[caseNumToBeUpdated][2] = testcase.getName();
+                tmpUpdateParams[caseNumToBeUpdated][3] = projectId;
+                caseNumToBeUpdated++;
             }
         }
 
@@ -202,12 +202,26 @@ public class TestCaseModel extends Model<TestCaseModel> {
         }
     }
 
-    public Map<String, String> findCaseIdByNames(long projectId) {
+    public Map<String, String> findAllCaseNameIdMap(long projectId) {
         Map<String, String> map = new HashMap<String, String>();
-        List<TestCaseModel> testCases = findValidTestCases(projectId);
+        List<TestCaseModel> testCases = findAllTestCases(projectId);
         for (TestCaseModel model : testCases) {
             map.put(model.getName(), model.getId() + "");
         }
         return map;
+    }
+
+    private List<TestCaseModel> findAllTestCases(long projectId) {
+        String sql = String.format(
+                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
+                Fields.ID,
+                Fields.PROJECT_ID,
+                Fields.NAME,
+                Fields.VERSION,
+                Fields.MAPPING_ID,
+                TABLE,
+                Fields.PROJECT_ID);
+
+        return find(sql, projectId);
     }
 }
