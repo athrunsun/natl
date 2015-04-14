@@ -1,21 +1,15 @@
 package net.nitrogen.ates.core.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.nitrogen.ates.util.StringUtil;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
+import net.nitrogen.ates.util.StringUtil;
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TestCaseModel extends Model<TestCaseModel> {
     public static final int MAX_TEST_NAME_LENGTH = 80;
@@ -35,6 +29,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
         TestCaseModel testCaseModel = new TestCaseModel();
 
         try {
+            testCaseModel.setId(rs.getLong(Fields.ID));
             testCaseModel.setProjectId(rs.getLong(Fields.PROJECT_ID));
             testCaseModel.setName(rs.getString(Fields.NAME));
             testCaseModel.setMappingId(rs.getString(Fields.MAPPING_ID));
@@ -94,43 +89,46 @@ public class TestCaseModel extends Model<TestCaseModel> {
         this.set(Fields.NAME, name);
     }
 
-    public TestCaseModel findFirstTestCase(long projectId, String name) {
-        return this.findFirst(String.format(
+    public boolean isTestCaseValid(long testCaseId) {
+        TestCaseModel testCase = findById(testCaseId);
+        return testCase.getVersion() == ProjectModel.me.findLatestTestCaseVersionForProject(testCase.getProjectId());
+    }
+
+    public TestCaseModel findValidTestCase(long projectId, long testCaseId) {
+        String sql = String.format(
                 "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=? LIMIT 1",
                 Fields.ID,
+                Fields.NAME,
                 Fields.PROJECT_ID,
                 Fields.MAPPING_ID,
-                Fields.NAME,
                 Fields.VERSION,
                 TABLE,
-                Fields.PROJECT_ID,
-                Fields.NAME), projectId, name);
+                Fields.ID,
+                Fields.VERSION);
+
+        return this.findFirst(sql, testCaseId, ProjectModel.me.findLatestTestCaseVersionForProject(projectId));
     }
 
-    public List<TestCaseModel> findTestCases(long projectId) {
+    public List<TestCaseModel> findValidTestCases(long projectId) {
         String sql = String.format(
-                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?",
+                "SELECT `%s`, `%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? AND `%s`=?",
                 Fields.ID,
                 Fields.PROJECT_ID,
                 Fields.NAME,
                 Fields.VERSION,
                 Fields.MAPPING_ID,
                 TABLE,
-                Fields.PROJECT_ID);
+                Fields.PROJECT_ID,
+                Fields.VERSION);
 
-        return find(sql, projectId);
-    }
-
-    public TestResultModel getLastExecutionResult() {
-        final List<TestResultModel> testResults = TestResultModel.me.findTestResultsByCaseName(this.getName(), 1);
-        return (testResults == null || testResults.size() < 1) ? null : testResults.get(0);
+        return find(sql, projectId, ProjectModel.me.findLatestTestCaseVersionForProject(projectId));
     }
 
     private String getCaseNamesStringSeperatedBySemicolon(long projectId) {
         StringBuffer sb = new StringBuffer();
         final String div = ";";
         sb.append(div);
-        List<TestCaseModel> cases = findTestCases(projectId);
+        List<TestCaseModel> cases = findValidTestCases(projectId);
         for (TestCaseModel caseModel : cases) {
             sb.append(caseModel.getName()).append(div);
         }
@@ -138,7 +136,9 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
-        Long version = Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime())); // 10 digital like: 1504101719
+        long version = Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime())); // 10 digital like: 1504101719
+        ProjectModel.me.updateLatestTestCaseVersionForProject(projectId, version);
+
         String caseNamesStringSeperatedBySemicolon = getCaseNamesStringSeperatedBySemicolon(projectId);
 
         final int UPDATE_PARAMS_SIZE = 4;
@@ -209,7 +209,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
 
     public Map<String, String> findCaseIdByNames(long projectId) {
         Map<String, String> map = new HashMap<String, String>();
-        List<TestCaseModel> testCases = findTestCases(projectId);
+        List<TestCaseModel> testCases = findValidTestCases(projectId);
         for (TestCaseModel model : testCases) {
             map.put(model.getName(), model.getId() + "");
         }

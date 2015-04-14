@@ -76,7 +76,7 @@ public class TestSuiteController extends Controller {
         for (String selectedTestCaseName : selectedTestCaseNames) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCaseModel.setTestCaseId(selectedTestCaseName);
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 
@@ -117,7 +117,7 @@ public class TestSuiteController extends Controller {
         for (String selectedTestCaseName : caseNamesToBeAssigned) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCaseModel.setTestCaseId(selectedTestCaseName);
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 

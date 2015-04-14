@@ -32,7 +32,7 @@ public class ExecutionListFactory {
                 List<ExecutionWithAdditionalInfo> executionsWithAdditionalInfo = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetExecutionsWithAdditionalInfo(?)}");
+                    callSP = conn.prepareCall("{CALL FindExecutionsWithAdditionalInfo(?)}");
                     callSP.setLong(1, projectId);
                     boolean hadResults = callSP.execute();
 

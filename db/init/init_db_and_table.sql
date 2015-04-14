@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `custom_parameter` (
 CREATE TABLE IF NOT EXISTS `test_case` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(500) NOT NULL,
-  `version` INT NOT NULL,
+  `version` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,
   `mapping_id` VARCHAR(100),
   PRIMARY KEY (`id`)
@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `jar_with_dependency_name` VARCHAR(500) NOT NULL,
   `git_url` VARCHAR(500) NOT NULL,
   `total_test_case_count` INT NOT NULL,
+  `latest_test_case_version` UNSIGNED INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 

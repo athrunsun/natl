@@ -36,18 +36,12 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
         this.set(Fields.TEST_SUITE_ID, testSuiteId);
     }
 
-    // TODO schema change
-    @Deprecated
-    public String getTestCaseId() {
-        return getStr(Fields.TEST_CASE_ID);
+    public long getTestCaseId() {
+        return getLong(Fields.TEST_CASE_ID);
     }
 
-    public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestCaseId(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
-    }
-
-    public void setTestName(String testName) {
-        this.set(Fields.TEST_CASE_ID, testName);
+    public void setTestCaseId(long testCaseId) {
+        this.set(Fields.TEST_CASE_ID, testCaseId);
     }
 
     public List<TestSuiteTestCaseModel> findTestSuiteTestCases(long testSuiteId) {
@@ -60,13 +54,14 @@ public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
                 Fields.TEST_SUITE_ID), testSuiteId);
     }
 
-    public int delete(long suiteId, String testcaseName) {
+    public int delete(long suiteId, long testCaseId) {
         String sql = String.format(
                 "DELETE FROM `%s` WHERE `%s`=? AND `%s` =?;",
                 TestSuiteTestCaseModel.TABLE,
                 TestSuiteTestCaseModel.Fields.TEST_SUITE_ID,
                 TestSuiteTestCaseModel.Fields.TEST_CASE_ID);
-        return Db.update(sql, suiteId, testcaseName);
+
+        return Db.update(sql, suiteId, testCaseId);
     }
 
     public void deleteNonexistent(long projectId) {

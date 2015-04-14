@@ -1,10 +1,10 @@
 USE `nitrogenates`;
 
-DROP PROCEDURE IF EXISTS `GetTestCasesForTestSuiteWithAdditionalInfo`;
+DROP PROCEDURE IF EXISTS `FindTestCasesForTestSuiteWithAdditionalInfo`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `GetTestCasesForTestSuiteWithAdditionalInfo`(
+CREATE PROCEDURE `FindTestCasesForTestSuiteWithAdditionalInfo`(
   IN SuiteId INT UNSIGNED)
 BEGIN
   DECLARE LatestExecutionId INT UNSIGNED;

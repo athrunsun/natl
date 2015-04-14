@@ -1,10 +1,10 @@
 USE `nitrogenates`;
 
-DROP PROCEDURE IF EXISTS `GetQueueEntriesWithAdditionalInfoByExecutionIdWithPaging`;
+DROP PROCEDURE IF EXISTS `FindQueueEntriesWithAdditionalInfoForExecution_Paging`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `GetQueueEntriesWithAdditionalInfoByExecutionIdWithPaging`(
+CREATE PROCEDURE `FindQueueEntriesWithAdditionalInfoForExecution_Paging`(
   IN ExecutionId INT UNSIGNED,
   IN PageNumber INT,
   IN PageSize INT)
@@ -18,8 +18,19 @@ BEGIN
   THEN SET Offset := Total - 1;
   END IF;
 
-  SELECT `q`.`id`,`q`.`status`,`q`.`test_case_id`,`tc`.`name` AS `test_case_name`,`q`.`slave_name`,`q`.`index`,`q`.`start_time`,`q`.`end_time`,`q`.`execution_id`,`q`.`project_id`,
-    `tr`.`id` AS `test_result_id`,`tr`.`exec_result` 
+  SELECT 
+    `q`.`id`,
+    `q`.`status`,
+    `q`.`test_case_id`,
+    `tc`.`name` AS `test_case_name`,
+    `q`.`slave_name`,
+    `q`.`index`,
+    `q`.`start_time`,
+    `q`.`end_time`,
+    `q`.`execution_id`,
+    `q`.`project_id`,
+    `tr`.`id` AS `test_result_id`,
+    `tr`.`exec_result` 
   FROM 
     `queue_entry` AS `q` 
     JOIN `test_case` AS `tc` ON `q`.`test_case_id` = `tc`.`id`

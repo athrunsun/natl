@@ -11,11 +11,11 @@ import net.nitrogen.ates.core.enumeration.ExecResult;
 
 import com.jfinal.plugin.activerecord.ICallback;
 
-public class FindQueueEntriesByExecResultCallback implements ICallback {
+public class Callback_FindValidQueueEntriesForExecution_ExecResultFiltering implements ICallback {
     private long executionId;
     private ExecResult execResult;
 
-    public FindQueueEntriesByExecResultCallback(long execId, ExecResult result) {
+    public Callback_FindValidQueueEntriesForExecution_ExecResultFiltering(long execId, ExecResult result) {
         this.executionId = execId;
         this.execResult = result;
     }
@@ -26,7 +26,7 @@ public class FindQueueEntriesByExecResultCallback implements ICallback {
         List<QueueEntryModel> entries = new ArrayList<>();
 
         try {
-            callSP = conn.prepareCall("{CALL GetQueueEntriesByExecutionIdAndExecResult(?,?)}");
+            callSP = conn.prepareCall("{CALL FindValidQueueEntriesForExecution_ExecResultFiltering(?,?)}");
             callSP.setLong(1, executionId);
             callSP.setInt(2, execResult.getValue());
             boolean hadResults = callSP.execute();
@@ -39,7 +39,7 @@ public class FindQueueEntriesByExecResultCallback implements ICallback {
                     QueueEntryModel entry = new QueueEntryModel();
                     entry.setId(rs.getLong(QueueEntryModel.Fields.ID));
                     entry.setStatus(rs.getInt(QueueEntryModel.Fields.STATUS));
-                    entry.setName(rs.getString(QueueEntryModel.Fields.NAME));
+                    entry.setTestCaseId(rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
                     entry.setSlaveName(rs.getString(QueueEntryModel.Fields.SLAVE_NAME));
                     entry.setIndex(rs.getInt(QueueEntryModel.Fields.INDEX));
                     entry.setStartTimestamp(rs.getTimestamp(QueueEntryModel.Fields.START_TIME));

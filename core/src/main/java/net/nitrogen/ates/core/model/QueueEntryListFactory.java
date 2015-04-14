@@ -62,7 +62,7 @@ public class QueueEntryListFactory {
                 List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionId(?)}");
+                    callSP = conn.prepareCall("{CALL FindQueueEntriesWithAdditionalInfoForExecution(?)}");
                     callSP.setLong(1, executionId);
                     boolean hadResults = callSP.execute();
 
@@ -73,6 +73,13 @@ public class QueueEntryListFactory {
                         while (rs.next()) {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
+
+                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
+                                    entryWithResult.getEntryModel().getProjectId(),
+                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+
+                            entryWithResult.setTestCaseModel(testCaseModel);
+
                             TestResultModel result = new TestResultModel();
                             result.setId(rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
@@ -104,7 +111,7 @@ public class QueueEntryListFactory {
                 List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetAllQueueEntriesWithAdditionalInfoWithPaging(?,?)}");
+                    callSP = conn.prepareCall("{CALL FindAllQueueEntriesWithAdditionalInfo_Paging(?,?)}");
                     callSP.setInt(1, pageNumber);
                     callSP.setInt(2, pageSize);
                     boolean hadResults = callSP.execute();
@@ -116,6 +123,13 @@ public class QueueEntryListFactory {
                         while (rs.next()) {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
+
+                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
+                                    entryWithResult.getEntryModel().getProjectId(),
+                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+
+                            entryWithResult.setTestCaseModel(testCaseModel);
+
                             TestResultModel result = new TestResultModel();
                             result.setId(rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
@@ -147,7 +161,7 @@ public class QueueEntryListFactory {
                 List<QueueEntryWithAdditionalInfo> entriesWithResult = new ArrayList<>();
 
                 try {
-                    callSP = conn.prepareCall("{CALL GetQueueEntriesWithAdditionalInfoByExecutionIdWithPaging(?,?,?)}");
+                    callSP = conn.prepareCall("{CALL FindQueueEntriesWithAdditionalInfoForExecution_Paging(?,?,?)}");
                     callSP.setLong(1, executionId);
                     callSP.setInt(2, pageNumber);
                     callSP.setInt(3, pageSize);
@@ -160,6 +174,13 @@ public class QueueEntryListFactory {
                         while (rs.next()) {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
+
+                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
+                                    entryWithResult.getEntryModel().getProjectId(),
+                                    rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_CASE_NAME));
+
+                            entryWithResult.setTestCaseModel(testCaseModel);
+
                             TestResultModel result = new TestResultModel();
                             result.setId(rs.getLong(QueueEntryWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
