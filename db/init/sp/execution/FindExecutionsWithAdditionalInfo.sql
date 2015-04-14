@@ -1,10 +1,10 @@
 USE `nitrogenates`;
 
-DROP PROCEDURE IF EXISTS `GetExecutionsWithAdditionalInfo`;
+DROP PROCEDURE IF EXISTS `FindExecutionsWithAdditionalInfo`;
 
 DELIMITER $$
 
-CREATE PROCEDURE `GetExecutionsWithAdditionalInfo`(
+CREATE PROCEDURE `FindExecutionsWithAdditionalInfo`(
   IN ProjectId INT UNSIGNED)
 BEGIN
   SELECT 

@@ -54,7 +54,7 @@ public class TestSuiteController extends Controller {
     public void removeCaseFromSuite() {
         long suiteId = getParaToLong("testsuiteId");
         final String testcaseName = StringEscapeUtils.unescapeHtml4(getPara("testcaseName"));
-        TestSuiteTestCaseModel.me.delete(suiteId, testcaseName);
+        // TestSuiteTestCaseModel.me.delete(suiteId, testcaseName); // TODO to be fixed
         redirect(String.format("/testsuite/detail/%d", suiteId));
     }
 
@@ -76,7 +76,7 @@ public class TestSuiteController extends Controller {
         for (String selectedTestCaseName : selectedTestCaseNames) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            // testSuiteTestCaseModel.setTestCaseId(selectedTestCaseName); // TODO to be fixed
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 
@@ -117,7 +117,7 @@ public class TestSuiteController extends Controller {
         for (String selectedTestCaseName : caseNamesToBeAssigned) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            // testSuiteTestCaseModel.setTestCaseId(selectedTestCaseName); // TODO to be fixed
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 

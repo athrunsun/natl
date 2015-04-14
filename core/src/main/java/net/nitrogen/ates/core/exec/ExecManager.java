@@ -55,9 +55,9 @@ public class ExecManager {
                     false);
             cmdLine.addArgument("org.testng.TestNG", false);
             cmdLine.addArgument("-testclass", false);
-            cmdLine.addArgument(entry.getName().substring(0, entry.getName().lastIndexOf(".")), false);
+            // cmdLine.addArgument(entry.getTestCaseId().substring(0, entry.getTestCaseId().lastIndexOf(".")), false);
             cmdLine.addArgument("-methods", false);
-            cmdLine.addArgument(entry.getName(), false);
+            // cmdLine.addArgument(entry.getTestCaseId(), false); // TODO to be fixed
             cmdLine.addArgument("-listener", false);
             cmdLine.addArgument(TEST_RESULT_REPORTER_CLASS_NAME, false);
             cmdLine.addArgument("-excludegroups", false);

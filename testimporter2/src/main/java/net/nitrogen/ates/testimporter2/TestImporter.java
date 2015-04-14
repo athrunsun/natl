@@ -20,7 +20,7 @@ import com.jfinal.plugin.druid.DruidPlugin;
 
 public class TestImporter {
     private static final String TEST_CLASS_TEST_METHOD_DELIMITER = ".";
-    private static final String DEFAULT_TEST_CASE_ID = "N/A";
+    private static final String DEFAULT_TEST_CASE_MAPPING_ID = "N/A";
     private static final long DEFAULT_PROJECT_ID = 1;
     private static final String projectIDProperty = "nitrogen_ates_projectid";
 
@@ -108,30 +108,31 @@ public class TestImporter {
 
         tc.setProjectId(projectId);
         tc.setName(testCaseName);
-        initCaseIdIfExists(className, tc, testCaseName);
+        initTestCaseMappingIdIfExists(className, tc, testCaseName);
 
         testCasesToReload.add(tc);
     }
 
-    private void initCaseIdIfExists(String className, TestCaseModel tc, String testCaseName) {
+    private void initTestCaseMappingIdIfExists(String className, TestCaseModel tc, String testCaseName) {
         try {
             final Class<?> testClass = Class.forName(className);
             Method[] reflectedMethods = testClass.getMethods();
+
             for (Method reflectedMethod : reflectedMethods) {
                 if (!testCaseName.endsWith("." + reflectedMethod.getName())) {
                     continue;
                 }
+
                 if (reflectedMethod.isAnnotationPresent(net.nitrogen.ates.testpartner.ATESTest.class)) {
                     tc.setMappingId(reflectedMethod.getAnnotation(net.nitrogen.ates.testpartner.ATESTest.class).mappingId());
-                } else {
-                    tc.setMappingId(DEFAULT_TEST_CASE_ID);
                 }
+
                 break;
             }
         } catch (SecurityException e) {
-            tc.setMappingId(DEFAULT_TEST_CASE_ID);
+            // Do nothing
         } catch (ClassNotFoundException e) {
-            tc.setMappingId(DEFAULT_TEST_CASE_ID);
+            // Do nothing
         }
     }
 
