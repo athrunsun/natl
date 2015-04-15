@@ -57,7 +57,7 @@ public class TestCaseListFactory {
                             TestCaseWithAdditionalInfo testCaseWithAdditionalInfo = new TestCaseWithAdditionalInfo();
                             testCaseWithAdditionalInfo.setTestCase(TestCaseModel.createByResultSet(rs));
                             TestResultModel result = new TestResultModel();
-                            result.setId(rs.getLong(TestResultModel.Fields.ID));
+                            result.setId(rs.getLong(TestCaseWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
                             testCaseWithAdditionalInfo.setLatestTestResult(result);
                             testCasesWithAdditionalInfo.add(testCaseWithAdditionalInfo);
