@@ -48,7 +48,7 @@
                             </a>
                         <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
                             <a href="${CPATH}/testresult/detail/${testResult.getId()}">
-                             	<span class="label error">${testResult.getExecResultLabel()}</span>
+                                <span class="label error">${testResult.getExecResultLabel()}</span>
                             </a>
                         <#else>
                             <span class="label">UNKNOWN</span>

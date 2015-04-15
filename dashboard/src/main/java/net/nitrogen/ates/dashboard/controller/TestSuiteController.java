@@ -69,12 +69,12 @@ public class TestSuiteController extends Controller {
         }
 
         // Construct a list for assignment
-        Integer[] selectedTestCaseIds = getParaValuesToInt("selected_test_cases");
-        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(selectedTestCaseIds.length);
-        for (int selectedTestCaseId : selectedTestCaseIds) {
+        String[] selectedTestCaseIds = getParaValues("selected_test_cases");
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<>(selectedTestCaseIds.length);
+        for (String selectedTestCaseId : selectedTestCaseIds) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestCaseId(selectedTestCaseId);
+            testSuiteTestCaseModel.setTestCaseId(Long.parseLong(selectedTestCaseId));
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 

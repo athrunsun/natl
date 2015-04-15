@@ -35,8 +35,8 @@ public class ExecutionController extends Controller {
         String executionName = getPara(ExecutionModel.Fields.NAME);
         List<Long> selectedTestCaseIds = new ArrayList<>();
 
-        for (String testCaseNameHtmlEncoded : getParaValues("selected_test_cases")) {
-            selectedTestCaseIds.add(Long.parseLong(testCaseNameHtmlEncoded));
+        for (String testCaseId : getParaValues("selected_test_cases")) {
+            selectedTestCaseIds.add(Long.parseLong(testCaseId));
         }
 
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.nitrogen.ates.util.DateTimeUtil;
 import net.nitrogen.ates.util.StringUtil;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -45,6 +46,11 @@ public class TestCaseModel extends Model<TestCaseModel> {
         }
 
         return testCaseModel;
+    }
+
+    public static long generateTestCaseVersion() {
+        // 10 digital like: 1504101719
+        return Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime()));
     }
 
     public long getId() {
@@ -146,7 +152,7 @@ public class TestCaseModel extends Model<TestCaseModel> {
     }
 
     public void reloadTestCases(final long projectId, List<TestCaseModel> testCases) {
-        Long version = Long.parseLong(new SimpleDateFormat("yyMMddHHmm").format(Calendar.getInstance().getTime())); // 10 digital like: 1504101719
+        long version = generateTestCaseVersion();
         Map<String, String> existingCases = findAllCaseNameIdMap(projectId);
         ProjectModel.me.updateLatestTestCaseVersionForProject(projectId, version);
 

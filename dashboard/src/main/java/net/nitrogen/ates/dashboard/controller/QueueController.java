@@ -9,19 +9,27 @@ public class QueueController extends Controller {
         render("index.html");
     }
 
-    public void fetchAllQueueEntriesWithResultAsJson(){
+    public void fetchAllQueueEntriesWithResultAJAX(){
         renderJson(QueueEntryListFactory.createMapListForAllQueueEntriesWithPaging(getParaToInt("pageNumber")));
     }
 
-    public void fetchQueueEntriesWithResultByExecutionIdAsJson() {
-        renderJson(QueueEntryListFactory.createMapListWithPaging(getParaToLong("executionId"), getParaToInt("pageNumber")));
+    public void fetchQueueEntriesWithResultForProjectAJAX() {
+        renderJson(QueueEntryListFactory.createMapListForProjectWithPaging(ControllerHelper.getProjectPrefFromCookie(this), getParaToInt("pageNumber")));
+    }
+
+    public void fetchQueueEntriesWithResultForExecutionAJAX() {
+        renderJson(QueueEntryListFactory.createMapListForExecutionWithPaging(getParaToLong("executionId"), getParaToInt("pageNumber")));
     }
 
     public void fetchAllQueueEntriesTotalPageCountAJAX() {
         renderText(String.format("%d", QueueEntryModel.me.allEntriesPageCount()));
     }
 
-    public void fetchQueueEntriesTotalPageCountByExecutionIdAJAX() {
-        renderText(String.format("%d", QueueEntryModel.me.entriesPageCount(getParaToLong("executionId"))));
+    public void fetchQueueEntriesTotalPageCountForProjectAJAX() {
+        renderText(String.format("%d", QueueEntryModel.me.entriesPageCountForProject(ControllerHelper.getProjectPrefFromCookie(this))));
+    }
+
+    public void fetchQueueEntriesTotalPageCountForExecutionAJAX() {
+        renderText(String.format("%d", QueueEntryModel.me.entriesPageCountForExecution(getParaToLong("executionId"))));
     }
 }

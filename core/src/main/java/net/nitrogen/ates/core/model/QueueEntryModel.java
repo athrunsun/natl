@@ -167,12 +167,21 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
     }
 
-    public long entriesPageCount(long executionId) {
-        return this.entriesPageCount(executionId, DEFAULT_PAGE_SIZE);
+    public long entriesPageCountForExecution(long executionId) {
+        return this.entriesPageCountForExecution(executionId, DEFAULT_PAGE_SIZE);
     }
 
-    public long entriesPageCount(long executionId, int pageSize) {
+    public long entriesPageCountForExecution(long executionId, int pageSize) {
         long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=?", Fields.ID, TABLE, Fields.EXECUTION_ID), executionId);
+        return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
+    }
+
+    public long entriesPageCountForProject(long projectId) {
+        return this.entriesPageCountForProject(projectId, DEFAULT_PAGE_SIZE);
+    }
+
+    public long entriesPageCountForProject(long projectId, int pageSize) {
+        long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=?", Fields.ID, TABLE, Fields.PROJECT_ID), projectId);
         return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
     }
 
