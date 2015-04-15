@@ -68,7 +68,8 @@
 ### Daemon
 * ~~`P1`Deployment(stop/deploy/start)~~
 * Run TestNG programatically inside `net.nitrogen.ates.TestRunner`, to fit `@Parameters` requirement
-* Timeout for queue entry (to avoid 'dead' queue entry to block slave)
+* Timeout for queue entry (to avoid 'dead' queue entry to block slave), 
+  try to use apache.commons.exec DefaultExecuteResultHandler.waitFor(long timeout)
 <br/>
 
 ### Miscellaneous
