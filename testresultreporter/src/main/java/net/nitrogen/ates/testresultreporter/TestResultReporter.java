@@ -68,6 +68,14 @@ public class TestResultReporter {
         testResult.setProjectId(EnvParameter.projectId());
         StringBuilder message = new StringBuilder();
 
+        if (result.getThrowable() != null) {
+            Throwable t = result.getThrowable();
+            StringWriter errors = new StringWriter();
+            t.printStackTrace(new PrintWriter(errors));
+            testResult.setStackTrace(errors.toString());
+            message.append(t.getMessage());
+        }
+
         switch (status) {
         case FAILED:
             testResult.setExecResult(ExecResult.FAILED.getValue());
@@ -83,14 +91,6 @@ public class TestResultReporter {
         default:
             testResult.setExecResult(ExecResult.UNKNOWN.getValue());
             break;
-        }
-
-        if (result.getThrowable() != null) {
-            Throwable t = result.getThrowable();
-            StringWriter errors = new StringWriter();
-            t.printStackTrace(new PrintWriter(errors));
-            testResult.setStackTrace(errors.toString());
-            message.append(t.getMessage());
         }
 
         testResult.setMessage(message.toString());
