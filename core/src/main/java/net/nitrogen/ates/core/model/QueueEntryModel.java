@@ -238,7 +238,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                         rs.beforeFirst();
 
                         while (rs.next()) {
-                            QueueEntryModel.createByResultSet(rs);
+                            entries.add(QueueEntryModel.createByResultSet(rs));
                         }
 
                         rs.close();

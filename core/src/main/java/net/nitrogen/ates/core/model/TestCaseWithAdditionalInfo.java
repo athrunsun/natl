@@ -7,6 +7,10 @@ public class TestCaseWithAdditionalInfo {
     private TestResultModel latestTestResult;
 //    private List<TestResultModel> testResults;
 
+    public class Fields {
+        public static final String TEST_RESULT_ID = "test_result_id";
+    }
+
     public TestCaseWithAdditionalInfo() {
     }
 
