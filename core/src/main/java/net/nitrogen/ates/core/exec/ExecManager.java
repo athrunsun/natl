@@ -68,7 +68,6 @@ public class ExecManager {
             cmdLine.addArgument(TEST_RESULT_REPORTER_CLASS_NAME, false);
             // cmdLine.addArgument(entry.getParams(), false); // Function to be Added
             System.out.println("cmdLine.toString:" + cmdLine.toString());
-            log.info("cmdLine.toString:" + cmdLine.toString());
 
             QueueEntryExecResultHandler resultHandler = new QueueEntryExecResultHandler(entry.getId());
 
