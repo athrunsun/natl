@@ -15,6 +15,7 @@ public class ProjectModel extends Model<ProjectModel> {
         public static final String JAR_WITH_DEPENDENCY_NAME = "jar_with_dependency_name";
         public static final String GIT_URL = "git_url";
         public static final String TOTAL_TEST_CASE_COUNT = "total_test_case_count";
+        public static final String LATEST_TEST_CASE_VERSION = "latest_test_case_version";
     }
 
     public static final ProjectModel me = new ProjectModel();
@@ -59,6 +60,24 @@ public class ProjectModel extends Model<ProjectModel> {
         this.set(Fields.TOTAL_TEST_CASE_COUNT, totalTestCaseCount);
     }
 
+    public long getLatestTestCaseVersion() {
+        return this.getLong(Fields.LATEST_TEST_CASE_VERSION);
+    }
+
+    public void setLatestTestCaseVersion(long version) {
+        this.set(Fields.LATEST_TEST_CASE_VERSION, version);
+    }
+
+    public long findLatestTestCaseVersionForProject(long projectId) {
+        return this.findProject(projectId).getLatestTestCaseVersion();
+    }
+
+    public void updateLatestTestCaseVersionForProject(long projectId, long version) {
+        ProjectModel project = this.findProject(projectId);
+        project.setLatestTestCaseVersion(version);
+        project.update();
+    }
+
     public ProjectModel findProject(long projectId) {
         return me.findById(projectId);
     }
@@ -69,12 +88,13 @@ public class ProjectModel extends Model<ProjectModel> {
 
     public List<ProjectModel> findAllProjects() {
         return this.find(String.format(
-                "SELECT `%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
+                "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s`",
                 Fields.ID,
                 Fields.NAME,
                 Fields.JAR_WITH_DEPENDENCY_NAME,
                 Fields.GIT_URL,
                 Fields.TOTAL_TEST_CASE_COUNT,
+                Fields.LATEST_TEST_CASE_VERSION,
                 TABLE));
     }
 
@@ -86,9 +106,21 @@ public class ProjectModel extends Model<ProjectModel> {
             return null;
         } else {
             coverageData.put("TOTAL", totalTestCaseCount);
-            int automatedTestCaseCount = TestCaseModel.me.findTestCases(projectId).size();
+            int automatedTestCaseCount = TestCaseModel.me.findValidTestCases(projectId).size();
             coverageData.put("AUTOMATED", automatedTestCaseCount);
             return coverageData;
         }
+    }
+
+    public Map<String, Object> projectDetailsAsMap(long projectId) {
+        Map<String, Object> projectDetailsMap = new HashMap<>();
+        ProjectModel project = findById(projectId);
+        projectDetailsMap.put(Fields.ID, project.getId());
+        projectDetailsMap.put(Fields.NAME, project.getName());
+        projectDetailsMap.put(Fields.GIT_URL, project.getGitUrl());
+        projectDetailsMap.put(Fields.JAR_WITH_DEPENDENCY_NAME, project.getJarWithDependencyName());
+        projectDetailsMap.put(Fields.TOTAL_TEST_CASE_COUNT, project.getTotalTestCaseCount());
+        projectDetailsMap.put(Fields.LATEST_TEST_CASE_VERSION, project.getLatestTestCaseVersion());
+        return projectDetailsMap;
     }
 }

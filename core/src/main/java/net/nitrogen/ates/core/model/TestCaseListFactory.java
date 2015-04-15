@@ -24,16 +24,16 @@ public class TestCaseListFactory {
     }
 
     public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForProject(final long projectId) {
-        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForProjectWithAdditionalInfo(?)}", projectId);
+        return this.createTestCaseListWithAdditionalInfo("{CALL FindTestCasesForProjectWithAdditionalInfo(?)}", projectId);
     }
 
     public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForTestGroup(final long testGroupId) {
-        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestGroupWithAdditionalInfo(?)}", testGroupId);
+        return this.createTestCaseListWithAdditionalInfo("{CALL FindTestCasesForTestGroupWithAdditionalInfo(?)}", testGroupId);
     }
 
     @SuppressWarnings("unchecked")
     public List<TestCaseWithAdditionalInfo> createTestCaseListWithAdditionalInfoForTestSuite(final long testSuiteId) {
-        return this.createTestCaseListWithAdditionalInfo("{CALL GetTestCasesForTestSuiteWithAdditionalInfo(?)}", testSuiteId);
+        return this.createTestCaseListWithAdditionalInfo("{CALL FindTestCasesForTestSuiteWithAdditionalInfo(?)}", testSuiteId);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +57,7 @@ public class TestCaseListFactory {
                             TestCaseWithAdditionalInfo testCaseWithAdditionalInfo = new TestCaseWithAdditionalInfo();
                             testCaseWithAdditionalInfo.setTestCase(TestCaseModel.createByResultSet(rs));
                             TestResultModel result = new TestResultModel();
-                            result.setId(rs.getLong(TestResultModel.Fields.ID));
+                            result.setId(rs.getLong(TestCaseWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
                             testCaseWithAdditionalInfo.setLatestTestResult(result);
                             testCasesWithAdditionalInfo.add(testCaseWithAdditionalInfo);

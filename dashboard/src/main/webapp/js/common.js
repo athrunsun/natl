@@ -1,5 +1,6 @@
 (function(ates, $, undefined){
     ates.contextPath = "/ates";
+    ates.jenkinsUrl = "http://10.136.4.133:8080/jenkins";
     ates.cookieKeyProjectPref = "ates_project_pref";
     ates.maxTestNameLength = 80;
 
@@ -52,7 +53,7 @@ $(document).ready(function(){
     });
 
     if ($('.sticky-sidebar').length) {
-        // Check the initial Poistion of the sticky sidebar
+        // Check the initial position of the sticky sidebar
         var stickySidebarTop = $('.sticky-sidebar').offset().top;
 
         $(window).scroll(function () {

@@ -23,4 +23,9 @@ public class ProjectController extends Controller {
     public void fetchAutomationCoverageAsJson() {
         renderJson(ProjectModel.me.automationCoverage(getParaToLong("projectId")));
     }
+
+    public void projectDetailsAJAX() {
+        long projectId = getParaToLong("projectId");
+        renderJson(ProjectModel.me.projectDetailsAsMap(projectId));
+    }
 }

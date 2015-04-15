@@ -11,6 +11,7 @@ import java.util.Properties;
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.env.EnvParameter;
+import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestResultModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
@@ -55,7 +56,8 @@ public class TestResultReporter {
     private TestResultModel prepareTestResult(ITestResult result, ExecResult status) throws UnknownHostException {
         TestResultModel testResult = new TestResultModel();
         testResult.setEntryId(EnvParameter.entryId());
-        testResult.setTestName(String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName()));
+        final String caseName = String.format("%s%s%s", result.getTestClass().getName(), TESTCLASS_TESTMETHOD_DELIMITER, result.getMethod().getMethodName());
+        testResult.setTestCaseId(TestCaseModel.me.findValidTestCase(EnvParameter.projectId(), caseName).getId());
         testResult.setSlaveName(EnvParameter.machineName());
         testResult.setStartTime(new DateTime(result.getStartMillis()));
         testResult.setEndTime(new DateTime(result.getEndMillis()));
@@ -66,18 +68,17 @@ public class TestResultReporter {
         testResult.setProjectId(EnvParameter.projectId());
         StringBuilder message = new StringBuilder();
 
+        if (result.getThrowable() != null) {
+            Throwable t = result.getThrowable();
+            StringWriter errors = new StringWriter();
+            t.printStackTrace(new PrintWriter(errors));
+            testResult.setStackTrace(errors.toString());
+            message.append(t.getMessage());
+        }
+
         switch (status) {
         case FAILED:
             testResult.setExecResult(ExecResult.FAILED.getValue());
-
-            if (result.getThrowable() != null) {
-                Throwable t = result.getThrowable();
-                StringWriter errors = new StringWriter();
-                t.printStackTrace(new PrintWriter(errors));
-                testResult.setStackTrace(errors.toString());
-                message.append(t.getMessage());
-            }
-
             this.takeScreenshot(result, message, testResult);
             break;
         case PASSED:
@@ -85,6 +86,7 @@ public class TestResultReporter {
             break;
         case SKIPPED:
             testResult.setExecResult(ExecResult.SKIPPED.getValue());
+            this.takeScreenshot(result, message, testResult);
             break;
         default:
             testResult.setExecResult(ExecResult.UNKNOWN.getValue());

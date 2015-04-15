@@ -113,7 +113,16 @@ public class ExecutionModel extends Model<ExecutionModel> {
                 Fields.ID), projectId);
     }
 
-    public long createExecutionByTestCase(long projectId, String executionName, List<String> testCaseNames) {
+    public long createExecutionByTestCase(long projectId, String executionName, List<Long> testCaseIds) {
+        List<Long> validTestCaseIds = new ArrayList<>();
+
+        for (long testCaseId : testCaseIds) {
+            if (TestCaseModel.me.isTestCaseValid(testCaseId)) {
+                // ToBeFixed: performance issue
+                validTestCaseIds.add(testCaseId);
+            }
+        }
+
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.setName(executionName);
         newExecution.setProjectId(projectId);
@@ -122,10 +131,10 @@ public class ExecutionModel extends Model<ExecutionModel> {
         long newExecutionId = newExecution.get(Fields.ID);
         List<QueueEntryModel> entries = new ArrayList<>();
 
-        for (String testName : testCaseNames) {
+        for (long testCaseId : validTestCaseIds) {
             QueueEntryModel entry = new QueueEntryModel();
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            entry.setName(testName);
+            entry.setTestCaseId(testCaseId);
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
@@ -143,20 +152,20 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
         long newExecutionId = newExecution.get(Fields.ID);
-        Set<String> uniqueTestNames = new HashSet<String>();
+        Set<Long> uniqueTestCaseIds = new HashSet<>();
 
         for (Long testGroupId : testGroupIds) {
             for (TestGroupTestCaseModel tg_tc : TestGroupTestCaseModel.me.findTestGroupTestCases(testGroupId.longValue())) {
-                uniqueTestNames.add(tg_tc.getTestName());
+                uniqueTestCaseIds.add(tg_tc.getTestCaseId());
             }
         }
 
-        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
+        List<QueueEntryModel> entries = new ArrayList<>();
 
-        for (String testName : uniqueTestNames) {
+        for (long testCaseId : uniqueTestCaseIds) {
             QueueEntryModel entry = new QueueEntryModel();
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            entry.setName(testName);
+            entry.setTestCaseId(testCaseId);
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
@@ -175,16 +184,18 @@ public class ExecutionModel extends Model<ExecutionModel> {
         newExecution.setTestSuiteId(testSuiteId);
         newExecution.save();
         long newExecutionId = newExecution.get(Fields.ID);
-        Set<String> uniqueTestNames = new HashSet<String>();
+
+        // Invalid test_suite-test_case records will be removed during importing so don't have to do it here
         List<TestSuiteTestCaseModel> testCases = TestSuiteTestCaseModel.me.findTestSuiteTestCases(testSuiteId);
+
         CustomParameterModel.me.cloneParameters(CustomParameterDomainKey.TEST_SUITE, testSuiteId, newExecutionId);
 
-        List<QueueEntryModel> entries = new ArrayList<QueueEntryModel>();
+        List<QueueEntryModel> entries = new ArrayList<>();
 
         for (TestSuiteTestCaseModel testCase : testCases) {
             QueueEntryModel entry = new QueueEntryModel();
             entry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            entry.setName(testCase.getTestName());
+            entry.setTestCaseId(testCase.getTestCaseId());
             entry.setSlaveName("");
             entry.setExecutionId(newExecutionId);
             entry.setProjectId(projectId);
@@ -196,7 +207,8 @@ public class ExecutionModel extends Model<ExecutionModel> {
     }
 
     public long cloneExecution(long executionId) {
-        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findEntries(executionId);
+        // Filter out invalid queue entries
+        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findValidEntriesForExecution(executionId);
 
         if (existingEntries == null || existingEntries.size() <= 0) {
             return executionId;
@@ -205,6 +217,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         ExecutionModel existingExecution = findFirst(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID),
                 executionId);
+
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.setName(String.format("%s_RerunALL", existingExecution.getName()));
         newExecution.setProjectId(existingExecution.getProjectId());
@@ -218,7 +231,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         for (QueueEntryModel entry : existingEntries) {
             QueueEntryModel newEntry = new QueueEntryModel();
             newEntry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            newEntry.setName(entry.getName());
+            newEntry.setTestCaseId(entry.getTestCaseId());
             newEntry.setSlaveName("");
             newEntry.setExecutionId(newExecution.getId());
             newEntry.setProjectId(existingExecution.getProjectId());
@@ -230,7 +243,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
     }
 
     public long createExecutionByExecResult(long executionId, ExecResult execResult) {
-        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findEntries(executionId, execResult);
+        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findValidEntriesForExecution(executionId, execResult);
 
         if (existingEntries == null || existingEntries.size() <= 0) {
             return executionId;
@@ -239,6 +252,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         ExecutionModel existingExecution = findFirst(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID),
                 executionId);
+
         ExecutionModel newExecution = new ExecutionModel();
         newExecution.setName(String.format("%s_Rerun%s", existingExecution.getName(), execResult.toString()));
         newExecution.setProjectId(existingExecution.getProjectId());
@@ -252,7 +266,7 @@ public class ExecutionModel extends Model<ExecutionModel> {
         for (QueueEntryModel entry : existingEntries) {
             QueueEntryModel newEntry = new QueueEntryModel();
             newEntry.setStatus(QueueEntryStatus.WAITING.getStatus());
-            newEntry.setName(entry.getName());
+            newEntry.setTestCaseId(entry.getTestCaseId());
             newEntry.setSlaveName("");
             newEntry.setExecutionId(newExecution.getId());
             newEntry.setProjectId(existingExecution.getProjectId());

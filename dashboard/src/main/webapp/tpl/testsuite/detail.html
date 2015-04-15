@@ -62,7 +62,7 @@
 <#macro additionalTds>
     <td>
         <!--<span data-id="${testsuite.getId()}" data-name="${testCase.getName()}" class="remove-from-testsuite" title="Remove from Suite">-->
-            <a class="button danger" href="${CPATH}/testsuite/removeCaseFromSuite?testsuiteId=${testsuite.getId()}&testcaseName=${testCase.getHtmlEncodedName()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Remove</a>
+            <a class="button danger" href="${CPATH}/testsuite/removeCaseFromSuite?testsuiteId=${testsuite.getId()}&testCaseId=${testCase.getId()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Remove</a>
         <!--</span>-->
     </td>
 </#macro>

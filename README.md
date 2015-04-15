@@ -20,6 +20,7 @@
   * ~~`P1`Pie chart to display pass rate~~
   * Append to current execution?
   * `P1`Queue entry count, execution's created date on execution list page
+  * highlight failed cases on suite/execution detail page or, support sort function on those pages
 <br/>
 
 * TestCase
@@ -54,6 +55,8 @@
   * Reload automatically when full-building project
   * Historical pass rate (need to create relationship with execution)
   * Define test suite based on certain condition: 1) TestGroup.name == "ABC" OR "DEF"
+  * BUG - test suite details page doesn't show last execution results
+  * Execution history list, list all executions triggered by current test suite.
 <br/>
 
 * Slave
@@ -66,7 +69,8 @@
 ### Daemon
 * ~~`P1`Deployment(stop/deploy/start)~~
 * Run TestNG programatically inside `net.nitrogen.ates.TestRunner`, to fit `@Parameters` requirement
-* Timeout for queue entry (to avoid 'dead' queue entry to block slave)
+* Timeout for queue entry (to avoid 'dead' queue entry to block slave), 
+  try to use apache.commons.exec DefaultExecuteResultHandler.waitFor(long timeout)
 <br/>
 
 ### Miscellaneous
@@ -85,3 +89,5 @@
   then run TestNG programatically to import tests with a virtual TestNG suite.
   This way users don't have to add `ATESTestImporter.xml` to their project.~~
 * Add DB build
+* BUG: some failures are noted as unknown
+* Exception in BeforeClass method not caught

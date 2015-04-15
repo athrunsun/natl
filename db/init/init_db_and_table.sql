@@ -12,7 +12,7 @@ USE `nitrogenates`;
 CREATE TABLE IF NOT EXISTS `queue_entry` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `status` INT NOT NULL,
-  `name` VARCHAR(500) NOT NULL,
+  `test_case_id` INT UNSIGNED NOT NULL,
   `slave_name` VARCHAR(100) NOT NULL,
   `index` INT,
   `start_time` DATETIME,
@@ -50,9 +50,12 @@ CREATE TABLE IF NOT EXISTS `custom_parameter` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `test_case` (
-  `project_id` INT UNSIGNED NOT NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(500) NOT NULL,
-  `mapping_id` VARCHAR(100) NOT NULL
+  `version` INT UNSIGNED NOT NULL,
+  `project_id` INT UNSIGNED NOT NULL,
+  `mapping_id` VARCHAR(100),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `test_group` (
@@ -65,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `test_group` (
 CREATE TABLE IF NOT EXISTS `test_group-test_case` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `test_group_id` INT UNSIGNED NOT NULL,
-  `test_name` VARCHAR(500) NOT NULL,
+  `test_case_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -79,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `test_suite` (
 CREATE TABLE IF NOT EXISTS `test_suite-test_case` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `test_suite_id` INT UNSIGNED NOT NULL,
-  `test_name` VARCHAR(500) NOT NULL,
+  `test_case_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 
@@ -91,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `test_suite-test_case` (
 CREATE TABLE IF NOT EXISTS `test_result` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `entry_id` INT UNSIGNED NOT NULL,
-  `test_name` VARCHAR(500) NOT NULL,
+  `test_case_id` INT UNSIGNED NOT NULL,
   `slave_name` VARCHAR(100) NOT NULL,
   `start_time` DATETIME NOT NULL,
   `end_time` DATETIME NOT NULL,
@@ -119,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `jar_with_dependency_name` VARCHAR(500) NOT NULL,
   `git_url` VARCHAR(500) NOT NULL,
   `total_test_case_count` INT NOT NULL,
+  `latest_test_case_version` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
 

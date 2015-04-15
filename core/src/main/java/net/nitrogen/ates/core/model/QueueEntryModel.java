@@ -1,24 +1,16 @@
 package net.nitrogen.ates.core.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jfinal.plugin.activerecord.*;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
 import net.nitrogen.ates.util.DateTimeUtil;
-import net.nitrogen.ates.util.StringUtil;
 
 import org.joda.time.DateTime;
-
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Model;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
 
 public class QueueEntryModel extends Model<QueueEntryModel> {
     public static final int DEFAULT_PAGE_SIZE = 20;
@@ -27,7 +19,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
     public class Fields {
         public static final String ID = "id";
         public static final String STATUS = "status";
-        public static final String NAME = "name";
+        public static final String TEST_CASE_ID = "test_case_id";
         public static final String SLAVE_NAME = "slave_name";
         public static final String INDEX = "index";
         public static final String START_TIME = "start_time";
@@ -42,7 +34,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         QueueEntryModel entry = new QueueEntryModel();
         entry.setId(record.getLong(Fields.ID));
         entry.setStatus(record.getInt(Fields.STATUS));
-        entry.setName(record.getStr(Fields.NAME));
+        entry.setTestCaseId(record.getLong(Fields.TEST_CASE_ID));
         entry.setSlaveName(record.getStr(Fields.SLAVE_NAME));
         entry.setIndex(record.getInt(Fields.INDEX));
         entry.setStartTimestamp(record.getTimestamp(Fields.START_TIME));
@@ -58,7 +50,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         try {
             entry.setId(rs.getLong(Fields.ID));
             entry.setStatus(rs.getInt(Fields.STATUS));
-            entry.setName(rs.getString(Fields.NAME));
+            entry.setTestCaseId(rs.getLong(Fields.TEST_CASE_ID));
             entry.setSlaveName(rs.getString(Fields.SLAVE_NAME));
             entry.setIndex(rs.getInt(Fields.INDEX));
             entry.setStartTimestamp(rs.getTimestamp(Fields.START_TIME));
@@ -88,16 +80,12 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         this.set(Fields.STATUS, status);
     }
 
-    public String getName() {
-        return this.getStr(Fields.NAME);
+    public long getTestCaseId() {
+        return this.getLong(Fields.TEST_CASE_ID);
     }
 
-    public String getShortName() {
-        return StringUtil.shortenString(this.getName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
-    }
-
-    public void setName(String name) {
-        this.set(Fields.NAME, name);
+    public void setTestCaseId(long id) {
+        this.set(Fields.TEST_CASE_ID, id);
     }
 
     public String getSlaveName() {
@@ -179,12 +167,21 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
     }
 
-    public long entriesPageCount(long executionId) {
-        return this.entriesPageCount(executionId, DEFAULT_PAGE_SIZE);
+    public long entriesPageCountForExecution(long executionId) {
+        return this.entriesPageCountForExecution(executionId, DEFAULT_PAGE_SIZE);
     }
 
-    public long entriesPageCount(long executionId, int pageSize) {
+    public long entriesPageCountForExecution(long executionId, int pageSize) {
         long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=?", Fields.ID, TABLE, Fields.EXECUTION_ID), executionId);
+        return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
+    }
+
+    public long entriesPageCountForProject(long projectId) {
+        return this.entriesPageCountForProject(projectId, DEFAULT_PAGE_SIZE);
+    }
+
+    public long entriesPageCountForProject(long projectId, int pageSize) {
+        long total = Db.queryLong(String.format("SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=?", Fields.ID, TABLE, Fields.PROJECT_ID), projectId);
         return total / pageSize + ((total % pageSize <= 0) ? 0 : 1);
     }
 
@@ -193,7 +190,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
-                Fields.NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.INDEX,
                 Fields.START_TIME,
@@ -204,12 +201,12 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                 Fields.ID));
     }
 
-    public List<QueueEntryModel> findEntries(long executionId) {
+    public List<QueueEntryModel> findEntriesForExecution(long executionId) {
         String sql = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
-                Fields.NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.INDEX,
                 Fields.START_TIME,
@@ -223,12 +220,48 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         return find(sql, executionId);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<QueueEntryModel> findValidEntriesForExecution(final long executionId) {
+        return (List<QueueEntryModel>) Db.execute(new ICallback() {
+            @Override
+            public Object call(Connection conn) throws SQLException {
+                CallableStatement callSP = null;
+                List<QueueEntryModel> entries = new ArrayList<>();
+
+                try {
+                    callSP = conn.prepareCall("{CALL FindValidQueueEntriesForExecution(?)}");
+                    callSP.setLong(1, executionId);
+                    boolean hadResults = callSP.execute();
+
+                    if (hadResults) {
+                        ResultSet rs = callSP.getResultSet();
+                        rs.beforeFirst();
+
+                        while (rs.next()) {
+                            entries.add(QueueEntryModel.createByResultSet(rs));
+                        }
+
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (callSP != null) {
+                        callSP.close();
+                    }
+                }
+
+                return entries;
+            }
+        });
+    }
+
     public Page<QueueEntryModel> paginate(int pageNumber, int pageSize) {
         String selectClause = String.format(
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.STATUS,
-                Fields.NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.INDEX,
                 Fields.START_TIME,
@@ -241,8 +274,8 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
         return paginate(pageNumber, pageSize, selectClause, sqlExceptSelect);
     }
 
-    public List<QueueEntryModel> findEntries(long executionId, ExecResult execResult) {
-        return (List<QueueEntryModel>) Db.execute(new FindQueueEntriesByExecResultCallback(executionId, execResult));
+    public List<QueueEntryModel> findValidEntriesForExecution(long executionId, ExecResult execResult) {
+        return (List<QueueEntryModel>) Db.execute(new Callback_FindValidQueueEntriesForExecution_ExecResultFiltering(executionId, execResult));
     }
 
     public void insertEntries(List<QueueEntryModel> entries) {
@@ -250,8 +283,8 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
         // Make sure all entries have corresponding test cases
         for (QueueEntryModel entry : entries) {
-            // Test case name (i.e. test method name) is the unique identifier
-            TestCaseModel foundTestCase = TestCaseModel.me.findFirstTestCase(entry.getProjectId(), entry.getName());
+            // Test case id is the unique identifier
+            TestCaseModel foundTestCase = TestCaseModel.me.findValidTestCase(entry.getProjectId(), entry.getTestCaseId());
 
             if (foundTestCase != null) {
                 foundEntries.add(entry);
@@ -265,7 +298,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
                     "INSERT INTO `%s`(`%s`,`%s`,`%s`,`%s`,`%s`) VALUES(?,?,?,?,?)",
                     TABLE,
                     Fields.STATUS,
-                    Fields.NAME,
+                    Fields.TEST_CASE_ID,
                     Fields.SLAVE_NAME,
                     Fields.EXECUTION_ID,
                     Fields.PROJECT_ID);
@@ -274,7 +307,7 @@ public class QueueEntryModel extends Model<QueueEntryModel> {
 
             for (int i = 0; i < foundEntries.size(); i++) {
                 params[i][0] = foundEntries.get(i).getStatus();
-                params[i][1] = foundEntries.get(i).getName();
+                params[i][1] = foundEntries.get(i).getTestCaseId();
                 params[i][2] = foundEntries.get(i).getSlaveName();
                 params[i][3] = foundEntries.get(i).getExecutionId();
                 params[i][4] = foundEntries.get(i).getProjectId();

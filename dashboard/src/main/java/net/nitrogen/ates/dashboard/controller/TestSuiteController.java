@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import com.jfinal.aop.Before;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.model.CustomParameterModel;
@@ -15,8 +14,8 @@ import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 public class TestSuiteController extends Controller {
     public void index() {
@@ -52,8 +51,8 @@ public class TestSuiteController extends Controller {
 
     public void removeCaseFromSuite() {
         long suiteId = getParaToLong("testsuiteId");
-        final String testcaseName = StringEscapeUtils.unescapeHtml4(getPara("testcaseName"));
-        TestSuiteTestCaseModel.me.delete(suiteId, testcaseName);
+        final Long testCaseId = getParaToLong("testCaseId");
+        TestSuiteTestCaseModel.me.delete(suiteId, testCaseId);
         redirect(String.format("/testsuite/detail/%d", suiteId));
     }
 
@@ -70,12 +69,12 @@ public class TestSuiteController extends Controller {
         }
 
         // Construct a list for assignment
-        String[] selectedTestCaseNames = getParaValues("selected_test_cases");
-        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(selectedTestCaseNames.length);
-        for (String selectedTestCaseName : selectedTestCaseNames) {
+        String[] selectedTestCaseIds = getParaValues("selected_test_cases");
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<>(selectedTestCaseIds.length);
+        for (String selectedTestCaseId : selectedTestCaseIds) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCaseModel.setTestCaseId(Long.parseLong(selectedTestCaseId));
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 
@@ -105,17 +104,18 @@ public class TestSuiteController extends Controller {
         // Construct a list for assignment
         String[] selectedTestGroupIds = getParaValues("selected_test_groups");
         HashSet<String> caseNamesToBeAssigned = new HashSet();
+        HashSet<Long> caseIdsToBeAssigned = new HashSet();
         for (String selectedTestGroupId : selectedTestGroupIds) {
             List<TestGroupTestCaseModel> testcases = TestGroupTestCaseModel.me.findTestGroupTestCases(Long.parseLong(selectedTestGroupId));
             for (TestGroupTestCaseModel caseModel : testcases) {
-                caseNamesToBeAssigned.add(caseModel.getTestName());
+                caseIdsToBeAssigned.add(caseModel.getTestCaseId());
             }
         }
-        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(caseNamesToBeAssigned.size());
-        for (String selectedTestCaseName : caseNamesToBeAssigned) {
+        List<TestSuiteTestCaseModel> testSuiteTestCases = new ArrayList<TestSuiteTestCaseModel>(caseIdsToBeAssigned.size());
+        for (long selectedTestCaseId : caseIdsToBeAssigned) {
             TestSuiteTestCaseModel testSuiteTestCaseModel = new TestSuiteTestCaseModel();
             testSuiteTestCaseModel.setTestSuiteId(testsuiteId);
-            testSuiteTestCaseModel.setTestName(selectedTestCaseName);
+            testSuiteTestCaseModel.setTestCaseId(selectedTestCaseId);
             testSuiteTestCases.add(testSuiteTestCaseModel);
         }
 

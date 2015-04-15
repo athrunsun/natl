@@ -1,7 +1,8 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import com.jfinal.aop.Before;
-import com.jfinal.core.Controller;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.CustomParameterModel;
@@ -10,10 +11,9 @@ import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.TestSuiteModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
-import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jfinal.aop.Before;
+import com.jfinal.core.Controller;
 
 public class ExecutionController extends Controller {
     public void index() {
@@ -33,23 +33,15 @@ public class ExecutionController extends Controller {
     @Before(RawCustomParameterHandlingInterceptor.class)
     public void createByTestCase() {
         String executionName = getPara(ExecutionModel.Fields.NAME);
-        List<String> selectedTestCaseNames = new ArrayList<>();
+        List<Long> selectedTestCaseIds = new ArrayList<>();
 
-        for (String testCaseNameHtmlEncoded : getParaValues("selected_test_cases")) {
-            selectedTestCaseNames.add(StringEscapeUtils.unescapeHtml4(testCaseNameHtmlEncoded));
+        for (String testCaseId : getParaValues("selected_test_cases")) {
+            selectedTestCaseIds.add(Long.parseLong(testCaseId));
         }
 
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
-
-        long newExecutionId = ExecutionModel.me.createExecutionByTestCase(
-                ControllerHelper.getProjectPrefFromCookie(this),
-                executionName,
-                selectedTestCaseNames);
-
-        CustomParameterModel.me.insertParameters(
-                ControllerHelper.getRawCustomParameterMap(this),
-                CustomParameterDomainKey.EXECUTION,
-                newExecutionId);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestCase(ControllerHelper.getProjectPrefFromCookie(this), executionName, selectedTestCaseIds);
+        CustomParameterModel.me.insertParameters(ControllerHelper.getRawCustomParameterMap(this), CustomParameterDomainKey.EXECUTION, newExecutionId);
 
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
@@ -65,15 +57,9 @@ public class ExecutionController extends Controller {
             testGroupIds.add(Long.valueOf(testGroupIdAsString));
         }
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(
-                ControllerHelper.getProjectPrefFromCookie(this),
-                executionName,
-                testGroupIds);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, testGroupIds);
 
-        CustomParameterModel.me.insertParameters(
-                ControllerHelper.getRawCustomParameterMap(this),
-                CustomParameterDomainKey.EXECUTION,
-                newExecutionId);
+        CustomParameterModel.me.insertParameters(ControllerHelper.getRawCustomParameterMap(this), CustomParameterDomainKey.EXECUTION, newExecutionId);
 
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
@@ -82,7 +68,10 @@ public class ExecutionController extends Controller {
         Long testSuiteId = getParaToLong(0);
         Long projectId = ControllerHelper.getProjectPrefFromCookie(this);
 
-        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(projectId, String.format("CreatedFromSuite_%s", TestSuiteModel.me.findById(testSuiteId).getName()), testSuiteId);
+        long newExecutionId = ExecutionModel.me.createExecutionByTestSuite(
+                projectId,
+                String.format("CreatedFromSuite_%s", TestSuiteModel.me.findById(testSuiteId).getName()),
+                testSuiteId);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 

@@ -1,15 +1,16 @@
 package net.nitrogen.ates.core.model;
 
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Model;
-import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
-import net.nitrogen.ates.core.enumeration.CustomParameterType;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
+
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Model;
 
 public class CustomParameterModel extends Model<CustomParameterModel> {
     public static final String TABLE = "custom_parameter";
@@ -79,6 +80,9 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
     }
 
     private void insertParameters(List<CustomParameterModel> models) {
+        if (models == null || models.size() == 0) {
+            return;
+        }
         final int INSERT_PARAMETER_TABLE_PARAM_SIZE = 5;
 
         final String insertParameterSql = String.format(

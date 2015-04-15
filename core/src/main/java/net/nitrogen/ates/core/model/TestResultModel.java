@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.util.DateTimeUtil;
-import net.nitrogen.ates.util.StringUtil;
 
 import org.joda.time.DateTime;
 
@@ -17,7 +16,7 @@ public class TestResultModel extends Model<TestResultModel> {
     public class Fields {
         public static final String ID = "id";
         public static final String ENTRY_ID = "entry_id";
-        public static final String TEST_NAME = "test_name";
+        public static final String TEST_CASE_ID = "test_case_id";
         public static final String SLAVE_NAME = "slave_name";
         public static final String START_TIME = "start_time";
         public static final String END_TIME = "end_time";
@@ -47,16 +46,12 @@ public class TestResultModel extends Model<TestResultModel> {
         this.set(Fields.ENTRY_ID, entryId);
     }
 
-    public String getTestName() {
-        return getStr(Fields.TEST_NAME);
+    public long getTestCaseId() {
+        return getLong(Fields.TEST_CASE_ID);
     }
 
-    public String getShortTestName() {
-        return StringUtil.shortenString(this.getTestName(), TestCaseModel.MAX_TEST_NAME_LENGTH, false);
-    }
-
-    public void setTestName(String testName) {
-        this.set(Fields.TEST_NAME, testName);
+    public void setTestCaseId(long testCaseId) {
+        this.set(Fields.TEST_CASE_ID, testCaseId);
     }
 
     public String getSlaveName() {
@@ -172,7 +167,7 @@ public class TestResultModel extends Model<TestResultModel> {
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? LIMIT 1",
                 Fields.ID,
                 Fields.ENTRY_ID,
-                Fields.TEST_NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.START_TIME,
                 Fields.END_TIME,
@@ -193,7 +188,7 @@ public class TestResultModel extends Model<TestResultModel> {
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY `%s` DESC",
                 Fields.ID,
                 Fields.ENTRY_ID,
-                Fields.TEST_NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.START_TIME,
                 Fields.END_TIME,
@@ -214,7 +209,7 @@ public class TestResultModel extends Model<TestResultModel> {
         TestResultModel m = new TestResultModel();
 
         m.setEntryId(testResult.getEntryId());
-        m.setTestName(testResult.getTestName());
+        m.setTestCaseId(testResult.getTestCaseId());
         m.setSlaveName(testResult.getSlaveName());
         m.setStartTime(testResult.getStartTime());
         m.setEndTime(testResult.getEndTime());
@@ -234,7 +229,7 @@ public class TestResultModel extends Model<TestResultModel> {
                 "SELECT `%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s`,`%s` FROM `%s` WHERE `%s`=? ORDER BY '%s' DESC LIMIT %s",
                 Fields.ID,
                 Fields.ENTRY_ID,
-                Fields.TEST_NAME,
+                Fields.TEST_CASE_ID,
                 Fields.SLAVE_NAME,
                 Fields.START_TIME,
                 Fields.END_TIME,
@@ -245,7 +240,7 @@ public class TestResultModel extends Model<TestResultModel> {
                 Fields.EXECUTION_ID,
                 Fields.PROJECT_ID,
                 TABLE,
-                Fields.TEST_NAME,
+                Fields.TEST_CASE_ID,
                 Fields.ID,
                 limittedNum);
 
