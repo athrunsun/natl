@@ -20,7 +20,7 @@
     </appender>
 
     <root level="info">
-        <!--<appender-ref ref="AllROLLING" />-->
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="AllROLLING" />
+        <!--<appender-ref ref="STDOUT" />-->
     </root>
 </configuration>

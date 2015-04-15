@@ -12,6 +12,8 @@ import net.nitrogen.ates.util.StringUtil;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExecManager {
     public static final String EXEC_PARAM_KEY_DEBUG = "nitrogen_ates_debug";
@@ -23,15 +25,18 @@ public class ExecManager {
     public static final String TEST_RESULT_REPORTER_JAR_PATH = "C:\\ates\\lib\\ates-testresultreporter-jar-with-dependencies.jar";
     public static final String TEST_RESULT_REPORTER_CLASS_NAME = "net.nitrogen.ates.testresultreporter.TestResultListener";
 
+    private Logger log = LoggerFactory.getLogger(ExecManager.class);
+
     public void fetchAndExecQueueEntry() {
         if (!SlaveModel.me.slaveExists(EnvParameter.machineName())) {
             SlaveModel.me.insertSlave(EnvParameter.machineName());
         }
 
         QueueEntryModel entry = QueueEntryModel.me.fetchEntry(EnvParameter.machineName());
-        TestCaseModel testCase = TestCaseModel.me.findById(entry.getTestCaseId());
 
         if (entry != null) {
+            TestCaseModel testCase = TestCaseModel.me.findById(entry.getTestCaseId());
+
             List<CustomParameterModel> parameterModels = CustomParameterModel.me.findParameters(
                     CustomParameterDomainKey.EXECUTION,
                     entry.getExecutionId(),
@@ -55,14 +60,15 @@ public class ExecManager {
                     false);
 
             cmdLine.addArgument("org.testng.TestNG", false);
-            cmdLine.addArgument("-testclass", false);
-            cmdLine.addArgument(testCase.getName().substring(0, testCase.getName().lastIndexOf(".")), false);
+            //cmdLine.addArgument("-testclass", false);
+            //cmdLine.addArgument(testCase.getName().substring(0, testCase.getName().lastIndexOf(".")), false);
             cmdLine.addArgument("-methods", false);
             cmdLine.addArgument(testCase.getName(), false);
             cmdLine.addArgument("-listener", false);
             cmdLine.addArgument(TEST_RESULT_REPORTER_CLASS_NAME, false);
             // cmdLine.addArgument(entry.getParams(), false); // Function to be Added
             System.out.println("cmdLine.toString:" + cmdLine.toString());
+            log.info("cmdLine.toString:" + cmdLine.toString());
 
             QueueEntryExecResultHandler resultHandler = new QueueEntryExecResultHandler(entry.getId());
 

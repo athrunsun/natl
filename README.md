@@ -56,6 +56,7 @@
   * Historical pass rate (need to create relationship with execution)
   * Define test suite based on certain condition: 1) TestGroup.name == "ABC" OR "DEF"
   * BUG - test suite details page doesn't show last execution results
+  * Execution history list, list all executions triggered by current test suite.
 <br/>
 
 * Slave
