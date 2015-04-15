@@ -1,18 +1,30 @@
 (function(ates, $, undefined){
+    ates.refreshQueueLocationEnum = {
+        "ALL":0,
+        "PROJECT":1,
+        "EXECUTION":2
+    };
+
     ates.queueEntryTableRefreshInterval = 5000;
     ates.currentQueuePageNumber = 1;
     ates.refreshQueueIntervalId = null;
-    ates.refreshQueueByExecutionIdIntervalId = null;
+    ates.refreshQueueLocation = null;
     ates.queuePaginationTplFn = doT.template($('#queue_pagination_tpl').text(), undefined, undefined);
     ates.queueTableRowTplFn = doT.template($('#queue_table_row_tpl').text(), undefined, undefined);
     ates.queueEntryTableLocator = null;
     ates.queueEntryTableRefreshExecutionId = null;
 
-    ates.reloadQueuePaginationThenEntries = function(pageType, pageNumber, executionId) {
-        var requestPath = "/queue/fetchQueueEntriesTotalPageCountByExecutionIdAJAX";
-        var requestData = "executionId=" + ates.queueEntryTableRefreshExecutionId;
+    ates.reloadQueuePaginationThenEntries = function(pageType, pageNumber) {
+        var requestPath = "";
+        var requestData = "";
 
-        if(executionId === undefined || executionId === null) {
+        if(ates.refreshQueueLocation === ates.refreshQueueLocationEnum["PROJECT"]) {
+            requestPath = "/queue/fetchQueueEntriesTotalPageCountForProjectAJAX";
+            requestData = null;
+        }else if(ates.refreshQueueLocation === ates.refreshQueueLocationEnum["EXECUTION"]) {
+            requestPath = "/queue/fetchQueueEntriesTotalPageCountForExecutionAJAX";
+            requestData = "executionId=" + ates.queueEntryTableRefreshExecutionId;
+        }else {
             requestPath = "/queue/fetchAllQueueEntriesTotalPageCountAJAX";
             requestData = null;
         }
@@ -63,7 +75,7 @@
                     totalPageCount:totalPage,
                     currentPageNumber:ates.currentQueuePageNumber}));
 
-                var $pagination = $paginationContainer.find(".pagination");
+                $pagination = $paginationContainer.find(".pagination");
 
                 $pagination.find("> ul > li.first > a").on("click", function() {
                     ates.reloadQueuePaginationThenEntries("first", null, ates.queueEntryTableRefreshExecutionId);
@@ -89,12 +101,15 @@
                     clearInterval(ates.refreshQueueIntervalId);
                 }
 
-                if(executionId === undefined || executionId === null) {
+                if(ates.refreshQueueLocation === ates.refreshQueueLocationEnum["PROJECT"]) {
+                    ates.refreshQueueForProject();
+                    ates.refreshQueueIntervalId = setInterval("ates.refreshQueueForProject()", ates.queueEntryTableRefreshInterval);
+                }else if(ates.refreshQueueLocation === ates.refreshQueueLocationEnum["EXECUTION"]) {
+                    ates.refreshQueueForExecution();
+                    ates.refreshQueueIntervalId = setInterval("ates.refreshQueueForExecution()", ates.queueEntryTableRefreshInterval);
+                }else {
                     ates.refreshQueue();
                     ates.refreshQueueIntervalId = setInterval("ates.refreshQueue()", ates.queueEntryTableRefreshInterval);
-                }else {
-                    ates.refreshQueueByExecutionId();
-                    ates.refreshQueueByExecutionIdIntervalId = setInterval("ates.refreshQueueByExecutionId()", ates.queueEntryTableRefreshInterval);
                 }
             }
         });
@@ -107,7 +122,7 @@
 
         $.each(result, function (index, item) {
             var trCssClass = ates.composeQueueTableRowCssClass(item.status);
-            var nameTDContent = ates.composeQueueTableRowNameTDContent(item.name);
+            var nameTDContent = ates.composeQueueTableRowNameTDContent(item.test_case_name);
             var statusTDContent = ates.composeQueueTableRowStatusTDContent(item.status);
             var startTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.start_time);
             var endTimeTDContent = ates.composeQueueTableRowDateTimeTDContent(item.end_time);
@@ -120,10 +135,10 @@
                 name: nameTDContent,
                 slave_name: item.slave_name,
                 index: item.index,
-                //start_time:startTimeTDContent,
-                //end_time:endTimeTDContent,
-                start_time: item.start_time,
-                end_time: item.end_time,
+                start_time:startTimeTDContent,
+                end_time:endTimeTDContent,
+                //start_time: item.start_time,
+                //end_time: item.end_time,
                 execution_id: item.execution_id,
                 exec_result: execResultTDContent
             });
@@ -137,7 +152,7 @@
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
-            url: ates.contextPath + "/queue/fetchAllQueueEntriesWithResultAsJson",
+            url: ates.contextPath + "/queue/fetchAllQueueEntriesWithResultAJAX",
             data: "pageNumber=" + ates.currentQueuePageNumber,
             success: function(result) {
                 ates.refreshQueueSuccessHandler(result);
@@ -145,12 +160,25 @@
         });
     }
 
-    ates.refreshQueueByExecutionId = function(){
+    ates.refreshQueueForProject = function(){
         $.ajax({
             type: "POST",
             dataType: "json",
             //contentType: "application/json; charset=utf-8",
-            url: ates.contextPath + "/queue/fetchQueueEntriesWithResultByExecutionIdAsJson",
+            url: ates.contextPath + "/queue/fetchQueueEntriesWithResultForProjectAJAX",
+            data: "&pageNumber=" + ates.currentQueuePageNumber,
+            success: function(result) {
+                ates.refreshQueueSuccessHandler(result);
+            }
+        });
+    }
+
+    ates.refreshQueueForExecution = function(){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            //contentType: "application/json; charset=utf-8",
+            url: ates.contextPath + "/queue/fetchQueueEntriesWithResultForExecutionAJAX",
             data: "executionId=" + ates.queueEntryTableRefreshExecutionId + "&pageNumber=" + ates.currentQueuePageNumber,
             success: function(result) {
                 ates.refreshQueueSuccessHandler(result);
@@ -220,7 +248,8 @@
     }
 
     ates.composeQueueTableRowDateTimeTDContent = function(jsonDateTime){
-        return (!jsonDateTime ? "N/A" : ates.convertJSONDateToString(jsonDateTime));
+        //return (!jsonDateTime ? "N/A" : ates.convertJSONDateToString(jsonDateTime));
+        return (jsonDateTime === undefined || jsonDateTime === null ? "" : jsonDateTime);
     }
 
     ates.composeQueueTableRowExecResultTDContent = function(testResultId, execResultId) {

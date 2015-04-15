@@ -2,6 +2,7 @@ package net.nitrogen.ates.dashboard.controller;
 
 import net.nitrogen.ates.core.model.ExecutionModel;
 import net.nitrogen.ates.core.model.QueueEntryModel;
+import net.nitrogen.ates.core.model.TestCaseModel;
 import net.nitrogen.ates.core.model.TestResultModel;
 
 import com.jfinal.core.Controller;
@@ -11,6 +12,7 @@ public class TestResultController extends Controller {
         ControllerHelper.setExecResultEnumAttr(this);
         TestResultModel testResult = TestResultModel.me.findById(getParaToLong(0));
         setAttr("testResult", testResult);
+        setAttr("testCase", TestCaseModel.me.findById(testResult.getTestCaseId()));
         setAttr("execution", ExecutionModel.me.findById(testResult.getExecutionId()));
         setAttr("entry", QueueEntryModel.me.findById(testResult.getEntryId()));
         render("detail.html");

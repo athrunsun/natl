@@ -53,7 +53,7 @@ $(document).ready(function(){
     });
 
     if ($('.sticky-sidebar').length) {
-        // Check the initial Poistion of the sticky sidebar
+        // Check the initial position of the sticky sidebar
         var stickySidebarTop = $('.sticky-sidebar').offset().top;
 
         $(window).scroll(function () {
