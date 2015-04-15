@@ -88,8 +88,7 @@ public class QueueEntryListFactory {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
 
-                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
-                                    entryWithResult.getEntryModel().getProjectId(),
+                            TestCaseModel testCaseModel = TestCaseModel.me.findById(
                                     rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
@@ -138,8 +137,7 @@ public class QueueEntryListFactory {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
 
-                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
-                                    entryWithResult.getEntryModel().getProjectId(),
+                            TestCaseModel testCaseModel = TestCaseModel.me.findById(
                                     rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
@@ -189,8 +187,7 @@ public class QueueEntryListFactory {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
 
-                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
-                                    entryWithResult.getEntryModel().getProjectId(),
+                            TestCaseModel testCaseModel = TestCaseModel.me.findById(
                                     rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
@@ -240,8 +237,7 @@ public class QueueEntryListFactory {
                             QueueEntryWithAdditionalInfo entryWithResult = new QueueEntryWithAdditionalInfo();
                             entryWithResult.setEntryModel(QueueEntryModel.createByResultSet(rs));
 
-                            TestCaseModel testCaseModel = TestCaseModel.me.findValidTestCase(
-                                    entryWithResult.getEntryModel().getProjectId(),
+                            TestCaseModel testCaseModel = TestCaseModel.me.findById(
                                     rs.getLong(QueueEntryModel.Fields.TEST_CASE_ID));
 
                             entryWithResult.setTestCaseModel(testCaseModel);
