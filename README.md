@@ -90,3 +90,4 @@
   This way users don't have to add `ATESTestImporter.xml` to their project.~~
 * Add DB build
 * BUG: some failures are noted as unknown
+* Exception in BeforeClass method not caught

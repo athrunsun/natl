@@ -71,15 +71,6 @@ public class TestResultReporter {
         switch (status) {
         case FAILED:
             testResult.setExecResult(ExecResult.FAILED.getValue());
-
-            if (result.getThrowable() != null) {
-                Throwable t = result.getThrowable();
-                StringWriter errors = new StringWriter();
-                t.printStackTrace(new PrintWriter(errors));
-                testResult.setStackTrace(errors.toString());
-                message.append(t.getMessage());
-            }
-
             this.takeScreenshot(result, message, testResult);
             break;
         case PASSED:
@@ -87,10 +78,19 @@ public class TestResultReporter {
             break;
         case SKIPPED:
             testResult.setExecResult(ExecResult.SKIPPED.getValue());
+            this.takeScreenshot(result, message, testResult);
             break;
         default:
             testResult.setExecResult(ExecResult.UNKNOWN.getValue());
             break;
+        }
+
+        if (result.getThrowable() != null) {
+            Throwable t = result.getThrowable();
+            StringWriter errors = new StringWriter();
+            t.printStackTrace(new PrintWriter(errors));
+            testResult.setStackTrace(errors.toString());
+            message.append(t.getMessage());
         }
 
         testResult.setMessage(message.toString());
