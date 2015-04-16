@@ -1,3 +1,20 @@
+body {
+    background: url('/ates/img/body-bg.png');
+    background-attachment: fixed;
+}
+
+.main-content-wrapper {
+    min-height: 100%;
+    height: auto!important;
+    height: 100%;
+    margin: 0 auto -200px;
+}
+
+.global-footer {
+    height: 200px;
+    margin-top:0;
+}
+
 .top-offset {
     /*margin-top: 70px;*/
 }
@@ -46,3 +63,11 @@
     width: 160px;
     height: 120px;
 }
+
+.panel > .panel-content {
+    background-color: #FFF;
+}
+
+/*.panel > .panel-content .chart-container {
+    width: 96%;
+}*/

@@ -15,7 +15,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
     <head>
-        <title>ATES</title>
+        <title>ATL</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <link rel="icon" href="${CPATH}/img/ATES-logo.png" type="image/png">
         <link rel="shortcut icon" href="${CPATH}/img/ATES-logo.png" type="image/png">
@@ -26,70 +26,105 @@
         <@customCss/>
     </head>
     <body class="metro">
-    <div class="navigation-bar bg-lightBlue">
-        <div class="navigation-bar-content">
-            <a href="${CPATH}" class="element"><span class="icon-home"></span> ATES <sup>beta</sup></a>
-            <span class="element-divider"></span>
-            <a class="pull-menu" href="#"></a>
-            <ul class="element-menu">
-                <li>
-                    <a href="${CPATH}/summary">Summary</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/queue">Queue</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/execution">Execution</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/testcase">TestCase</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/testsuite">TestSuite</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/testgroup">TestGroup</a>
-                </li>
-                <li>
-                    <a href="${CPATH}/project">Project</a>
-                </li>
-                <li>
-                    <a class="icon-help-2" href="${CPATH}/help" target="blank"></a>
-                </li>
-            </ul>
-            <ul class="element-menu place-right">
-                <li>
-                    <a class="dropdown-toggle" href="#">Admin</a>
-                    <ul class="dropdown-menu place-right" data-role="dropdown">
-                        <li><a href="${CPATH}/admin/queue">Queue</a></li>
-                        <li><a href="${CPATH}/admin/project">Project</a></li>
-                        <li><a href="${CPATH}/admin/slave">Slave</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <span class="element-divider place-right"></span>
-            <div class="element input-element place-right">
-                <form>
-                    <div class="input-control select text">
-                        <select id="navbar_project_list">
-                            <#list projectList as project>
-                                <#if project.getId() == currentProjectId>
-                                    <option value="${project.getId()}" selected="selected">${project.getName()}</option>
-                                <#else>
-                                    <option value="${project.getId()}">${project.getName()}</option>
-                                </#if>
-                            </#list>
-                        </select>
-                    </div>
-                </form>
+    <div class="main-content-wrapper">
+        <div class="navigation-bar dark">
+            <div class="navigation-bar-content">
+                <a href="${CPATH}" class="element"><span class="icon-home"></span> ATL </a>
+                <span class="element-divider"></span>
+                <a class="pull-menu" href="#"></a>
+                <ul class="element-menu">
+                    <li>
+                        <a href="${CPATH}/summary">Summary</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/queue">Queue</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/execution">Execution</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/testcase">TestCase</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/testsuite">TestSuite</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/testgroup">TestGroup</a>
+                    </li>
+                    <li>
+                        <a href="${CPATH}/project">Project</a>
+                    </li>
+                    <li>
+                        <a class="icon-help-2" href="${CPATH}/help" target="blank"></a>
+                    </li>
+                </ul>
+                <ul class="element-menu place-right">
+                    <li>
+                        <a class="dropdown-toggle" href="#">Admin</a>
+                        <ul class="dropdown-menu place-right" data-role="dropdown">
+                            <li><a href="${CPATH}/admin/queue">Queue</a></li>
+                            <li><a href="${CPATH}/admin/project">Project</a></li>
+                            <li><a href="${CPATH}/admin/slave">Slave</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <span class="element-divider place-right"></span>
+                <div class="element input-element place-right">
+                    <form>
+                        <div class="input-control select text">
+                            <select id="navbar_project_list">
+                                <#list projectList as project>
+                                    <#if project.getId() == currentProjectId>
+                                        <option value="${project.getId()}" selected="selected">${project.getName()}</option>
+                                    <#else>
+                                        <option value="${project.getId()}">${project.getName()}</option>
+                                    </#if>
+                                </#list>
+                            </select>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+        <@customBody/>
+        <div style='height:200px;'></div>
     </div>
-    <@customBody/>
+    <div class="global-footer bg-dark">
+        <div class="container" style="padding: 10px 0;">
+            <div class="grid no-margin">
+                <div class="row no-margin">
+                    <div class="span3 padding10">
+                        <img src="${CPATH}/img/ATES-logo.png" alt="ATL LOGO" class="polaroid">
+                    </div>
+                    <div class="span6 padding10">
+                        <h3 class="fg-white">About ATL</h3>
+                        <p class="fg-white"><strong class="text-success">ATL</strong>, i.e. <strong class="text-success">Automation Test Lab</strong>, a 'Selenium Grid' like system that supports WebDriver automation with parallel execution, better customization, and a more manageable frontend.</p>
+                    </div>
+                    <div class="span3 padding10">
+                        <a class="button success" style="width: 100%; margin-bottom: 5px" href="${CPATH}/help" target="_blank">Documentation</a>
+                        <a class="button info" style="width: 100%; margin-bottom: 5px" href="#" target="_blank">Git Repo</a>
+                        <button id="global_footer_contact_us" class="button warning" style="width: 100%; margin-bottom: 5px;">Contact us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container tertiary-text bg-dark fg-white" style="padding: 10px">
+            2014-2015, AutomationTestLab © by  <span class="fg-yellow">NitrogenAutomationTeam</span>
+        </div>
+    </div>
     <script src="${CPATH}/jquery/jquery-2.1.3.min.js" type="text/javascript"></script>
     <script src="${CPATH}/jquery/jquery.cookie.js" type="text/javascript"></script>
     <script src="${CPATH}/jquery/jquery-ui.min.js" type="text/javascript"></script>
     <script src="${CPATH}/metro-ui/min/metro.min.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/doT.js" type="text/javascript"></script>
+    <script id="global_footer_contact_us_tpl" type="text/x-dot-template">
+        <p>Please email to the following recipients if you have any questions regarding this system.</p>
+        <blockquote>
+            <p class='text-info'><string>bruce.sun@lanyon.com</string></p>
+            <p class='text-info'><string>allen.liu@lanyon.com</string></p>
+            <p class='text-info'><string>brandon.li@lanyon.com</string></p>
+        </blockquote>
+    </script>
     <script src="${CPATH}/js/common.js" type="text/javascript"></script>
     <@customJavascript/>
     </body>

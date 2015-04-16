@@ -12,6 +12,8 @@
 
             $('#chart_container_coverage').highcharts({
                 chart: {
+                    type: 'pie',
+                    backgroundColor: 'transparent',
                     plotBackgroundColor: null,
                     plotBorderWidth: null,
                     plotShadow: false
@@ -102,6 +104,8 @@
 
                 ates.$passratePieChart = $chartContainer.highcharts({
                     chart: {
+                        type: 'pie',
+                        backgroundColor: 'transparent',
                         plotBackgroundColor: null,
                         plotBorderWidth: null,
                         plotShadow: false
