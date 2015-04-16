@@ -22,6 +22,7 @@ $(document).ready(function () {
         }
         $("#passrate_chart_container").highcharts({
             chart: {
+                backgroundColor: 'transparent',
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false

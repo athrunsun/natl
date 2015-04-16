@@ -44,6 +44,8 @@
 
         return dateTimeStr;
     }
+
+    ates.globalFooterContactUsTplFn = doT.template($('#global_footer_contact_us_tpl').text(), undefined, undefined);
 })(window.ates = window.ates || {}, jQuery)
 
 $(document).ready(function(){
@@ -69,4 +71,18 @@ $(document).ready(function(){
             }
         });
     }
+
+    $("#global_footer_contact_us").on("click", function() {
+        $.Dialog({
+            shadow: true,
+            overlay: false,
+            icon: false,
+            title: 'Contact us',
+            padding: 30,
+            content: '',
+            onShow: function() {
+                $.Dialog.content(ates.globalFooterContactUsTplFn({}));
+            }
+        });
+    });
 });

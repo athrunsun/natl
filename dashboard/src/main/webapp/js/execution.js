@@ -17,6 +17,7 @@
 
                 $chartContainer.highcharts({
                     chart: {
+                        backgroundColor: 'transparent',
                         plotBackgroundColor: null,
                         plotBorderWidth: null,
                         plotShadow: false
