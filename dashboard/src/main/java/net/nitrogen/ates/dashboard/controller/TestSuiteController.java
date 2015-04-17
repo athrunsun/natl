@@ -6,11 +6,12 @@ import java.util.List;
 
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
-import net.nitrogen.ates.core.model.CustomParameterModel;
-import net.nitrogen.ates.core.model.TestCaseListFactory;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestSuiteModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseListFactory;
+import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteListFactory;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
@@ -19,7 +20,7 @@ import com.jfinal.core.Controller;
 
 public class TestSuiteController extends Controller {
     public void index() {
-        setAttr("testsuiteList", TestSuiteModel.me.findTestSuites(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("testSuiteListWithAdditionalInfo", TestSuiteListFactory.me().createTestSuiteListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 

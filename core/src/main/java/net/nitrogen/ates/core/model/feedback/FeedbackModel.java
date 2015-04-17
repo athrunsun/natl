@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.feedback;
 
 import java.sql.Timestamp;
 

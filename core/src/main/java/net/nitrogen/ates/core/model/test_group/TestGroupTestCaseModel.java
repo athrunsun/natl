@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_group;
 
 import java.sql.SQLException;
 import java.util.List;

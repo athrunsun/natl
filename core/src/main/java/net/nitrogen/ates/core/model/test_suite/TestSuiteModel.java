@@ -1,5 +1,7 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_suite;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,11 @@ import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 
 import com.jfinal.plugin.activerecord.Model;
 import net.nitrogen.ates.core.enumeration.ExecResult;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseListFactory;
+import net.nitrogen.ates.core.model.test_case.TestCaseWithAdditionalInfo;
 
 public class TestSuiteModel extends Model<TestSuiteModel> {
     public static final String TABLE = "test_suite";
@@ -19,6 +26,20 @@ public class TestSuiteModel extends Model<TestSuiteModel> {
     }
 
     public static final TestSuiteModel me = new TestSuiteModel();
+
+    public static TestSuiteModel createByResultSet(ResultSet rs) {
+        TestSuiteModel testSuite = new TestSuiteModel();
+
+        try {
+            testSuite.setId(rs.getLong(Fields.ID));
+            testSuite.setName(rs.getString(Fields.NAME));
+            testSuite.setProjectId(rs.getLong(Fields.PROJECT_ID));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return testSuite;
+    }
 
     public long insert(long projectId, String suiteName) {
         TestSuiteModel newExecution = new TestSuiteModel();

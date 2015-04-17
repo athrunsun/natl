@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.execution;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +13,14 @@ import java.util.Set;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryListFactory;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryWithAdditionalInfo;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.DateTimeUtil;
 
 import org.joda.time.DateTime;

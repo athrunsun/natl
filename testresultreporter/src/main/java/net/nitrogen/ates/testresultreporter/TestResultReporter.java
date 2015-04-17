@@ -11,8 +11,8 @@ import java.util.Properties;
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.env.EnvParameter;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestResultModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
 import org.apache.commons.io.FileUtils;

@@ -2,7 +2,7 @@ package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
 import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.model.CustomParameterModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
 import net.nitrogen.ates.dashboard.constant.CookieKey;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 

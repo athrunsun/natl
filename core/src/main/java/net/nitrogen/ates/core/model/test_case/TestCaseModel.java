@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_case;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.nitrogen.ates.util.DateTimeUtil;
+import net.nitrogen.ates.core.model.project.ProjectModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import org.apache.commons.lang3.StringEscapeUtils;

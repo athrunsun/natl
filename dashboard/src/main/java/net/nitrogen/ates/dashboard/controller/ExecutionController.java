@@ -5,10 +5,10 @@ import java.util.List;
 
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.model.CustomParameterModel;
-import net.nitrogen.ates.core.model.ExecutionListFactory;
-import net.nitrogen.ates.core.model.ExecutionModel;
-import net.nitrogen.ates.core.model.TestSuiteModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.execution.ExecutionListFactory;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 

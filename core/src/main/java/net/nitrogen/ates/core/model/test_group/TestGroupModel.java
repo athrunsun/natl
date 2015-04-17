@@ -1,9 +1,10 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_group;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,6 +18,20 @@ public class TestGroupModel extends Model<TestGroupModel> {
     }
 
     public static final TestGroupModel me = new TestGroupModel();
+
+    public static TestGroupModel createByResultSet(ResultSet rs) {
+        TestGroupModel testGroup = new TestGroupModel();
+
+        try {
+            testGroup.setId(rs.getLong(Fields.ID));
+            testGroup.setName(rs.getString(Fields.NAME));
+            testGroup.setProjectId(rs.getLong(Fields.PROJECT_ID));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return testGroup;
+    }
 
     public long getId() {
         return getLong(Fields.ID);

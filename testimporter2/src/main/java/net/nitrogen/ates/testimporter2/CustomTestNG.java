@@ -1025,7 +1025,7 @@ public class CustomTestNG extends TestNG {
             suiteRunners = runSuitesLocally();
 
             // Bruce 2015-2-15
-            // We only define one suite in ATESTestImport.xml
+            // We only define one suite in ATLTestImport.xml
             new TestImporter().composeAndImport(suiteRunners.get(0).getAllMethods());
         }
 

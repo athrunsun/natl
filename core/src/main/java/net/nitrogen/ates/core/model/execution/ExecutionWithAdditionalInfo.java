@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.execution;
 
 public class ExecutionWithAdditionalInfo {
     public class Fields {

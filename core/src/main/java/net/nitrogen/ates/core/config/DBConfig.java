@@ -1,17 +1,17 @@
 package net.nitrogen.ates.core.config;
 
-import net.nitrogen.ates.core.model.CustomParameterModel;
-import net.nitrogen.ates.core.model.ExecutionModel;
-import net.nitrogen.ates.core.model.FeedbackModel;
-import net.nitrogen.ates.core.model.ProjectModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
-import net.nitrogen.ates.core.model.SlaveModel;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestGroupModel;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestResultModel;
-import net.nitrogen.ates.core.model.TestSuiteModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
+import net.nitrogen.ates.core.model.feedback.FeedbackModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
+import net.nitrogen.ates.core.model.slave.SlaveModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
 
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;

@@ -24,24 +24,29 @@
                                 <tr>
                                     <th></th>
                                     <th class="text-left">Name</th>
+                                    <th class="text-left">TestCaseCount</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list testGroupList as testGroup>
-                                    <tr>
-                                        <td class="span1">
-                                            <div class="input-control checkbox">
-                                                <label>
-                                                    <input data-id="${testGroup.getId()}" type="checkbox" class="check-to-run-test-group"/>
-                                                    <span class="check"></span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="span11">
-                                            <a href="${CPATH}/testgroup/detail/${testGroup.getId()}">${testGroup.getName()}</a>
-                                        </td>
-                                    </tr>
-                                </#list>
+                                    <#list testGroupListWithAdditionalInfo as testGroupWithAdditionalInfo>
+                                        <#assign testGroup = testGroupWithAdditionalInfo.getTestGroup()>
+                                        <tr>
+                                            <td class="span1">
+                                                <div class="input-control checkbox">
+                                                    <label>
+                                                        <input data-id="${testGroup.getId()}" type="checkbox" class="check-to-run-test-group"/>
+                                                        <span class="check"></span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td class="span9">
+                                                <a href="${CPATH}/testgroup/detail/${testGroup.getId()}">${testGroup.getName()}</a>
+                                            </td>
+                                            <td class="span2">
+                                                ${testGroupWithAdditionalInfo.getTestCaseCount()}
+                                            </td>
+                                        </tr>
+                                    </#list>
                                 </tbody>
                             </table>
                         </div>

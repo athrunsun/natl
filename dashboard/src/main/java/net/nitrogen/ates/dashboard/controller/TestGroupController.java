@@ -1,13 +1,14 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import net.nitrogen.ates.core.model.TestCaseListFactory;
-import net.nitrogen.ates.core.model.TestGroupModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseListFactory;
+import net.nitrogen.ates.core.model.test_group.TestGroupListFactory;
+import net.nitrogen.ates.core.model.test_group.TestGroupModel;
 
 import com.jfinal.core.Controller;
 
 public class TestGroupController extends Controller {
     public void index() {
-        setAttr("testGroupList", TestGroupModel.me.findTestGroups(ControllerHelper.getProjectPrefFromCookie(this)));
+        setAttr("testGroupListWithAdditionalInfo", TestGroupListFactory.me().createTestGroupListWithAdditionalInfo(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 

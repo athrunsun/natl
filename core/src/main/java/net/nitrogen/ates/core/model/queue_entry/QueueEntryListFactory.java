@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.queue_entry;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -10,6 +10,8 @@ import java.util.Map;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.ICallback;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
 
 public class QueueEntryListFactory {
     private static QueueEntryListFactory queueEntryListFactory;
