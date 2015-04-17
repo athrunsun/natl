@@ -2,7 +2,7 @@ package net.nitrogen.ates.dashboard.interceptor;
 
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
-import net.nitrogen.ates.core.model.CustomParameterModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import java.util.HashMap;

@@ -18,7 +18,8 @@ BEGIN
     `tc`.`mapping_id`,
     `tc`.`version`,
     `tr`.`id` AS `test_result_id`,
-    `tr`.`exec_result` 
+    `tr`.`exec_result`,
+    `tr`.`start_time` 
   FROM 
     `test_suite-test_case` AS `ts-tc`
     JOIN `test_case` AS `tc`  ON `tc`.`id` = `ts-tc`.`test_case_id`

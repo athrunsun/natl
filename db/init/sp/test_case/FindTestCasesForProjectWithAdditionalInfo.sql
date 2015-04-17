@@ -18,7 +18,8 @@ BEGIN
     `tc`.`mapping_id`,
     `tc`.`version`,
     `tr`.`id` AS `test_result_id`,
-    `tr`.`exec_result` 
+    `tr`.`exec_result`,
+    `tr`.`start_time` 
   FROM 
     `test_case` AS `tc` 
   LEFT JOIN 

@@ -2,7 +2,7 @@ package net.nitrogen.ates.dashboard.validator;
 
 import com.jfinal.core.Controller;
 import com.jfinal.validate.Validator;
-import net.nitrogen.ates.core.model.ProjectModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
 
 public class ProjectValidator extends Validator {
     @Override

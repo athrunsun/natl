@@ -1,9 +1,9 @@
 package net.nitrogen.ates.dashboard.controller.admin;
 
-import net.nitrogen.ates.core.model.ProjectModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.TestCaseModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
 
 public class AdminProjectController extends Controller {
     public void index() {

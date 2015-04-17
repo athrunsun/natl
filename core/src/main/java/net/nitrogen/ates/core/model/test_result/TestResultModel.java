@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_result;
 
 import java.sql.Timestamp;
 import java.util.List;

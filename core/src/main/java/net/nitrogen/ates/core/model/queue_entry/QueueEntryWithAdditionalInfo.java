@@ -1,9 +1,11 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.queue_entry;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.nitrogen.ates.core.enumeration.ExecResult;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
 
 public class QueueEntryWithAdditionalInfo {
     public class Fields {

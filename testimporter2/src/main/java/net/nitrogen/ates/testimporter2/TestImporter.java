@@ -7,10 +7,10 @@ import com.jfinal.plugin.druid.DruidPlugin;
 
 import net.nitrogen.ates.core.config.DBConfig;
 import net.nitrogen.ates.core.exec.ExecManager;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestGroupModel;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.PropertiesUtil;
 
 import java.lang.reflect.Method;

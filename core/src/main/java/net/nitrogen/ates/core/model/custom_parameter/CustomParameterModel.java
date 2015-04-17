@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.custom_parameter;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

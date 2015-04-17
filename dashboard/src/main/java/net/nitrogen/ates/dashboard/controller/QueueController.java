@@ -1,8 +1,8 @@
 package net.nitrogen.ates.dashboard.controller;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.QueueEntryListFactory;
-import net.nitrogen.ates.core.model.QueueEntryModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryListFactory;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
 
 public class QueueController extends Controller {
     public void index() {

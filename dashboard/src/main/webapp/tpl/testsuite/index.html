@@ -20,23 +20,30 @@
                             <table id="testsuite_table" class="table hovered">
                                 <thead>
                                 <tr>
-                                    <th class="text-left span2">Name</th>
-                                    <th class="text-left span7">Custom Parameters</th>
-                                    <th class="text-left span3">Actions</th>
+                                    <th class="text-left">Name</th>
+                                    <th class="text-left">Custom Parameters</th>
+                                    <th class="text-left">TestCaseCount</th>
+                                    <th class="text-left">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list testsuiteList as testsuite>
-                                    <tr>
-                                        <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">${testsuite.getName()}</a></td>
-                                        <!-- <td><a href="${CPATH}/testsuite/detail/${testsuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
-                                        <td><a class="span12 code">~>java [commands] ${testsuite.getJvmOptionsAsString()}</a></td>
-                                        <td>
-                                            <a class="button primary" href="${CPATH}/execution/createByTestSuite/${testsuite.getId()}">Execute</a>
-                                            <a class="button danger" href="${CPATH}/testsuite/delete/${testsuite.getId()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Delete</a>
-                                        </td>
-                                    </tr>
-                                </#list>
+                                    <#list testSuiteListWithAdditionalInfo as testSuiteWithAdditionalInfo>
+                                        <#assign testSuite = testSuiteWithAdditionalInfo.getTestSuite()>
+                                        <tr>
+                                            <td><a href="${CPATH}/testsuite/detail/${testSuite.getId()}">${testSuite.getName()}</a></td>
+                                            <!-- <td><a href="${CPATH}/testsuite/detail/${testSuite.getId()}">Total(Pass/Fail/Skip/Unknown) ExecutionDate</a></td> -->
+                                            <td>
+                                                <a class="span12 code">~>java [commands] ${testSuite.getJvmOptionsAsString()}</a>
+                                            </td>
+                                            <td>
+                                                ${testSuiteWithAdditionalInfo.getTestCaseCount()}
+                                            </td>
+                                            <td>
+                                                <a class="button primary" href="${CPATH}/execution/createByTestSuite/${testSuite.getId()}">Execute</a>
+                                                <a class="button danger" href="${CPATH}/testsuite/delete/${testSuite.getId()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Delete</a>
+                                            </td>
+                                        </tr>
+                                    </#list>
                                 </tbody>
                             </table>
                         </div>

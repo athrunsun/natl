@@ -1,10 +1,11 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.project;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.jfinal.plugin.activerecord.Model;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
 
 public class ProjectModel extends Model<ProjectModel> {
     public static final String TABLE = "project";

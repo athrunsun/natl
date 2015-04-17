@@ -1,9 +1,9 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import net.nitrogen.ates.core.model.ExecutionModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestResultModel;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
 
 import com.jfinal.core.Controller;
 

@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_case;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.ICallback;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
 
 public class TestCaseListFactory {
     private static TestCaseListFactory testCaseListFactory;
@@ -59,6 +60,7 @@ public class TestCaseListFactory {
                             TestResultModel result = new TestResultModel();
                             result.setId(rs.getLong(TestCaseWithAdditionalInfo.Fields.TEST_RESULT_ID));
                             result.setExecResult(rs.getInt(TestResultModel.Fields.EXEC_RESULT));
+                            result.setStartTimestamp(rs.getTimestamp(TestResultModel.Fields.START_TIME));
                             testCaseWithAdditionalInfo.setLatestTestResult(result);
                             testCasesWithAdditionalInfo.add(testCaseWithAdditionalInfo);
                         }

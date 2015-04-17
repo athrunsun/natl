@@ -1,13 +1,17 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.queue_entry;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.*;
+import net.nitrogen.ates.core.callback.Callback_FindValidQueueEntriesForExecution_ExecResultFiltering;
+import net.nitrogen.ates.core.callback.FetchQueueEntryCallback;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.enumeration.QueueEntryStatus;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
 import net.nitrogen.ates.util.DateTimeUtil;
 
 import org.joda.time.DateTime;

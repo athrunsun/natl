@@ -2,7 +2,7 @@ package net.nitrogen.ates.dashboard.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.nitrogen.ates.core.model.FeedbackModel;
+import net.nitrogen.ates.core.model.feedback.FeedbackModel;
 
 import org.joda.time.DateTime;
 

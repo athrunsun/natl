@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.model.test_suite;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Model;
+import net.nitrogen.ates.core.model.project.ProjectModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
 
 public class TestSuiteTestCaseModel extends Model<TestSuiteTestCaseModel> {
     public static final String TABLE = "test_suite-test_case";

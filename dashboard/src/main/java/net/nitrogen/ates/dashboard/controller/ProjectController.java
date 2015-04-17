@@ -1,6 +1,6 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import net.nitrogen.ates.core.model.ProjectModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
 
 import com.jfinal.core.Controller;
 

@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.env.EnvParameter;
-import net.nitrogen.ates.core.model.CustomParameterModel;
-import net.nitrogen.ates.core.model.ProjectModel;
-import net.nitrogen.ates.core.model.QueueEntryModel;
-import net.nitrogen.ates.core.model.SlaveModel;
-import net.nitrogen.ates.core.model.TestCaseModel;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
+import net.nitrogen.ates.core.model.slave.SlaveModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
 import net.nitrogen.ates.util.StringUtil;
 
 import java.io.IOException;

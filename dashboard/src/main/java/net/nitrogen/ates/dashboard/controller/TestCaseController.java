@@ -1,6 +1,6 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import net.nitrogen.ates.core.model.TestCaseListFactory;
+import net.nitrogen.ates.core.model.test_case.TestCaseListFactory;
 
 import com.jfinal.core.Controller;
 

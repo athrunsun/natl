@@ -1,4 +1,4 @@
-package net.nitrogen.ates.core.model;
+package net.nitrogen.ates.core.callback;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -10,6 +10,7 @@ import java.util.List;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 
 import com.jfinal.plugin.activerecord.ICallback;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
 
 public class Callback_FindValidQueueEntriesForExecution_ExecResultFiltering implements ICallback {
     private long executionId;
