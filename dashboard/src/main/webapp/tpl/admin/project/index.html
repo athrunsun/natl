@@ -55,19 +55,19 @@
         <form action="${CPATH}/admin/project/create" method="post">
             <label>Name</label>
             <div class="input-control text">
-                <input name="name" type="text">
+                <input name="name" type="text" required="required" placeholder="project name">
             </div>
             <label>Git URL</label>
             <div class="input-control text">
-                <input name="git_url" type="text">
+                <input name="git_url" type="text" required="required"  placeholder="e.g. https://host/path/project.git">
             </div>
             <label>JarName - WithDependency</label>
             <div class="input-control text">
-                <input name="jar_with_dependency_name" type="text">
+                <input name="jar_with_dependency_name" type="text" required="required" placeholder="e.g. jar-file-with-dependencies.jar">
             </div>
             <label>Total TestCase Count</label>
             <div class="input-control text">
-                <input name="total_test_case_count" type="text">
+                <input name="total_test_case_count" type="text" required="required"  placeholder="e.g. 88">
             </div>
             <input class="button primary" type="submit" value="Create">
         </form>
