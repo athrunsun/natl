@@ -30,7 +30,7 @@
         <form id="create_execution_form" action="${CPATH}/execution/createByTestCase" method="post">
             <label>Name</label>
             <div class="input-control text">
-                <input name="name" type="text">
+                <input name="name" type="text" required="required" placeholder="execution name">
             </div>
             <@parameterTable/>
             <div class="form-actions">

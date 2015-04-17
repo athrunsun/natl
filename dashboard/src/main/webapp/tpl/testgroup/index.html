@@ -62,7 +62,7 @@
         <form id="create_execution_form" action="${CPATH}/execution/createByTestGroup" method="post">
             <label>Name</label>
             <div class="input-control text">
-                <input name="name" type="text">
+                <input name="name" type="text" required="required" placeholder="execution name">
             </div>
             <@parameterTable/>
             <input id="selected_test_groups" name="selected_test_groups" type="hidden">

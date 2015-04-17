@@ -12,19 +12,19 @@
                                 <input name="id" type="hidden" value="${project.getId()}">
                                 <label>Name</label>
                                 <div class="input-control text">
-                                    <input name="name" type="text" value="${project.getName()}">
+                                    <input name="name" type="text" value="${project.getName()}" required="required">
                                 </div>
                                 <label>Git URL</label>
                                 <div class="input-control text">
-                                    <input name="git_url" type="text" value="${project.getGitUrl()}">
+                                    <input name="git_url" type="text" value="${project.getGitUrl()}" required="required">
                                 </div>
                                 <label>Jar Name - With Dependency</label>
                                 <div class="input-control text">
-                                    <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}">
+                                    <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}" required="required">
                                 </div>
                                 <label>Total Test Case Count</label>
                                 <div class="input-control text">
-                                    <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}">
+                                    <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}" required="required">
                                 </div>
                                 <input class="button primary" type="submit" value="Save">
                             </form>
