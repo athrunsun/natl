@@ -1,0 +1,66 @@
+<#include "/tpl/help/faq/_question.html" />
+
+<#macro qname>
+How do we pass testng.xml parameters to our test case?
+</#macro>
+
+<#macro qanswer>
+<p>For example, we have a testng.xml defined as below:</p>
+<p>
+    <pre class="code">
+&lt;suite name=&quot;testng.xml sample&quot;&gt;
+    &lt;parameter name=&quot;browser&quot; value=&quot;FireFox&quot; /&gt;
+    &lt;parameter name=&quot;environment&quot; value=&quot;UAT&quot; /&gt;
+    &lt;parameter name=&quot;config&quot; value=&quot;properties/config.properties&quot; /&gt;
+
+    &lt;test name=&quot;Smoke Test&quot; preserve-order=&quot;true&quot;&gt;
+        &lt;groups&gt;
+            &lt;run&gt;
+                &lt;include name=&quot;smoke&quot; /&gt;
+            &lt;/run&gt;
+        &lt;/groups&gt;
+        &lt;packages&gt;
+            &lt;package name=&quot;com.*&quot; /&gt;
+        &lt;/packages&gt;
+    &lt;/test&gt;
+&lt;/suite&gt;</pre>
+</p>
+<p>There are three parameters needed to be passed: 
+<a class="code">browser=FireFox</a>, 
+<a class="code">environment=UAT</a> and 
+<a class="code">config=properties/config.properties</a>. </p>
+<p>In this case, two actions are needed to make the job done. 
+    First, make a minor change to the JAVA code references those parameters. 
+    For example, change code from: </p>
+<p><pre class="code">
+@Parameters({ "browser", "environment", "config" })
+public void initConfig(String browser, String environment, String config) {
+    Properties prop = null;
+    prop = initializeProperties(config);
+    prop.setProperty("browser", browser);
+    prop.setProperty("environment", environment);
+}
+</pre></p>
+<p>To:</p>
+<p><pre class="code">
+@Parameters({ "browser", "environment", "config" })
+public void initConfig(String browser, String environment, String config) {
+<a class="fg-black">+   if (browser == null || browser.isEmpty()) {
++       browser = System.getProperty("browser");
++   }
++   if (environment == null || environment.isEmpty()) {
++       environment = System.getProperty("environment");
++   }
++   if (config == null || config.isEmpty()) {
++       config = System.getProperty("config");
++   }</a>
+    Properties prop = null;
+    prop = initializeProperties(config);
+    prop.setProperty("browser", browser);
+    prop.setProperty("environment", environment);
+}
+</pre></p>
+<p>By doing this, you might notice that it reads system parameters, which we defined in the second step when creating a test suite, or execution:</p>
+<img src="img/help/testSuiteParameters.png" class="shadow"></img>
+</#macro>
+

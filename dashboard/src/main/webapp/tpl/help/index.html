@@ -1,4 +1,5 @@
 <#include "/tpl/common/_master.html" />
+<#include "/tpl/help/faq/_questions.html" />
 <#macro customBody>
 <div class="container">
     <div class="grid">
@@ -15,167 +16,94 @@
                 </nav>
             </div>
             <div class="span9">
-                <h2 id="_general">General</h2>
-                <div class="description padding20 bg-grayLighter">
-                    <p>ATL (Automation Test Lab) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
-                    <br/>
-                    <p>The system enables you to:
-                        <ul>
-                            <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
-                            <li>Troubleshoot test failures with detailed test reports</li>
-                            <li>Oversee the automation coverage with historical execution results</li>
-                        </ul>
-                    </p>
+                <div class="panel">
+                    <div id="_general" class="panel-header">General</div>
+                    <div class="panel-content padding20">
+                        <p>ATL (Automation Test Lab) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
+                        <br/>
+                        <p>The system enables you to:
+                            <ul>
+                                <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
+                                <li>Troubleshoot test failures with detailed test reports</li>
+                                <li>Oversee the automation coverage with historical execution results</li>
+                            </ul>
+                        </p>
+                    </div>
                 </div>
-                
                 <br/>
-                <h2 id="_howitworks">How It Works</h2>
-                <div class="description">
-                    <p>To be added. Chart1: basic set up. 2: test case navigation 3: test suite and execution 4 reports 5. Queue </p>
-                    <br/>
+                
+                <div class="panel">
+                    <div id="_howitworks" class="panel-header">How It Works</div>
+                    <div class="panel-content">
+                        <p>To be added. Chart1: basic set up. 2: test case navigation 3: test suite and execution 4 reports 5. Queue </p>
+                        <br/>
+                    </div>
                 </div>
                 <br/>
 
-                <h2 id="_integrationrequirement">Integration Requirements</h2>
-                <div class="description">
-                    <p>To make full use of the system, we need to make sure following items are ready:</p>
-                    <div class="panel">
-                        <ul>
-                            <li>The automation code is written in <strong>JAVA</strong></li>
-                            <li>The automation code is annotated by <strong>TestNG</strong></li>
-                            <li>The source is integrated with <strong>MAVEN</strong>, and it's preferred that the project source structure follows MAVEN recommendations.</li>
-                        </ul>
+                <div class="panel">
+                    <div id="_integrationrequirement" class="panel-header">Integration Requirements</div>
+                    <div class="panel-content">
+                        <p>To make full use of the system, we need to make sure following items are ready:</p>
+                        <div class="panel">
+                            <ul>
+                                <li>The automation code is written in <strong>JAVA</strong></li>
+                                <li>The automation code is annotated by <strong>TestNG</strong></li>
+                                <li>The source is integrated with <strong>MAVEN</strong>, and it's preferred that the project source structure follows MAVEN recommendations.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <br/>
                 
-                <h2 id="_faq">FAQ</h2>
-                <div class="panel padding10">
-                    <div class="panel" data-role="panel">
-                        <div class="panel-header">
-                            Can we run cases with JUnit annotations?
-                        </div>
-                        <div class="panel-content">
-                            <p>No. </p> 
-                            <p>TestNG is the only framework supported so far. Please make sure the annotations are converted to TestNG. You can refer to <a href="http://testng.org/doc/migrating.html" target="_blank">this link</a> for more information.</p>
-                        </div>
+                <div class="panel">
+                    <div id="_faq" class="panel-header">FAQ</div>
+                    <div class="panel padding10 panel-content">
+                        <@questions qtotal=12/>
                     </div>
-                    <br/>
-                    
-                    <div class="panel" data-role="panel">
-                        <div class="panel-header">
-                            How do we pass in testng.xml parameters to our test case?
-                        </div>
-                        <div class="panel-content">
-                            <p>For example, we have a testng.xml defined as below:</p>
-                            <p>
-                                <pre class="code">
-&lt;suite name=&quot;testng.xml sample&quot;&gt;
-    &lt;parameter name=&quot;browser&quot; value=&quot;FireFox&quot; /&gt;
-    &lt;parameter name=&quot;environment&quot; value=&quot;UAT&quot; /&gt;
-    &lt;parameter name=&quot;config&quot; value=&quot;properties/config.properties&quot; /&gt;
-
-    &lt;test name=&quot;Smoke Test&quot; preserve-order=&quot;true&quot;&gt;
-        &lt;groups&gt;
-            &lt;run&gt;
-                &lt;include name=&quot;smoke&quot; /&gt;
-            &lt;/run&gt;
-        &lt;/groups&gt;
-        &lt;packages&gt;
-            &lt;package name=&quot;com.*&quot; /&gt;
-        &lt;/packages&gt;
-    &lt;/test&gt;
-&lt;/suite&gt;</pre>
-                            </p>
-                            <p>There are three parameters needed to be passed: 
-                            <a class="code">browser=FireFox</a>, 
-                            <a class="code">environment=UAT</a> and 
-                            <a class="code">config=properties/config.properties</a>. </p>
-                            <p>In this case, two actions are needed to make the job done. 
-                            First, make a minor change to the JAVA code references those parameters. 
-                            For example, change code from: </p>
-                            <p><pre class="code">
-@Parameters({ "browser", "environment", "config" })
-public void initConfig(String browser, String environment, String config) {
-    Properties prop = null;
-    prop = initializeProperties(config);
-    prop.setProperty("browser", browser);
-    prop.setProperty("environment", environment);
-}
-                            </pre></p>
-                            <p>To:</p>
-                            <p><pre class="code">
-@Parameters({ "browser", "environment", "config" })
-public void initConfig(String browser, String environment, String config) {
-<a class="fg-black">+   if (browser == null || browser.isEmpty()) {
-+       browser = System.getProperty("browser");
-+   }
-+   if (environment == null || environment.isEmpty()) {
-+       environment = System.getProperty("environment");
-+   }
-+   if (config == null || config.isEmpty()) {
-+       config = System.getProperty("config");
-+   }</a>
-    Properties prop = null;
-    prop = initializeProperties(config);
-    prop.setProperty("browser", browser);
-    prop.setProperty("environment", environment);
-}
-                            </pre></p>
-                            <p>By doing this, you might notice that it reads system parameters, which we defined in the second step when creating a test suite, or execution:</p>
-                            <img src="img/help/testSuiteParameters.png" class="shadow"></img>
-                        </div>
-                    </div>
-                    <br/>
-                    
-                    <div class="panel" data-role="panel">
-                        <div class="panel-header">Question Name</div>
-                        <div class="panel-content" style="display: block;">
-                            Answer body.
-                        </div>
-                    </div>
-                    <br/>
                 </div>
                 <br/>
                 
-                <h2 id="_feedback">Feedback</h2>
-                <div class="panel padding10">
-                    <form action="${CPATH}/help/feedback" method="post">
-                        <label>Your Comment *</label>
-                        <div class="input-control textarea">
-                            <textarea data-transform="input-control" placeholder="message content" name="feedbackContent" maxlength="12000" required="required"></textarea>
-                        </div>
-                        <div class="clearfix">
-                            <label>This is a:</label>
-                            <div class="input-control radio inline-block" data-role="input-control">
-                                <label class="inline-block">
-                                    <input type="radio" name="feedbackType" checked="" value="0">
-                                    <span class="check"></span>
-                                    Comment
-                                </label>
-                                <label class="inline-block">
-                                    <input type="radio" name="feedbackType" value="1">
-                                    <span class="check"></span>
-                                    Bug
-                                </label>
-                                <label class="inline-block">
-                                    <input type="radio" name="feedbackType" value="2">
-                                    <span class="check"></span>
-                                    Suggestion
-                                </label>
-                                <label class="inline-block">
-                                    <input type="radio" name="feedbackType" value="3">
-                                    <span class="check"></span>
-                                    Question
-                                </label>
+                <div class="panel">
+                    <div id="_feedback" class="panel-header">Feedback</div>
+                    <div class="panel padding10 panel-content">
+                        <form action="${CPATH}/help/feedback" method="post">
+                            <label>Your Comment *</label>
+                            <div class="input-control textarea">
+                                <textarea data-transform="input-control" placeholder="message content" name="feedbackContent" maxlength="12000" required="required"></textarea>
                             </div>
-                        </div>
-                        <label>Your Email <small>(Optional)</small></label>
-                        <div class="input-control text">
-                            <input name="feedbackEmail" type="text" placeholder="email address or other contact information"/>
-                        </div>
-                        <input class="button primary place-right" type="submit" value="Send Feedback"/>
-                    </form>
+                            <div class="clearfix">
+                                <label>This is a:</label>
+                                <div class="input-control radio inline-block" data-role="input-control">
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" checked="" value="0">
+                                        <span class="check"></span>
+                                        Comment
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="1">
+                                        <span class="check"></span>
+                                        Bug
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="2">
+                                        <span class="check"></span>
+                                        Suggestion
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="3">
+                                        <span class="check"></span>
+                                        Question
+                                    </label>
+                                </div>
+                            </div>
+                            <label>Your Email <small>(Optional)</small></label>
+                            <div class="input-control text">
+                                <input name="feedbackEmail" type="text" placeholder="email address or other contact information"/>
+                            </div>
+                            <input class="button primary place-right" type="submit" value="Send Feedback"/>
+                        </form>
+                    </div>
                 </div>
                 <br/>
             </div>

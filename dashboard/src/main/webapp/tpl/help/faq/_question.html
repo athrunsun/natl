@@ -1,0 +1,19 @@
+<#macro qname>
+Question Name
+</#macro>
+
+<#macro qanswer>
+Question Body
+</#macro>
+
+<#macro question num>
+<div class="panel collapsed" data-role="panel">
+    <div class="panel-header">
+${num}. <@qname/>
+    </div>
+    <div class="panel-content" style="display: none;">
+<@qanswer/>
+    </div>
+</div>
+<br/>
+</#macro>
