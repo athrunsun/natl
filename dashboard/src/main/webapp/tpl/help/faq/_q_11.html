@@ -1,9 +1,11 @@
 <#include "/tpl/help/faq/_question.html" />
 
 <#macro qname>
-Do we support TestNG "Depends on" methods?
+Do we support TestNG "Depends on" annotation?
 </#macro>
 
 <#macro qanswer>
-Question Body
+<p>No. Only the target method will be executed - and final execution status will be skipped.</p>
+<p>As a test design best practice, we recommend you not add any dependency to your test cases. 
+You can explicitly call the dependent methods if you have to.</p>
 </#macro>

@@ -1,26 +1,30 @@
 package net.nitrogen.ates.core.exec;
 
-import java.io.IOException;
-import java.util.List;
-
-import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
-import net.nitrogen.ates.core.enumeration.CustomParameterType;
-import net.nitrogen.ates.core.env.EnvParameter;
-import net.nitrogen.ates.core.model.*;
-import net.nitrogen.ates.util.StringUtil;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
+import net.nitrogen.ates.core.env.EnvParameter;
+import net.nitrogen.ates.core.model.CustomParameterModel;
+import net.nitrogen.ates.core.model.ProjectModel;
+import net.nitrogen.ates.core.model.QueueEntryModel;
+import net.nitrogen.ates.core.model.SlaveModel;
+import net.nitrogen.ates.core.model.TestCaseModel;
+import net.nitrogen.ates.util.StringUtil;
+
+import java.io.IOException;
+import java.util.List;
+
 public class ExecManager {
-    public static final String EXEC_PARAM_KEY_DEBUG = "nitrogen_ates_debug";
-    public static final String EXEC_PARAM_KEY_ENTRY_ID = "nitrogen_ates_entryid";
-    public static final String EXEC_PARAM_KEY_ENTRY_INDEX = "nitrogen_ates_entryindex";
-    public static final String EXEC_PARAM_KEY_EXECUTION_ID = "nitrogen_ates_executionid";
-    public static final String EXEC_PARAM_KEY_PROJECT_ID = "nitrogen_ates_projectid";
+    public static final String EXEC_PARAM_KEY_DEBUG = "nitrogen_atl_debug";
+    public static final String EXEC_PARAM_KEY_ENTRY_ID = "nitrogen_atl_entryid";
+    public static final String EXEC_PARAM_KEY_ENTRY_INDEX = "nitrogen_atl_entryindex";
+    public static final String EXEC_PARAM_KEY_EXECUTION_ID = "nitrogen_atl_executionid";
+    public static final String EXEC_PARAM_KEY_PROJECT_ID = "nitrogen_atl_projectid";
 
     public static final String TEST_RESULT_REPORTER_JAR_PATH = "C:\\ates\\lib\\ates-testresultreporter-jar-with-dependencies.jar";
     public static final String TEST_RESULT_REPORTER_CLASS_NAME = "net.nitrogen.ates.testresultreporter.TestResultListener";
@@ -60,8 +64,8 @@ public class ExecManager {
                     false);
 
             cmdLine.addArgument("org.testng.TestNG", false);
-            //cmdLine.addArgument("-testclass", false);
-            //cmdLine.addArgument(testCase.getName().substring(0, testCase.getName().lastIndexOf(".")), false);
+            // cmdLine.addArgument("-testclass", false);
+            // cmdLine.addArgument(testCase.getName().substring(0, testCase.getName().lastIndexOf(".")), false);
             cmdLine.addArgument("-methods", false);
             cmdLine.addArgument(testCase.getName(), false);
             cmdLine.addArgument("-listener", false);

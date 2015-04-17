@@ -1,5 +1,18 @@
 package net.nitrogen.ates.testimporter2;
 
+import org.testng.ITestNGMethod;
+
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+
+import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.core.exec.ExecManager;
+import net.nitrogen.ates.core.model.TestCaseModel;
+import net.nitrogen.ates.core.model.TestGroupModel;
+import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
+import net.nitrogen.ates.util.PropertiesUtil;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,23 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestGroupModel;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
-import net.nitrogen.ates.util.PropertiesUtil;
-
-import org.testng.ITestNGMethod;
-
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
-
 public class TestImporter {
     private static final String TEST_CLASS_TEST_METHOD_DELIMITER = ".";
     private static final String DEFAULT_TEST_CASE_MAPPING_ID = "N/A";
     private static final long DEFAULT_PROJECT_ID = 1;
-    private static final String projectIDProperty = "nitrogen_ates_projectid";
 
     private static List<TestCaseModel> testCasesToReload = new ArrayList<TestCaseModel>();
     private static List<TestGroupModel> testGroupsToReload = new ArrayList<TestGroupModel>();
@@ -43,7 +43,7 @@ public class TestImporter {
         ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
         arp.start();
 
-        final String projectIDSaved = System.getProperty(projectIDProperty);
+        final String projectIDSaved = System.getProperty(ExecManager.EXEC_PARAM_KEY_PROJECT_ID);
 
         if (projectIDSaved == null) {
             throw new RuntimeException(String.format("Project ID property is null!"));

@@ -1,5 +1,6 @@
 <#include "/tpl/common/_master.html" />
 <#include "/tpl/help/faq/_questions.html" />
+<#include "/tpl/help/_howitworks.html" />
 <#macro customBody>
 <div class="container">
     <div class="grid">
@@ -35,8 +36,7 @@
                 <div class="panel">
                     <div id="_howitworks" class="panel-header">How It Works</div>
                     <div class="panel-content">
-                        <p>To be added. Chart1: basic set up. 2: test case navigation 3: test suite and execution 4 reports 5. Queue </p>
-                        <br/>
+                        <@howitworks/>
                     </div>
                 </div>
                 <br/>
@@ -110,6 +110,10 @@
         </div>
     </div>
 </div>
+</#macro>
+
+<#macro customJavascript>
+    <script src="${CPATH}/metro-ui/js/metro-carousel.js" type="text/javascript"></script>
 </#macro>
 
 <@master/>
