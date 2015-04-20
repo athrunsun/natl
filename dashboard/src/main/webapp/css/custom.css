@@ -7,12 +7,26 @@ body {
     min-height: 100%;
     height: auto!important;
     height: 100%;
-    margin: 0 auto -200px;
+    margin: 0 auto -213px;
+}
+
+.main-content-push {
+    height: 213px;
 }
 
 .global-footer {
-    height: 200px;
+    height: 213px;
     margin-top:0;
+}
+
+.global-footer > .part1 {
+    height: 175px;
+    padding: 10px 0;
+}
+
+.global-footer > .part2 {
+    height: 38px;
+    padding: 10px 0;
 }
 
 .top-offset {
