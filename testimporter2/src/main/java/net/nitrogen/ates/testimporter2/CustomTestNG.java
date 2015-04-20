@@ -1,12 +1,27 @@
 package net.nitrogen.ates.testimporter2;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-import org.testng.*;
+import org.testng.CommandLineArgs;
+import org.testng.IConfigurable;
+import org.testng.IConfigurationListener;
+import org.testng.IHookable;
+import org.testng.IInvokedMethodListener;
+import org.testng.IMethodInterceptor;
+import org.testng.IReporter;
+import org.testng.ITestRunnerFactory;
+import org.testng.ReporterConfig;
+import org.testng.SuiteRunnerWorker;
+import org.testng.TestNG;
 import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Lists;
 import org.testng.collections.Maps;
-import org.testng.internal.*;
+import org.testng.internal.ClassHelper;
+import org.testng.internal.Configuration;
+import org.testng.internal.DynamicGraph;
+import org.testng.internal.IConfiguration;
+import org.testng.internal.IResultListener2;
+import org.testng.internal.OverrideProcessor;
+import org.testng.internal.SuiteRunnerMap;
+import org.testng.internal.Version;
 import org.testng.internal.annotations.DefaultAnnotationTransformer;
 import org.testng.internal.annotations.IAnnotationFinder;
 import org.testng.internal.annotations.JDK15AnnotationFinder;
@@ -14,14 +29,20 @@ import org.testng.junit.JUnitTestFinder;
 import org.testng.log4testng.Logger;
 import org.testng.remote.SuiteDispatcher;
 import org.testng.remote.SuiteSlave;
-import org.testng.reporters.*;
+import org.testng.reporters.EmailableReporter;
+import org.testng.reporters.EmailableReporter2;
+import org.testng.reporters.FailedReporter;
+import org.testng.reporters.JUnitReportReporter;
+import org.testng.reporters.SuiteHTMLReporter;
 import org.testng.xml.Parser;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,16 +50,21 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
- * Bruce 2015-2-15
- * This is a modified version of TestNG borrowed from TestNG 6.8.5.
- * This class is the main entry point for scanning tests and import them into ATES database.
- * Users can create their own TestNG object and invoke it in many different
- * ways:
+ * Bruce 2015-2-15 This is a modified version of TestNG borrowed from TestNG 6.8.5. This class is the main entry point for scanning tests and import them into
+ * ATES database. Users can create their own TestNG object and invoke it in many different ways:
  * <ul>
  * <li>On an existing testng.xml
  * <li>On a synthetic testng.xml, created entirely from Java
@@ -49,10 +75,9 @@ import java.util.jar.JarFile;
  * The command line parameters are:
  * <UL>
  * <LI>-d <TT>outputdir</TT>: specify the output directory</LI>
- * <LI>-testclass <TT>class_name</TT>: specifies one or several class names </li>
+ * <LI>-testclass <TT>class_name</TT>: specifies one or several class names</li>
  * <LI>-testjar <TT>jar_name</TT>: specifies the jar containing the tests</LI>
- * <LI>-sourcedir <TT>src1;src2</TT>: ; separated list of source directories
- * (used only when javadoc annotations are used)</LI>
+ * <LI>-sourcedir <TT>src1;src2</TT>: ; separated list of source directories (used only when javadoc annotations are used)</LI>
  * <LI>-target</LI>
  * <LI>-groups</LI>
  * <LI>-testrunfactory</LI>
@@ -61,7 +86,7 @@ import java.util.jar.JarFile;
  * <p/>
  * Please consult documentation for more details.
  * <p/>
- *
+ * 
  * @author Bruce Sun
  * @see #usage()
  */
@@ -174,11 +199,10 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * Used by maven2 to have 0 output of any kind come out
-     * of testng.
-     *
-     * @param useDefaultListeners Whether or not any default reports
-     *                            should be added to tests.
+     * Used by maven2 to have 0 output of any kind come out of testng.
+     * 
+     * @param useDefaultListeners
+     *            Whether or not any default reports should be added to tests.
      */
     public CustomTestNG(boolean useDefaultListeners) {
         init(useDefaultListeners);
@@ -191,6 +215,7 @@ public class CustomTestNG extends TestNG {
         m_configuration = new Configuration();
     }
 
+    @Override
     public int getStatus() {
         return m_status;
     }
@@ -201,9 +226,11 @@ public class CustomTestNG extends TestNG {
 
     /**
      * Sets the output directory where the reports will be created.
-     *
-     * @param outputdir The directory.
+     * 
+     * @param outputdir
+     *            The directory.
      */
+    @Override
     public void setOutputDirectory(final String outputdir) {
         if (org.testng.internal.Utils.isStringNotEmpty(outputdir)) {
             m_outputDir = outputdir;
@@ -211,27 +238,28 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * If this method is passed true before run(), the default listeners
-     * will not be used.
+     * If this method is passed true before run(), the default listeners will not be used.
      * <ul>
      * <li>TestHTMLReporter
      * <li>JUnitXMLReporter
      * <li>XMLReporter
      * </ul>
-     *
+     * 
      * @see org.testng.reporters.TestHTMLReporter
      * @see org.testng.reporters.JUnitXMLReporter
      * @see org.testng.reporters.XMLReporter
      */
+    @Override
     public void setUseDefaultListeners(boolean useDefaultListeners) {
         m_useDefaultListeners = useDefaultListeners;
     }
 
     /**
      * Sets a jar containing a testng.xml file.
-     *
+     * 
      * @param jarPath
      */
+    @Override
     public void setTestJar(String jarPath) {
         m_jarPath = jarPath;
     }
@@ -239,10 +267,12 @@ public class CustomTestNG extends TestNG {
     /**
      * Sets the path to the XML file in the test jar file.
      */
+    @Override
     public void setXmlPathInJar(String xmlPathInJar) {
         m_xmlPathInJar = xmlPathInJar;
     }
 
+    @Override
     public void initializeSuitesAndJarFile() {
         // The Eclipse plug-in (RemoteTestNG) might have invoked this method already
         // so don't initialize suites twice.
@@ -252,7 +282,7 @@ public class CustomTestNG extends TestNG {
 
         m_isInitialized = true;
         if (m_suites.size() > 0) {
-            //to parse the suite files (<suite-file>), if any
+            // to parse the suite files (<suite-file>), if any
             for (org.testng.xml.XmlSuite s : m_suites) {
                 List<String> suiteFiles = s.getSuiteFiles();
                 for (int i = 0; i < suiteFiles.size(); i++) {
@@ -306,10 +336,15 @@ public class CustomTestNG extends TestNG {
             } catch (Exception ex) {
                 // Probably a Yaml exception, unnest it
                 Throwable t = ex;
-                while (t.getCause() != null) t = t.getCause();
-//        t.printStackTrace();
-                if (t instanceof org.testng.TestNGException) throw (org.testng.TestNGException) t;
-                else throw new org.testng.TestNGException(t);
+                while (t.getCause() != null) {
+                    t = t.getCause();
+                }
+                // t.printStackTrace();
+                if (t instanceof org.testng.TestNGException) {
+                    throw (org.testng.TestNGException) t;
+                } else {
+                    throw new org.testng.TestNGException(t);
+                }
             }
         }
 
@@ -323,8 +358,7 @@ public class CustomTestNG extends TestNG {
             for (String s : m_stringSuites) {
                 suites.append(s);
             }
-            org.testng.internal.Utils.log("TestNG", 2, "Ignoring the XML file inside " + m_jarPath + " and using "
-                    + suites + " instead");
+            org.testng.internal.Utils.log("TestNG", 2, "Ignoring the XML file inside " + m_jarPath + " and using " + suites + " instead");
             return;
         }
         if (org.testng.internal.Utils.isStringEmpty(m_jarPath)) {
@@ -339,7 +373,7 @@ public class CustomTestNG extends TestNG {
             org.testng.internal.Utils.log("TestNG", 2, "Trying to open jar file:" + jarFile);
 
             JarFile jf = new JarFile(jarFile);
-//      System.out.println("   result: " + jf);
+            // System.out.println("   result: " + jf);
             Enumeration<JarEntry> entries = jf.entries();
             List<String> classes = Lists.newArrayList();
             boolean foundTestngXml = false;
@@ -356,8 +390,7 @@ public class CustomTestNG extends TestNG {
                 }
             }
             if (!foundTestngXml) {
-                org.testng.internal.Utils.log("TestNG", 1,
-                        "Couldn't find the " + m_xmlPathInJar + " in the jar file, running all the classes");
+                org.testng.internal.Utils.log("TestNG", 1, "Couldn't find the " + m_xmlPathInJar + " in the jar file, running all the classes");
                 org.testng.xml.XmlSuite xmlSuite = new org.testng.xml.XmlSuite();
                 xmlSuite.setVerbose(0);
                 xmlSuite.setName("Jar suite");
@@ -396,9 +429,7 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * If the XmlSuite contains at least one test named as testNames, return
-     * an XmlSuite that's made only of these tests, otherwise, return the
-     * original suite.
+     * If the XmlSuite contains at least one test named as testNames, return an XmlSuite that's made only of these tests, otherwise, return the original suite.
      */
     private static org.testng.xml.XmlSuite extractTestNames(org.testng.xml.XmlSuite s, List<String> testNames) {
         List<XmlTest> tests = Lists.newArrayList();
@@ -423,6 +454,7 @@ public class CustomTestNG extends TestNG {
     /**
      * Define the number of threads in the thread pool.
      */
+    @Override
     public void setThreadCount(int threadCount) {
         if (threadCount < 1) {
             exitWithError("Cannot use a threadCount parameter less than 1; 1 > " + threadCount);
@@ -435,11 +467,13 @@ public class CustomTestNG extends TestNG {
     /**
      * Define whether this run will be run in parallel mode.
      */
+    @Override
     public void setParallel(String parallel) {
         m_parallelMode = parallel;
         m_useParallelMode = true;
     }
 
+    @Override
     public void setCommandLineSuite(org.testng.xml.XmlSuite suite) {
         m_cmdlineSuites = Lists.newArrayList();
         m_cmdlineSuites.add(suite);
@@ -447,37 +481,35 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * Set the test classes to be run by this TestNG object.  This method
-     * will create a dummy suite that will wrap these classes called
-     * "Command Line Test".
+     * Set the test classes to be run by this TestNG object. This method will create a dummy suite that will wrap these classes called "Command Line Test".
      * <p/>
      * If used together with threadCount, parallel, groups, excludedGroups than this one must be set first.
-     *
-     * @param classes An array of classes that contain TestNG annotations.
+     * 
+     * @param classes
+     *            An array of classes that contain TestNG annotations.
      */
+    @Override
     public void setTestClasses(Class[] classes) {
         m_suites.clear();
         m_commandLineTestClasses = classes;
     }
 
     /**
-     * Given a string com.example.Foo.f1, return an array where [0] is the class and [1]
-     * is the method.
+     * Given a string com.example.Foo.f1, return an array where [0] is the class and [1] is the method.
      */
     private String[] splitMethod(String m) {
         int index = m.lastIndexOf(".");
         if (index < 0) {
-            throw new org.testng.TestNGException("Bad format for command line method:" + m
-                    + ", expected <class>.<method>");
+            throw new org.testng.TestNGException("Bad format for command line method:" + m + ", expected <class>.<method>");
         }
 
-        return new String[]{m.substring(0, index), m.substring(index + 1).replaceAll("\\*", "\\.\\*")};
+        return new String[] { m.substring(0, index), m.substring(index + 1).replaceAll("\\*", "\\.\\*") };
     }
 
     /**
-     * @param commandLineMethods a string with the form "com.example.Foo.f1,com.example.Bar.f2"
-     * @return a list of XmlSuite objects that represent the list of classes and methods passed
-     * in parameter.
+     * @param commandLineMethods
+     *            a string with the form "com.example.Foo.f1,com.example.Bar.f2"
+     * @return a list of XmlSuite objects that represent the list of classes and methods passed in parameter.
      */
     private List<org.testng.xml.XmlSuite> createCommandLineSuitesForMethods(List<String> commandLineMethods) {
         //
@@ -572,92 +604,102 @@ public class CustomTestNG extends TestNG {
         return new ArrayList<org.testng.xml.XmlSuite>(suites.values());
     }
 
+    @Override
     public void addMethodSelector(String className, int priority) {
         m_methodDescriptors.put(className, priority);
     }
 
     /**
-     * Set the suites file names to be run by this TestNG object. This method tries to load and
-     * parse the specified TestNG suite xml files. If a file is missing, it is ignored.
-     *
-     * @param suites A list of paths to one more XML files defining the tests.  For example:
-     *               <p/>
-     *               <pre>
-     *               TestNG tng = new TestNG();
-     *               List<String> suites = Lists.newArrayList();
-     *               suites.add("c:/tests/testng.xml");
-     *               suites.add("c:/tests/testng2.xml");
-     *               tng.setTestSuites(suites);
-     *               tng.run();
-     *               </pre>
+     * Set the suites file names to be run by this TestNG object. This method tries to load and parse the specified TestNG suite xml files. If a file is
+     * missing, it is ignored.
+     * 
+     * @param suites
+     *            A list of paths to one more XML files defining the tests. For example:
+     *            <p/>
+     * 
+     *            <pre>
+     * TestNG tng = new TestNG();
+     * List&lt;String&gt; suites = Lists.newArrayList();
+     * suites.add(&quot;c:/tests/testng.xml&quot;);
+     * suites.add(&quot;c:/tests/testng2.xml&quot;);
+     * tng.setTestSuites(suites);
+     * tng.run();
+     * </pre>
      */
+    @Override
     public void setTestSuites(List<String> suites) {
         m_stringSuites = suites;
     }
 
     /**
      * Specifies the XmlSuite objects to run.
-     *
+     * 
      * @param suites
      * @see org.testng.xml.XmlSuite
      */
+    @Override
     public void setXmlSuites(List<org.testng.xml.XmlSuite> suites) {
         m_suites = suites;
     }
 
     /**
      * Define which groups will be excluded from this run.
-     *
-     * @param groups A list of group names separated by a comma.
+     * 
+     * @param groups
+     *            A list of group names separated by a comma.
      */
+    @Override
     public void setExcludedGroups(String groups) {
         m_excludedGroups = org.testng.internal.Utils.split(groups, ",");
     }
 
-
     /**
      * Define which groups will be included from this run.
-     *
-     * @param groups A list of group names separated by a comma.
+     * 
+     * @param groups
+     *            A list of group names separated by a comma.
      */
+    @Override
     public void setGroups(String groups) {
         m_includedGroups = org.testng.internal.Utils.split(groups, ",");
     }
-
 
     private void setTestRunnerFactoryClass(Class testRunnerFactoryClass) {
         setTestRunnerFactory((ITestRunnerFactory) ClassHelper.newInstance(testRunnerFactoryClass));
     }
 
-
+    @Override
     protected void setTestRunnerFactory(ITestRunnerFactory itrf) {
         m_testRunnerFactory = itrf;
     }
 
+    @Override
     public void setObjectFactory(Class c) {
         m_objectFactory = (org.testng.ITestObjectFactory) ClassHelper.newInstance(c);
     }
 
+    @Override
     public void setObjectFactory(org.testng.ITestObjectFactory factory) {
         m_objectFactory = factory;
     }
 
     /**
      * Define which listeners to user for this run.
-     *
-     * @param classes A list of classes, which must be either ISuiteListener,
-     *                ITestListener or IReporter
+     * 
+     * @param classes
+     *            A list of classes, which must be either ISuiteListener, ITestListener or IReporter
      */
+    @Override
     public void setListenerClasses(List<Class> classes) {
         for (Class cls : classes) {
             addListener(ClassHelper.newInstance(cls));
         }
     }
 
+    @Override
     public void addListener(Object listener) {
         if (!(listener instanceof org.testng.ITestNGListener)) {
-            exitWithError("Listener " + listener
-                    + " must be one of ITestListener, ISuiteListener, IReporter, "
+            exitWithError("Listener " + listener + " must be one of ITestListener, ISuiteListener, IReporter, "
                     + " IAnnotationTransformer, IMethodInterceptor or IInvokedMethodListener");
         } else {
             if (listener instanceof org.testng.ISuiteListener) {
@@ -693,40 +735,48 @@ public class CustomTestNG extends TestNG {
         }
     }
 
+    @Override
     public void addListener(IInvokedMethodListener listener) {
         m_invokedMethodListeners.add(listener);
     }
 
+    @Override
     public void addListener(org.testng.ISuiteListener listener) {
         if (null != listener) {
             m_suiteListeners.add(listener);
         }
     }
 
+    @Override
     public void addListener(org.testng.ITestListener listener) {
         if (null != listener) {
             m_testListeners.add(listener);
         }
     }
 
+    @Override
     public void addListener(org.testng.IReporter listener) {
         if (null != listener) {
             m_reporters.add(listener);
         }
     }
 
+    @Override
     public void addInvokedMethodListener(IInvokedMethodListener listener) {
         m_invokedMethodListeners.add(listener);
     }
 
+    @Override
     public Set<org.testng.IReporter> getReporters() {
         return m_reporters;
     }
 
+    @Override
     public List<org.testng.ITestListener> getTestListeners() {
         return m_testListeners;
     }
 
+    @Override
     public List<org.testng.ISuiteListener> getSuiteListeners() {
         return m_suiteListeners;
     }
@@ -758,13 +808,13 @@ public class CustomTestNG extends TestNG {
     private IConfiguration m_configuration;
 
     /**
-     * Sets the level of verbosity. This value will override the value specified
-     * in the test suites.
-     *
-     * @param verbose the verbosity level (0 to 10 where 10 is most detailed)
-     *                Actually, this is a lie:  you can specify -1 and this will put TestNG
-     *                in debug mode (no longer slicing off stack traces and all).
+     * Sets the level of verbosity. This value will override the value specified in the test suites.
+     * 
+     * @param verbose
+     *            the verbosity level (0 to 10 where 10 is most detailed) Actually, this is a lie: you can specify -1 and this will put TestNG in debug mode (no
+     *            longer slicing off stack traces and all).
      */
+    @Override
     public void setVerbose(int verbose) {
         m_verbose = verbose;
     }
@@ -816,7 +866,7 @@ public class CustomTestNG extends TestNG {
         List<org.testng.xml.XmlSuite> suites = m_cmdlineSuites != null ? m_cmdlineSuites : m_suites;
         if (hasIncludedGroups || hasExcludedGroups) {
             for (org.testng.xml.XmlSuite s : suites) {
-                //set on each test, instead of just the first one of the suite
+                // set on each test, instead of just the first one of the suite
                 for (XmlTest t : s.getTests()) {
                     if (hasIncludedGroups) {
                         t.setIncludedGroups(Arrays.asList(m_includedGroups));
@@ -872,8 +922,7 @@ public class CustomTestNG extends TestNG {
 
                 // If specified listener does not exist, a TestNGException will be thrown
                 if (listenerClass == null) {
-                    throw new org.testng.TestNGException("Listener " + listenerName
-                            + " was not found in project's classpath");
+                    throw new org.testng.TestNGException("Listener " + listenerName + " was not found in project's classpath");
                 }
 
                 Object listener = ClassHelper.newInstance(listenerClass);
@@ -920,12 +969,11 @@ public class CustomTestNG extends TestNG {
             } else {
                 loadMethod = c.getMethod("load", Class.class);
             }
-            Iterable<org.testng.ITestNGListener> loader =
-                    (Iterable<org.testng.ITestNGListener>) loadMethod.invoke(c, parameters.toArray());
-//      Object loader = c.
-//      ServiceLoader<ITestNGListener> loader = m_serviceLoaderClassLoader != null
-//      ? ServiceLoader.load(ITestNGListener.class, m_serviceLoaderClassLoader)
-//          : ServiceLoader.load(ITestNGListener.class);
+            Iterable<org.testng.ITestNGListener> loader = (Iterable<org.testng.ITestNGListener>) loadMethod.invoke(c, parameters.toArray());
+            // Object loader = c.
+            // ServiceLoader<ITestNGListener> loader = m_serviceLoaderClassLoader != null
+            // ? ServiceLoader.load(ITestNGListener.class, m_serviceLoaderClassLoader)
+            // : ServiceLoader.load(ITestNGListener.class);
             for (org.testng.ITestNGListener l : loader) {
                 org.testng.internal.Utils.log("[TestNG]", 2, "Adding ServiceLoader listener:" + l);
                 addListener(l);
@@ -943,10 +991,10 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * Before suites are executed, do a sanity check to ensure all required
-     * conditions are met. If not, throw an exception to stop test execution
-     *
-     * @throws org.testng.TestNGException if the sanity check fails
+     * Before suites are executed, do a sanity check to ensure all required conditions are met. If not, throw an exception to stop test execution
+     * 
+     * @throws org.testng.TestNGException
+     *             if the sanity check fails
      */
     private void sanityCheck() {
         checkTestNames(m_suites);
@@ -961,8 +1009,7 @@ public class CustomTestNG extends TestNG {
             Set<String> testNames = org.testng.internal.annotations.Sets.newHashSet();
             for (XmlTest test : suite.getTests()) {
                 if (testNames.contains(test.getName())) {
-                    throw new org.testng.TestNGException("Two tests in the same suite "
-                            + "cannot have the same name: " + test.getName());
+                    throw new org.testng.TestNGException("Two tests in the same suite " + "cannot have the same name: " + test.getName());
                 } else {
                     testNames.add(test.getName());
                 }
@@ -972,12 +1019,10 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * Ensure that two XmlSuite don't have the same name
-     * Otherwise will be clash in SuiteRunnerMap
-     * See issue #302
+     * Ensure that two XmlSuite don't have the same name Otherwise will be clash in SuiteRunnerMap See issue #302
      */
     private void checkSuiteNames(List<org.testng.xml.XmlSuite> suites) {
-        checkSuiteNamesInternal(suites, org.testng.internal.annotations.Sets.<String>newHashSet());
+        checkSuiteNamesInternal(suites, org.testng.internal.annotations.Sets.<String> newHashSet());
     }
 
     private void checkSuiteNamesInternal(List<org.testng.xml.XmlSuite> suites, Set<String> names) {
@@ -994,6 +1039,7 @@ public class CustomTestNG extends TestNG {
     /**
      * Import tests.
      */
+    @Override
     public void run() {
         initializeSuitesAndJarFile();
         initializeConfiguration();
@@ -1025,7 +1071,7 @@ public class CustomTestNG extends TestNG {
             suiteRunners = runSuitesLocally();
 
             // Bruce 2015-2-15
-            // We only define one suite in ATLTestImport.xml
+            // We only define one suite in NATLTestImport.xml
             new TestImporter().composeAndImport(suiteRunners.get(0).getAllMethods());
         }
 
@@ -1034,9 +1080,7 @@ public class CustomTestNG extends TestNG {
         //
         else {
             SuiteDispatcher dispatcher = new SuiteDispatcher(m_masterfileName);
-            suiteRunners = dispatcher.dispatch(getConfiguration(),
-                    m_suites, getOutputDirectory(),
-                    getTestListeners());
+            suiteRunners = dispatcher.dispatch(getConfiguration(), m_suites, getOutputDirectory(), getTestListeners());
         }
 
         m_end = System.currentTimeMillis();
@@ -1060,15 +1104,18 @@ public class CustomTestNG extends TestNG {
     }
 
     private void runExecutionListeners(boolean start) {
-        for (List<org.testng.IExecutionListener> listeners
-                : Arrays.asList(m_executionListeners, m_configuration.getExecutionListeners())) {
+        for (List<org.testng.IExecutionListener> listeners : Arrays.asList(m_executionListeners, m_configuration.getExecutionListeners())) {
             for (org.testng.IExecutionListener l : listeners) {
-                if (start) l.onExecutionStart();
-                else l.onExecutionFinish();
+                if (start) {
+                    l.onExecutionStart();
+                } else {
+                    l.onExecutionFinish();
+                }
             }
         }
     }
 
+    @Override
     public void addExecutionListener(org.testng.IExecutionListener l) {
         m_executionListeners.add(l);
     }
@@ -1085,8 +1132,7 @@ public class CustomTestNG extends TestNG {
             try {
                 long start = System.currentTimeMillis();
                 reporter.generateReport(m_suites, suiteRunners, m_outputDir);
-                org.testng.internal.Utils.log("TestNG", 2, "Time taken by " + reporter + ": "
-                        + (System.currentTimeMillis() - start) + " ms");
+                org.testng.internal.Utils.log("TestNG", 2, "Time taken by " + reporter + ": " + (System.currentTimeMillis() - start) + " ms");
             } catch (Exception ex) {
                 System.err.println("[TestNG] Reporter " + reporter + " failed");
                 ex.printStackTrace(System.err);
@@ -1095,9 +1141,9 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * This needs to be public for maven2, for now..At least
-     * until an alternative mechanism is found.
+     * This needs to be public for maven2, for now..At least until an alternative mechanism is found.
      */
+    @Override
     public List<org.testng.ISuite> runSuitesLocally() {
         SuiteRunnerMap suiteRunnerMap = new SuiteRunnerMap();
         if (m_suites.size() > 0) {
@@ -1116,40 +1162,40 @@ public class CustomTestNG extends TestNG {
             //
             // Run suites
             //
-//      if (m_suiteThreadPoolSize == 1 && !m_randomizeSuites) {
-//        // Single threaded and not randomized: run the suites in order
-//        for (XmlSuite xmlSuite : m_suites) {
-//          runSuitesSequentially(xmlSuite, suiteRunnerMap, getVerbose(xmlSuite),
-//              getDefaultSuiteName());
-//        }
-//      } else {
-//        // Multithreaded: generate a dynamic graph that stores the suite hierarchy. This is then
-//        // used to run related suites in specific order. Parent suites are run only
-//        // once all the child suites have completed execution
-//        DynamicGraph<ISuite> suiteGraph = new DynamicGraph<ISuite>();
-//        for (XmlSuite xmlSuite : m_suites) {
-//          populateSuiteGraph(suiteGraph, suiteRunnerMap, xmlSuite);
-//        }
-//
-//        IThreadWorkerFactory<ISuite> factory = new SuiteWorkerFactory(suiteRunnerMap,
-//          0 /* verbose hasn't been set yet */, getDefaultSuiteName());
-//        GraphThreadPoolExecutor<ISuite> pooledExecutor =
-//          new GraphThreadPoolExecutor<ISuite>(suiteGraph, factory, m_suiteThreadPoolSize,
-//          m_suiteThreadPoolSize, Integer.MAX_VALUE, TimeUnit.MILLISECONDS,
-//          new LinkedBlockingQueue<Runnable>());
-//
-//        Utils.log("TestNG", 2, "Starting executor for all suites");
-//        // Run all suites in parallel
-//        pooledExecutor.run();
-//        try {
-//          pooledExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-//          pooledExecutor.shutdownNow();
-//        }
-//        catch (InterruptedException handled) {
-//          Thread.currentThread().interrupt();
-//          error("Error waiting for concurrent executors to finish " + handled.getMessage());
-//        }
-//      }
+            // if (m_suiteThreadPoolSize == 1 && !m_randomizeSuites) {
+            // // Single threaded and not randomized: run the suites in order
+            // for (XmlSuite xmlSuite : m_suites) {
+            // runSuitesSequentially(xmlSuite, suiteRunnerMap, getVerbose(xmlSuite),
+            // getDefaultSuiteName());
+            // }
+            // } else {
+            // // Multithreaded: generate a dynamic graph that stores the suite hierarchy. This is then
+            // // used to run related suites in specific order. Parent suites are run only
+            // // once all the child suites have completed execution
+            // DynamicGraph<ISuite> suiteGraph = new DynamicGraph<ISuite>();
+            // for (XmlSuite xmlSuite : m_suites) {
+            // populateSuiteGraph(suiteGraph, suiteRunnerMap, xmlSuite);
+            // }
+            //
+            // IThreadWorkerFactory<ISuite> factory = new SuiteWorkerFactory(suiteRunnerMap,
+            // 0 /* verbose hasn't been set yet */, getDefaultSuiteName());
+            // GraphThreadPoolExecutor<ISuite> pooledExecutor =
+            // new GraphThreadPoolExecutor<ISuite>(suiteGraph, factory, m_suiteThreadPoolSize,
+            // m_suiteThreadPoolSize, Integer.MAX_VALUE, TimeUnit.MILLISECONDS,
+            // new LinkedBlockingQueue<Runnable>());
+            //
+            // Utils.log("TestNG", 2, "Starting executor for all suites");
+            // // Run all suites in parallel
+            // pooledExecutor.run();
+            // try {
+            // pooledExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+            // pooledExecutor.shutdownNow();
+            // }
+            // catch (InterruptedException handled) {
+            // Thread.currentThread().interrupt();
+            // error("Error waiting for concurrent executors to finish " + handled.getMessage());
+            // }
+            // }
         } else {
             setStatus(HAS_NO_TEST);
             error("No test suite found. Nothing to run");
@@ -1167,46 +1213,46 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * @return the verbose level, checking in order: the verbose level on
-     * the suite, the verbose level on the TestNG object, or 1.
+     * @return the verbose level, checking in order: the verbose level on the suite, the verbose level on the TestNG object, or 1.
      */
     private int getVerbose(org.testng.xml.XmlSuite xmlSuite) {
-        int result = xmlSuite.getVerbose() != null ? xmlSuite.getVerbose()
-                : (m_verbose != null ? m_verbose : DEFAULT_VERBOSE);
+        int result = xmlSuite.getVerbose() != null ? xmlSuite.getVerbose() : (m_verbose != null ? m_verbose : DEFAULT_VERBOSE);
         return result;
     }
 
     /**
-     * Recursively runs suites. Runs the children suites before running the parent
-     * suite. This is done so that the results for parent suite can reflect the
+     * Recursively runs suites. Runs the children suites before running the parent suite. This is done so that the results for parent suite can reflect the
      * combined results of the children suites.
-     *
-     * @param xmlSuite         XML Suite to be executed
-     * @param suiteRunnerMap   Maps {@code XmlSuite}s to respective {@code ISuite}
-     * @param verbose          verbose level
-     * @param defaultSuiteName default suite name
+     * 
+     * @param xmlSuite
+     *            XML Suite to be executed
+     * @param suiteRunnerMap
+     *            Maps {@code XmlSuite}s to respective {@code ISuite}
+     * @param verbose
+     *            verbose level
+     * @param defaultSuiteName
+     *            default suite name
      */
-    private void runSuitesSequentially(org.testng.xml.XmlSuite xmlSuite,
-                                       SuiteRunnerMap suiteRunnerMap, int verbose, String defaultSuiteName) {
+    private void runSuitesSequentially(org.testng.xml.XmlSuite xmlSuite, SuiteRunnerMap suiteRunnerMap, int verbose, String defaultSuiteName) {
         for (org.testng.xml.XmlSuite childSuite : xmlSuite.getChildSuites()) {
             runSuitesSequentially(childSuite, suiteRunnerMap, verbose, defaultSuiteName);
         }
-        SuiteRunnerWorker srw = new SuiteRunnerWorker(suiteRunnerMap.get(xmlSuite), suiteRunnerMap,
-                verbose, defaultSuiteName);
+        SuiteRunnerWorker srw = new SuiteRunnerWorker(suiteRunnerMap.get(xmlSuite), suiteRunnerMap, verbose, defaultSuiteName);
         srw.run();
     }
 
     /**
-     * Populates the dynamic graph with the reverse hierarchy of suites. Edges are
-     * added pointing from child suite runners to parent suite runners, hence making
+     * Populates the dynamic graph with the reverse hierarchy of suites. Edges are added pointing from child suite runners to parent suite runners, hence making
      * parent suite runners dependent on all the child suite runners
-     *
-     * @param suiteGraph     dynamic graph representing the reverse hierarchy of SuiteRunners
-     * @param suiteRunnerMap Map with XMLSuite as key and its respective SuiteRunner as value
-     * @param xmlSuite       XML Suite
+     * 
+     * @param suiteGraph
+     *            dynamic graph representing the reverse hierarchy of SuiteRunners
+     * @param suiteRunnerMap
+     *            Map with XMLSuite as key and its respective SuiteRunner as value
+     * @param xmlSuite
+     *            XML Suite
      */
-    private void populateSuiteGraph(DynamicGraph<org.testng.ISuite> suiteGraph /* OUT */,
-                                    SuiteRunnerMap suiteRunnerMap, org.testng.xml.XmlSuite xmlSuite) {
+    private void populateSuiteGraph(DynamicGraph<org.testng.ISuite> suiteGraph /* OUT */, SuiteRunnerMap suiteRunnerMap, org.testng.xml.XmlSuite xmlSuite) {
         org.testng.ISuite parentSuiteRunner = suiteRunnerMap.get(xmlSuite);
         if (xmlSuite.getChildSuites().isEmpty()) {
             suiteGraph.addNode(parentSuiteRunner);
@@ -1219,12 +1265,12 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * Creates the {@code SuiteRunner}s and populates the suite runner map with
-     * this information
-     *
-     * @param suiteRunnerMap Map with XMLSuite as key and it's respective
-     *                       SuiteRunner as value. This is updated as part of this method call
-     * @param xmlSuite       Xml Suite (and its children) for which {@code SuiteRunner}s are created
+     * Creates the {@code SuiteRunner}s and populates the suite runner map with this information
+     * 
+     * @param suiteRunnerMap
+     *            Map with XMLSuite as key and it's respective SuiteRunner as value. This is updated as part of this method call
+     * @param xmlSuite
+     *            Xml Suite (and its children) for which {@code SuiteRunner}s are created
      */
     private void createSuiteRunners(SuiteRunnerMap suiteRunnerMap /* OUT */, org.testng.xml.XmlSuite xmlSuite) {
         if (null != m_isJUnit && !m_isJUnit.equals(org.testng.xml.XmlSuite.DEFAULT_JUNIT)) {
@@ -1264,18 +1310,15 @@ public class CustomTestNG extends TestNG {
 
     /**
      * Creates a suite runner and configures its initial state
-     *
+     * 
      * @param xmlSuite
      * @return returns the newly created suite runner
      */
     private org.testng.SuiteRunner createSuiteRunner(org.testng.xml.XmlSuite xmlSuite) {
-        org.testng.SuiteRunner result = new org.testng.SuiteRunner(getConfiguration(), xmlSuite,
-                m_outputDir,
-                m_testRunnerFactory,
-                m_useDefaultListeners);//,
-                //m_methodInterceptor,
-                //m_invokedMethodListeners,
-                //m_testListeners);
+        org.testng.SuiteRunner result = new org.testng.SuiteRunner(getConfiguration(), xmlSuite, m_outputDir, m_testRunnerFactory, m_useDefaultListeners);// ,
+        // m_methodInterceptor,
+        // m_invokedMethodListeners,
+        // m_testListeners);
 
         for (org.testng.ISuiteListener isl : m_suiteListeners) {
             result.addListener(isl);
@@ -1292,19 +1335,21 @@ public class CustomTestNG extends TestNG {
         return result;
     }
 
+    @Override
     protected IConfiguration getConfiguration() {
         return m_configuration;
     }
 
     /**
      * The TestNG entry point for command line execution.
-     *
-     * @param argv the TestNG command line parameters.
+     * 
+     * @param argv
+     *            the TestNG command line parameters.
      * @throws FileNotFoundException
      */
     public static void main(String[] argv) {
         CustomTestNG testng = privateMain(argv, null);
-		System.exit(0);
+        System.exit(0);
         // System.exit(testng.getStatus()); // Allen Liu: Comment this, so that it won't fail Jenkins job.
     }
 
@@ -1350,6 +1395,7 @@ public class CustomTestNG extends TestNG {
     /**
      * Configure the TestNG instance based on the command line parameters.
      */
+    @Override
     protected void configure(CommandLineArgs cla) {
         if (cla.verbose != null) {
             setVerbose(cla.verbose);
@@ -1373,10 +1419,10 @@ public class CustomTestNG extends TestNG {
             setTestNames(Arrays.asList(cla.testNames.split(",")));
         }
 
-//    List<String> testNgXml = (List<String>) cmdLineArgs.get(CommandLineArgs.SUITE_DEF);
-//    if (null != testNgXml) {
-//      setTestSuites(testNgXml);
-//    }
+        // List<String> testNgXml = (List<String>) cmdLineArgs.get(CommandLineArgs.SUITE_DEF);
+        // if (null != testNgXml) {
+        // setTestSuites(testNgXml);
+        // }
 
         // Note: can't use a Boolean field here because we are allowing a boolean
         // parameter with an arity of 1 ("-usedefaultlisteners false")
@@ -1446,8 +1492,7 @@ public class CustomTestNG extends TestNG {
             setObjectFactory(ClassHelper.fileToClass(cla.objectFactory));
         }
         if (cla.testRunnerFactory != null) {
-            setTestRunnerFactoryClass(
-                    ClassHelper.fileToClass(cla.testRunnerFactory));
+            setTestRunnerFactoryClass(ClassHelper.fileToClass(cla.testRunnerFactory));
         }
 
         if (cla.reporter != null) {
@@ -1467,34 +1512,37 @@ public class CustomTestNG extends TestNG {
         setRandomizeSuites(cla.randomizeSuites);
     }
 
+    @Override
     public void setSuiteThreadPoolSize(Integer suiteThreadPoolSize) {
         m_suiteThreadPoolSize = suiteThreadPoolSize;
     }
 
+    @Override
     public Integer getSuiteThreadPoolSize() {
         return m_suiteThreadPoolSize;
     }
 
+    @Override
     public void setRandomizeSuites(boolean randomizeSuites) {
         m_randomizeSuites = randomizeSuites;
     }
 
     /**
-     * This method is invoked by Maven's Surefire, only remove it once
-     * Surefire has been modified to no longer call it.
+     * This method is invoked by Maven's Surefire, only remove it once Surefire has been modified to no longer call it.
      */
+    @Override
     public void setSourcePath(String path) {
         // nop
     }
 
     /**
-     * This method is invoked by Maven's Surefire to configure the runner,
-     * do not remove unless you know for sure that Surefire has been updated
-     * to use the new configure(CommandLineArgs) method.
-     *
+     * This method is invoked by Maven's Surefire to configure the runner, do not remove unless you know for sure that Surefire has been updated to use the new
+     * configure(CommandLineArgs) method.
+     * 
      * @deprecated use new configure(CommandLineArgs) method
      */
-    @SuppressWarnings({"unchecked"})
+    @Override
+    @SuppressWarnings({ "unchecked" })
     @Deprecated
     public void configure(Map cmdLineArgs) {
         CommandLineArgs result = new CommandLineArgs();
@@ -1528,8 +1576,7 @@ public class CustomTestNG extends TestNG {
         result.mixed = (Boolean) cmdLineArgs.get(CommandLineArgs.MIXED);
         result.master = (String) cmdLineArgs.get(CommandLineArgs.MASTER);
         result.slave = (String) cmdLineArgs.get(CommandLineArgs.SLAVE);
-        result.skipFailedInvocationCounts = (Boolean) cmdLineArgs.get(
-                CommandLineArgs.SKIP_FAILED_INVOCATION_COUNTS);
+        result.skipFailedInvocationCounts = (Boolean) cmdLineArgs.get(CommandLineArgs.SKIP_FAILED_INVOCATION_COUNTS);
         String parallelMode = (String) cmdLineArgs.get(CommandLineArgs.PARALLEL);
         if (parallelMode != null) {
             result.parallelMode = parallelMode;
@@ -1593,10 +1640,12 @@ public class CustomTestNG extends TestNG {
     /**
      * Only run the specified tests from the suite.
      */
+    @Override
     public void setTestNames(List<String> testNames) {
         m_testNames = testNames;
     }
 
+    @Override
     public void setSkipFailedInvocationCounts(Boolean skip) {
         m_skipFailedInvocationCounts = skip;
     }
@@ -1612,27 +1661,32 @@ public class CustomTestNG extends TestNG {
 
     /**
      * Specify if this run should be in Master-Slave mode as Master
-     *
-     * @param fileName remote.properties path
+     * 
+     * @param fileName
+     *            remote.properties path
      */
+    @Override
     public void setMaster(String fileName) {
         m_masterfileName = fileName;
     }
 
     /**
      * Specify if this run should be in Master-Slave mode as slave
-     *
-     * @param fileName remote.properties path
+     * 
+     * @param fileName
+     *            remote.properties path
      */
+    @Override
     public void setSlave(String fileName) {
         m_slavefileName = fileName;
     }
 
     /**
      * Specify if this run should be made in JUnit mode
-     *
+     * 
      * @param isJUnit
      */
+    @Override
     public void setJUnit(Boolean isJUnit) {
         m_isJUnit = isJUnit;
     }
@@ -1640,6 +1694,7 @@ public class CustomTestNG extends TestNG {
     /**
      * Specify if this run should be made in mixed mode
      */
+    @Override
     public void setMixed(Boolean isMixed) {
         if (isMixed == null) {
             return;
@@ -1648,8 +1703,7 @@ public class CustomTestNG extends TestNG {
     }
 
     /**
-     * @deprecated The TestNG version is now established at load time. This
-     * method is not required anymore and is now a no-op.
+     * @deprecated The TestNG version is now established at load time. This method is not required anymore and is now a no-op.
      */
     @Deprecated
     public static void setTestNGVersion() {
@@ -1658,7 +1712,7 @@ public class CustomTestNG extends TestNG {
 
     /**
      * Returns true if this is the JDK 1.4 JAR version of TestNG, false otherwise.
-     *
+     * 
      * @return true if this is the JDK 1.4 JAR version of TestNG, false otherwise.
      */
     @Deprecated
@@ -1676,38 +1730,32 @@ public class CustomTestNG extends TestNG {
         String slave = args.slave;
         List<String> methods = args.commandLineMethods;
 
-        if (testClasses == null && slave == null && testJar == null
-                && (testNgXml == null || testNgXml.isEmpty())
-                && (methods == null || methods.isEmpty())) {
-            throw new ParameterException("You need to specify at least one testng.xml, one class"
-                    + " or one method");
+        if (testClasses == null && slave == null && testJar == null && (testNgXml == null || testNgXml.isEmpty()) && (methods == null || methods.isEmpty())) {
+            throw new ParameterException("You need to specify at least one testng.xml, one class" + " or one method");
         }
 
         String groups = args.groups;
         String excludedGroups = args.excludedGroups;
 
-        if (testJar == null &&
-                (null != groups || null != excludedGroups) && testClasses == null
-                && (testNgXml == null || testNgXml.isEmpty())) {
+        if (testJar == null && (null != groups || null != excludedGroups) && testClasses == null && (testNgXml == null || testNgXml.isEmpty())) {
             throw new ParameterException("Groups option should be used with testclass option");
         }
 
         if (args.slave != null && args.master != null) {
-            throw new ParameterException(CommandLineArgs.SLAVE + " can't be combined with "
-                    + CommandLineArgs.MASTER);
+            throw new ParameterException(CommandLineArgs.SLAVE + " can't be combined with " + CommandLineArgs.MASTER);
         }
 
         Boolean junit = args.junit;
         Boolean mixed = args.mixed;
         if (junit && mixed) {
-            throw new ParameterException(CommandLineArgs.MIXED + " can't be combined with "
-                    + CommandLineArgs.JUNIT);
+            throw new ParameterException(CommandLineArgs.MIXED + " can't be combined with " + CommandLineArgs.JUNIT);
         }
     }
 
     /**
      * @return true if at least one test failed.
      */
+    @Override
     public boolean hasFailure() {
         return (getStatus() & HAS_FAILURE) == HAS_FAILURE;
     }
@@ -1715,6 +1763,7 @@ public class CustomTestNG extends TestNG {
     /**
      * @return true if at least one test failed within success percentage.
      */
+    @Override
     public boolean hasFailureWithinSuccessPercentage() {
         return (getStatus() & HAS_FSP) == HAS_FSP;
     }
@@ -1722,6 +1771,7 @@ public class CustomTestNG extends TestNG {
     /**
      * @return true if at least one test was skipped.
      */
+    @Override
     public boolean hasSkip() {
         return (getStatus() & HAS_SKIPPED) == HAS_SKIPPED;
     }
@@ -1732,14 +1782,17 @@ public class CustomTestNG extends TestNG {
         System.exit(1);
     }
 
+    @Override
     public String getOutputDirectory() {
         return m_outputDir;
     }
 
+    @Override
     public org.testng.IAnnotationTransformer getAnnotationTransformer() {
         return m_annotationTransformer;
     }
 
+    @Override
     public void setAnnotationTransformer(org.testng.IAnnotationTransformer t) {
         // compare by reference!
         if (m_annotationTransformer != m_defaultAnnoProcessor && m_annotationTransformer != t) {
@@ -1751,13 +1804,16 @@ public class CustomTestNG extends TestNG {
     /**
      * @return the defaultSuiteName
      */
+    @Override
     public String getDefaultSuiteName() {
         return m_defaultSuiteName;
     }
 
     /**
-     * @param defaultSuiteName the defaultSuiteName to set
+     * @param defaultSuiteName
+     *            the defaultSuiteName to set
      */
+    @Override
     public void setDefaultSuiteName(String defaultSuiteName) {
         m_defaultSuiteName = defaultSuiteName;
     }
@@ -1765,33 +1821,38 @@ public class CustomTestNG extends TestNG {
     /**
      * @return the defaultTestName
      */
+    @Override
     public String getDefaultTestName() {
         return m_defaultTestName;
     }
 
     /**
-     * @param defaultTestName the defaultTestName to set
+     * @param defaultTestName
+     *            the defaultTestName to set
      */
+    @Override
     public void setDefaultTestName(String defaultTestName) {
         m_defaultTestName = defaultTestName;
     }
 
     /**
-     * Sets the policy for whether or not to ever invoke a configuration method again after
-     * it has failed once. Possible values are defined in {@link org.testng.xml.XmlSuite}.  The default
-     * value is {@link org.testng.xml.XmlSuite#SKIP}.
-     *
-     * @param failurePolicy the configuration failure policy
+     * Sets the policy for whether or not to ever invoke a configuration method again after it has failed once. Possible values are defined in
+     * {@link org.testng.xml.XmlSuite}. The default value is {@link org.testng.xml.XmlSuite#SKIP}.
+     * 
+     * @param failurePolicy
+     *            the configuration failure policy
      */
+    @Override
     public void setConfigFailurePolicy(String failurePolicy) {
         m_configFailurePolicy = failurePolicy;
     }
 
     /**
      * Returns the configuration failure policy.
-     *
+     * 
      * @return config failure policy
      */
+    @Override
     public String getConfigFailurePolicy() {
         return m_configFailurePolicy;
     }
@@ -1809,6 +1870,7 @@ public class CustomTestNG extends TestNG {
     /**
      * @deprecated since 5.1
      */
+    @Override
     @Deprecated
     public void setHasFailure(boolean hasFailure) {
         m_status |= HAS_FAILURE;
@@ -1817,6 +1879,7 @@ public class CustomTestNG extends TestNG {
     /**
      * @deprecated since 5.1
      */
+    @Override
     @Deprecated
     public void setHasFailureWithinSuccessPercentage(boolean hasFailureWithinSuccessPercentage) {
         m_status |= HAS_FSP;
@@ -1825,6 +1888,7 @@ public class CustomTestNG extends TestNG {
     /**
      * @deprecated since 5.1
      */
+    @Override
     @Deprecated
     public void setHasSkip(boolean hasSkip) {
         m_status |= HAS_SKIPPED;
@@ -1926,6 +1990,7 @@ public class CustomTestNG extends TestNG {
         m_hookable = h;
     }
 
+    @Override
     public void setMethodInterceptor(IMethodInterceptor i) {
         // compare by reference!
         if (m_methodInterceptor != null && m_methodInterceptor != i) {
@@ -1934,6 +1999,7 @@ public class CustomTestNG extends TestNG {
         m_methodInterceptor = i;
     }
 
+    @Override
     public void setDataProviderThreadCount(int count) {
         m_dataProviderThreadCount = count;
     }
@@ -1941,29 +2007,34 @@ public class CustomTestNG extends TestNG {
     /**
      * Add a class loader to the searchable loaders.
      */
+    @Override
     public void addClassLoader(final ClassLoader loader) {
         if (loader != null) {
             ClassHelper.addClassLoader(loader);
         }
     }
 
+    @Override
     public void setPreserveOrder(boolean b) {
         m_preserveOrder = b;
     }
 
+    @Override
     protected long getStart() {
         return m_start;
     }
 
+    @Override
     protected long getEnd() {
         return m_end;
     }
 
+    @Override
     public void setGroupByInstances(boolean b) {
         m_groupByInstances = b;
     }
 
-    /////
+    // ///
     // ServiceLoader testing
     //
 
@@ -1973,6 +2044,7 @@ public class CustomTestNG extends TestNG {
     /*
      * Used to test ServiceClassLoader
      */
+    @Override
     public void setServiceLoaderClassLoader(URLClassLoader ucl) {
         m_serviceLoaderClassLoader = ucl;
     }
@@ -1987,12 +2059,12 @@ public class CustomTestNG extends TestNG {
     /*
      * Used to test ServiceClassLoader
      */
+    @Override
     public List<org.testng.ITestNGListener> getServiceLoaderListeners() {
         return m_serviceLoaderListeners;
     }
 
     //
     // ServiceLoader testing
-    /////
+    // ///
 }
-
