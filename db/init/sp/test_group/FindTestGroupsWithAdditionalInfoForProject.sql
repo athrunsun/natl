@@ -14,7 +14,7 @@ BEGIN
     COUNT(`tg_tc`.`id`) AS `test_case_count` 
   FROM 
     `test_group` AS `tg` 
-  JOIN 
+  LEFT JOIN 
     `test_group-test_case` AS `tg_tc` 
   ON 
     `tg`.`id` = `tg_tc`.`test_group_id`
