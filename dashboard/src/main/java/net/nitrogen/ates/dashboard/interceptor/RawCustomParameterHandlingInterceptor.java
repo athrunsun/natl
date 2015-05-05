@@ -18,7 +18,7 @@ public class RawCustomParameterHandlingInterceptor implements Interceptor {
         String[] customFieldType = ai.getController().getParaValues("customFieldType");
         Map<String, CustomParameterModel> rawCustomParameterMap = new HashMap<>();
 
-        for(int i = 0; i < customFieldName.length; i++) {
+        for(int i = 0; customFieldName != null && i < customFieldName.length; i++) {
             if(!StringUtil.isNullOrWhiteSpace(customFieldName[i])) {
                 CustomParameterModel parameter = new CustomParameterModel();
                 parameter.setKey(customFieldName[i]);
