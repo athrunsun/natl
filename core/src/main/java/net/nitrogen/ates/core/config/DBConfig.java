@@ -1,6 +1,10 @@
 package net.nitrogen.ates.core.config;
 
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+
 import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.email.EmailModel;
 import net.nitrogen.ates.core.model.execution.ExecutionModel;
 import net.nitrogen.ates.core.model.feedback.FeedbackModel;
 import net.nitrogen.ates.core.model.project.ProjectModel;
@@ -12,9 +16,6 @@ import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
 import net.nitrogen.ates.core.model.test_result.TestResultModel;
 import net.nitrogen.ates.core.model.test_suite.TestSuiteModel;
 import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
-
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
 
 public class DBConfig {
     public static DruidPlugin createDruidPlugin(String jdbcUrl, String user, String password, int initialSize, int minIdle, int maxActive) {
@@ -50,5 +51,6 @@ public class DBConfig {
         arp.addMapping(ProjectModel.TABLE, ProjectModel.class);
         arp.addMapping(CustomParameterModel.TABLE, CustomParameterModel.class);
         arp.addMapping(FeedbackModel.TABLE, FeedbackModel.class);
+        arp.addMapping(EmailModel.TABLE, EmailModel.class);
     }
 }

@@ -1,23 +1,5 @@
 package net.nitrogen.ates.dashboard.config;
 
-import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.dashboard.controller.AtesHelpController;
-import net.nitrogen.ates.dashboard.controller.ExecutionController;
-import net.nitrogen.ates.dashboard.controller.IndexController;
-import net.nitrogen.ates.dashboard.controller.ProjectController;
-import net.nitrogen.ates.dashboard.controller.QueueController;
-import net.nitrogen.ates.dashboard.controller.SummaryController;
-import net.nitrogen.ates.dashboard.controller.TestCaseController;
-import net.nitrogen.ates.dashboard.controller.TestGroupController;
-import net.nitrogen.ates.dashboard.controller.TestResultController;
-import net.nitrogen.ates.dashboard.controller.TestSuiteController;
-import net.nitrogen.ates.dashboard.controller.admin.AdminIndexController;
-import net.nitrogen.ates.dashboard.controller.admin.AdminProjectController;
-import net.nitrogen.ates.dashboard.controller.admin.AdminQueueController;
-import net.nitrogen.ates.dashboard.controller.admin.AdminSlaveController;
-import net.nitrogen.ates.dashboard.interceptor.MasterTplProjectListInterceptor;
-import net.nitrogen.ates.dashboard.interceptor.ProjectPrefInterceptor;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.Constants;
@@ -29,6 +11,25 @@ import com.jfinal.config.Routes;
 import com.jfinal.ext.handler.ContextPathHandler;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
+
+import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.dashboard.controller.AtesHelpController;
+import net.nitrogen.ates.dashboard.controller.ExecutionController;
+import net.nitrogen.ates.dashboard.controller.IndexController;
+import net.nitrogen.ates.dashboard.controller.ProjectController;
+import net.nitrogen.ates.dashboard.controller.QueueController;
+import net.nitrogen.ates.dashboard.controller.SummaryController;
+import net.nitrogen.ates.dashboard.controller.TestCaseController;
+import net.nitrogen.ates.dashboard.controller.TestGroupController;
+import net.nitrogen.ates.dashboard.controller.TestResultController;
+import net.nitrogen.ates.dashboard.controller.TestSuiteController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminEmailController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminIndexController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminProjectController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminQueueController;
+import net.nitrogen.ates.dashboard.controller.admin.AdminSlaveController;
+import net.nitrogen.ates.dashboard.interceptor.MasterTplProjectListInterceptor;
+import net.nitrogen.ates.dashboard.interceptor.ProjectPrefInterceptor;
 
 public class AtdConfig extends JFinalConfig {
     @Override
@@ -52,6 +53,7 @@ public class AtdConfig extends JFinalConfig {
         me.add("/admin/queue", AdminQueueController.class, "/tpl/admin/queue");
         me.add("/admin/project", AdminProjectController.class, "/tpl/admin/project");
         me.add("/admin/slave", AdminSlaveController.class, "/tpl/admin/slave");
+        me.add("/admin/email", AdminEmailController.class, "/tpl/admin/email");
         me.add("/help", AtesHelpController.class, "/tpl/help");
     }
 
