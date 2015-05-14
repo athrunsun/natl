@@ -30,6 +30,7 @@ CD /D %project_path_daemon%
 CALL mvn clean compile package assembly:single
 XCOPY %project_path_daemon%\target\*.jar %ates_path_lib%\ /h /i /r /c /y /d
 COPY %project_path_daemon%\launchDaemon.bat %ates_path_lib%\ /y
+COPY %project_path_daemon%\launchEmailMonitor.bat %ates_path_lib%\ /y
 
 CD /D %project_path_dashboard%
 CALL mvn clean compile package

@@ -1,7 +1,7 @@
 package net.nitrogen.ates.core.enumeration;
 
 public enum CustomParameterType {
-    JVM(0), TESTNG(1);
+    JVM(0), TESTNG(1), EMAIL(2);
 
     final int value;
 
