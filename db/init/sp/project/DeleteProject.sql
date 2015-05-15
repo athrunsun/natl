@@ -13,7 +13,7 @@ CREATE PROCEDURE `DeleteProject`(
 BEGIN
     DELETE `cp` FROM `custom_parameter` AS `cp` JOIN `execution` AS `e` ON `cp`.`domain_value`=`e`.`id` WHERE `cp`.`domain_key`=0 AND `e`.`project_id`=ProjectId;
     DELETE `cp` FROM `custom_parameter` AS `cp` JOIN `test_suite` AS `ts` ON `cp`.`domain_value`=`ts`.`id` WHERE `cp`.`domain_key`=1 AND `ts`.`project_id`=ProjectId;
-    DELETE FROM `custom_parameter` AS `cp` WHERE `cp`.`domain_key`=2 AND `cp`.`domain_value`=ProjectId;
+    DELETE `cp` FROM `custom_parameter` AS `cp` WHERE `cp`.`domain_key`=2 AND `cp`.`domain_value`=ProjectId;
 
     DELETE FROM `queue_entry` WHERE `project_id`=projectId;
 
