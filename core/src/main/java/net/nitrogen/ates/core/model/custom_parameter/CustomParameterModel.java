@@ -1,16 +1,17 @@
 package net.nitrogen.ates.core.model.custom_parameter;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Model;
+
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
+import net.nitrogen.ates.core.model.custom_parameter.ProjectEmailSetting.Keys;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
-import net.nitrogen.ates.core.enumeration.CustomParameterType;
-
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Model;
 
 public class CustomParameterModel extends Model<CustomParameterModel> {
     public static final String TABLE = "custom_parameter";
@@ -36,6 +37,46 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
             params.append(" ");
         }
         return params.toString().trim();
+    }
+
+    public ProjectEmailSetting getProjectEmailSettings(long projectId) {
+        return new ProjectEmailSetting(this.findParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL));
+    }
+
+    public void updateProjectEmailSettings(long projectId, ProjectEmailSetting settings) {
+        this.deleteParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL);
+
+        List<CustomParameterModel> models = new ArrayList<CustomParameterModel>();
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.EMAIL_ENABLED).set(Fields.VALUE, settings.isEmailEnabled() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.SEND_WHEN_EXECUTION_STARTED)
+                .set(Fields.VALUE, settings.isSendWhenExecutionStarted() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.SEND_WHEN_EXECUTION_FINISHED)
+                .set(Fields.VALUE, settings.isSendWhenExecutionFinished() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.DEFAULT_RECIPIENTS)
+                .set(Fields.VALUE, settings.getDefaultRecipients()));
+
+        insertParameters(models);
+    }
+
+    public void deleteParameters(final CustomParameterDomainKey key, final long domainValue, final CustomParameterType type) {
+        final String deleteSql = String.format(
+                "DELETE FROM `%s` WHERE `%s`=? AND `%s`=? AND `%s`=?",
+                TABLE,
+                Fields.DOMAIN_KEY,
+                Fields.DOMAIN_VALUE,
+                Fields.TYPE);
+
+        Db.tx(new IAtom() {
+            @Override
+            public boolean run() throws SQLException {
+                Db.update(deleteSql, key.getValue(), domainValue, type.getValue());
+                return true;
+            }
+        });
     }
 
     public List<CustomParameterModel> findParameters(CustomParameterDomainKey key, long domainValue, CustomParameterType type) {
