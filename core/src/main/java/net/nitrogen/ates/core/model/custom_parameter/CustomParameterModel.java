@@ -7,6 +7,7 @@ import com.jfinal.plugin.activerecord.Model;
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.CustomParameterType;
 import net.nitrogen.ates.core.model.custom_parameter.ProjectEmailSetting.Keys;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,6 +42,32 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
 
     public ProjectEmailSetting getProjectEmailSettings(long projectId) {
         return new ProjectEmailSetting(this.findParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL));
+    }
+
+    /**
+     * Ideally, project.isEmailEnabled should have the highest priority.
+     * 
+     * If it's false, no email should be sent.
+     * 
+     * Else if true, then project.settings > execution.settings.
+     * 
+     * @param projectId
+     * @param testsuiteId
+     * @param executionId
+     * @return
+     */
+    public ProjectEmailSetting getExecutionEmailSettings(long executionId) {
+        ExecutionModel exeModel = ExecutionModel.me.findById(executionId);
+        ProjectEmailSetting projectSettings = this.getProjectEmailSettings(exeModel.getProjectId());
+        ProjectEmailSetting executionSettings = new ProjectEmailSetting(this.findParameters(
+                CustomParameterDomainKey.EXECUTION,
+                executionId,
+                CustomParameterType.EMAIL));
+        executionSettings.setEmailEnabled(projectSettings.isEmailEnabled());
+        executionSettings.setSendWhenExecutionStarted(projectSettings.isSendWhenExecutionStarted());
+        executionSettings.setSendWhenExecutionFinished(projectSettings.isSendWhenExecutionFinished());
+        // There is one exception for defaultRecipients, which is execution > project
+        return executionSettings;
     }
 
     public void updateProjectEmailSettings(long projectId, ProjectEmailSetting settings) {

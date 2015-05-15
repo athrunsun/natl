@@ -17,19 +17,19 @@
                                     <div class="frame" id="frame_1">
                                         <form action="${CPATH}/project/save" method="post">
                                             <input name="id" type="hidden" value="${project.getId()}">
-                                            <label>Name</label>
+                                            <p>Name</p>
                                             <div class="input-control text">
                                                 <input name="name" type="text" value="${project.getName()}" required="required">
                                             </div>
-                                            <label>Git URL</label>
+                                            <p>Git URL</p>
                                             <div class="input-control text">
                                                 <input name="git_url" type="text" value="${project.getGitUrl()}" required="required">
                                             </div>
-                                            <label>Jar Name - With Dependency</label>
+                                            <p>Jar Name - With Dependency</p>
                                             <div class="input-control text">
                                                 <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}" required="required">
                                             </div>
-                                            <label>Total Test Case Count</label>
+                                            <p>Total Test Case Count</p>
                                             <div class="input-control text">
                                                 <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}" required="required">
                                             </div>
@@ -54,7 +54,7 @@
                                                 </label>
                                                 <div class="row panel padding20">
                                                     <div class="span11">
-                                                        <label>Send email when:</label>
+                                                        <p>Send email when:</p>
                                                         <div>
                                                             <label class="input-control checkbox small-check">
                                                                 <#assign checked1="">
@@ -78,7 +78,7 @@
                                                             </label>
                                                         </div>
                                                         <div class="row"/>
-                                                        <label>Default email recipients:</label>
+                                                        <p>Default email recipients:</p>
                                                         <div class="input-control text">
                                                             <input id="default_recipients" ${disabled} name="default_recipients" type="text" value="${emailSettings.getDefaultRecipients()}" placeholder="emails seperated by semicolon(;)">
                                                         </div>

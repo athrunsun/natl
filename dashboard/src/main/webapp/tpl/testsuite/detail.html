@@ -17,22 +17,23 @@
                         <div class="panel-content">
                             <div class="row">
                                 <div class="span6">
-                                    <div id="passrate_chart_container" class="grid fluid">
-                                    </div>
+                                    <div id="passrate_chart_container" class="grid fluid"></div>
                                 </div>
                                 <div class="span6">
                                     <div class="panel" data-role="panel">
                                         <div class="panel-header bg-lightBlue fg-white">Suite Properties</div>
                                         <div class="panel-content">
                                             <form id="update_custom_params" action="${CPATH}/testsuite/updateCustomParameters" method="post">
-                                                <input type="hidden" name="testSuiteId" value="${testsuite.getId()}">
                                                 <div id="custom_params" class="grid fluid">
-                                                <#list customParameterList as customParameter>
-                                                    <@parameterRow paramKey=customParameter.getKey() paramValue=customParameter.getValue() />
-                                                </#list>
+                                                    <div class="span5"><a>Property Key</a></div>
+                                                    <div class="span7"><a>Property Value</a></div>
+                                                    <#list customParameterList as customParameter>
+                                                        <@parameterRow paramKey=customParameter.getKey() paramValue=customParameter.getValue() />
+                                                    </#list>
                                                 </div>
-                                                <div class="form-actions">
-                                                    <input class="button primary" type="submit" value="Save">
+                                                <input type="hidden" name="testSuiteId" value="${testsuite.getId()}"/>
+                                                <div class="row form-actions">
+                                                    <input class="button primary" type="submit" value="Save"/>
                                                     <button class="button default addPara">Add Parameter</button>
                                                 </div>
                                             </form>
