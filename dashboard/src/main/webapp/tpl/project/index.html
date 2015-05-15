@@ -53,10 +53,10 @@
                                                     <span class="caption">Enable email notifications</span>
                                                 </label>
                                                 <div class="row panel padding20">
-                                                    <div class="bg-white span11">
+                                                    <div class="span11">
                                                         <label>Send email when:</label>
                                                         <div>
-                                                            <label class="input-control checkbox small-check padding-40">
+                                                            <label class="input-control checkbox small-check">
                                                                 <#assign checked1="">
                                                                 <#if emailSettings.isSendWhenExecutionStarted()>
                                                                     <#assign checked1="checked=''">
@@ -67,7 +67,7 @@
                                                             </label>
                                                         </div>
                                                         <div>
-                                                            <label class="input-control checkbox small-check padding-40">
+                                                            <label class="input-control checkbox small-check">
                                                                 <#assign checked2="">
                                                                 <#if emailSettings.isSendWhenExecutionFinished()>
                                                                     <#assign checked2="checked=''">

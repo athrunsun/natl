@@ -44,6 +44,14 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
     }
 
     public void updateProjectEmailSettings(long projectId, ProjectEmailSetting settings) {
+        // if everything is empty from client, we only need to update isEmailEnabled, and keep other field values.
+        if (!settings.isEmailEnabled() && !settings.isSendWhenExecutionStarted() && !settings.isSendWhenExecutionFinished()
+                && settings.getDefaultRecipients().isEmpty()) {
+            ProjectEmailSetting originalSettings = this.getProjectEmailSettings(projectId);
+            settings.setSendWhenExecutionStarted(originalSettings.isSendWhenExecutionStarted());
+            settings.setSendWhenExecutionFinished(originalSettings.isSendWhenExecutionFinished());
+            settings.setDefaultRecipients(originalSettings.getDefaultRecipients());
+        }
         this.deleteParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL);
 
         List<CustomParameterModel> models = new ArrayList<CustomParameterModel>();
