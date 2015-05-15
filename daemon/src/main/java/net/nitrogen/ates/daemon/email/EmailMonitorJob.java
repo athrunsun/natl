@@ -42,7 +42,7 @@ public class EmailMonitorJob implements Job {
         String password = props.getProperty("hotmailPassword");
         HotMail hotmail = new HotMail(user, password);
         hotmail.setSubject(entry.getSubject());
-        hotmail.setBody(entry.getMessage() + entry.getId());
+        hotmail.setBody(entry.getMessage());
         hotmail.setFrom(user);
         hotmail.setTo(entry.getTo().split(";"));
         try {

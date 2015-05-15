@@ -5,6 +5,9 @@ import org.joda.time.DateTime;
 import com.jfinal.plugin.activerecord.Model;
 
 import net.nitrogen.ates.core.enumeration.EmailStatus;
+import net.nitrogen.ates.core.enumeration.EmailType;
+import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.custom_parameter.ProjectEmailSetting;
 import net.nitrogen.ates.util.DateTimeUtil;
 
 import java.sql.Timestamp;
@@ -27,6 +30,26 @@ public class EmailModel extends Model<EmailModel> {
     }
 
     public static final EmailModel me = new EmailModel();
+
+    public void insertEmailForSending(long executionId) {
+        ProjectEmailSetting settings = CustomParameterModel.me.getExecutionEmailSettings(executionId);
+        if (settings.isEmailEnabled()) {
+            if (settings.isSendWhenExecutionStarted()) {
+                EmailModel model = new EmailModel();
+                model.set(Fields.TO, settings.getDefaultRecipients()).set(Fields.STATUS, EmailStatus.READY.getValue())
+                        .set(Fields.TYPE, EmailType.EXECUTION.getValue()).set(Fields.VALUE, executionId).setUpdatedDate(DateTime.now());
+                model.setSubject("[NATL] Execution started: " + executionId);
+                model.setMessage("Hi,\n\nThe execution is started.\n\nRegards,\nNitrogen Automation Test Lab");
+                model.save();
+            }
+            if (settings.isSendWhenExecutionFinished()) {
+                EmailModel model = new EmailModel();
+                model.set(Fields.TO, settings.getDefaultRecipients()).set(Fields.STATUS, EmailStatus.STARTED.getValue())
+                        .set(Fields.TYPE, EmailType.EXECUTION.getValue()).set(Fields.VALUE, executionId).setUpdatedDate(DateTime.now());
+                model.save();
+            }
+        }
+    }
 
     public EmailModel findUnsentEmail() {
         String sql = String.format(

@@ -152,10 +152,10 @@ CREATE TABLE IF NOT EXISTS `feedback` (
 CREATE TABLE IF NOT EXISTS `email` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `from` VARCHAR(100),
-  `to` VARCHAR(100),
+  `to` VARCHAR(100) NOT NULL,
   `cc` VARCHAR(100),
-  `subject` VARCHAR(1000) NOT NULL,
-  `message` TEXT(65000) NOT NULL,
+  `subject` VARCHAR(1000),
+  `message` TEXT(65000),
   `status` INT NOT NULL,
   `updated_date` DATETIME NOT NULL,
   `type` INT NOT NULL,
