@@ -67,6 +67,9 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
         executionSettings.setSendWhenExecutionStarted(projectSettings.isSendWhenExecutionStarted());
         executionSettings.setSendWhenExecutionFinished(projectSettings.isSendWhenExecutionFinished());
         // There is one exception for defaultRecipients, which is execution > project
+        if (executionSettings.getDefaultRecipients().isEmpty()) {
+            executionSettings.setDefaultRecipients(projectSettings.getDefaultRecipients());
+        }
         return executionSettings;
     }
 
