@@ -1,19 +1,20 @@
 package net.nitrogen.ates.dashboard.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.jfinal.aop.Before;
+import com.jfinal.core.Controller;
 
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
 import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
+import net.nitrogen.ates.core.model.email.EmailModel;
 import net.nitrogen.ates.core.model.execution.ExecutionListFactory;
 import net.nitrogen.ates.core.model.execution.ExecutionModel;
 import net.nitrogen.ates.core.model.test_suite.TestSuiteModel;
 import net.nitrogen.ates.dashboard.interceptor.RawCustomParameterHandlingInterceptor;
 import net.nitrogen.ates.util.StringUtil;
 
-import com.jfinal.aop.Before;
-import com.jfinal.core.Controller;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExecutionController extends Controller {
     public void index() {
@@ -42,6 +43,7 @@ public class ExecutionController extends Controller {
         executionName = StringUtil.isNullOrWhiteSpace(executionName) ? ExecutionModel.DEFAULT_EXECUTION_NAME : executionName;
         long newExecutionId = ExecutionModel.me.createExecutionByTestCase(ControllerHelper.getProjectPrefFromCookie(this), executionName, selectedTestCaseIds);
         CustomParameterModel.me.insertParameters(ControllerHelper.getRawCustomParameterMap(this), CustomParameterDomainKey.EXECUTION, newExecutionId);
+        EmailModel.me.insertEmailForSending(newExecutionId);
 
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
@@ -60,6 +62,7 @@ public class ExecutionController extends Controller {
         long newExecutionId = ExecutionModel.me.createExecutionByTestGroup(ControllerHelper.getProjectPrefFromCookie(this), executionName, testGroupIds);
 
         CustomParameterModel.me.insertParameters(ControllerHelper.getRawCustomParameterMap(this), CustomParameterDomainKey.EXECUTION, newExecutionId);
+        EmailModel.me.insertEmailForSending(newExecutionId);
 
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
@@ -72,6 +75,7 @@ public class ExecutionController extends Controller {
                 projectId,
                 String.format("CreatedFromSuite_%s", TestSuiteModel.me.findById(testSuiteId).getName()),
                 testSuiteId);
+        EmailModel.me.insertEmailForSending(newExecutionId);
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
@@ -80,10 +84,15 @@ public class ExecutionController extends Controller {
     }
 
     public void rerunAll() {
-        redirect(String.format("/execution/detail/%d", ExecutionModel.me.cloneExecution(getParaToLong(0))));
+        final long newExecutionId = ExecutionModel.me.cloneExecution(getParaToLong(0));
+        EmailModel.me.insertEmailForSending(newExecutionId);
+        redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
     public void rerunFailed() {
-        redirect(String.format("/execution/detail/%d", ExecutionModel.me.createExecutionByExecResult(getParaToLong(0), ExecResult.FAILED)));
+        final long newExecutionId = ExecutionModel.me.createExecutionByExecResult(getParaToLong(0), ExecResult.FAILED);
+        EmailModel.me.insertEmailForSending(newExecutionId);
+        redirect(String.format("/execution/detail/%d", newExecutionId));
     }
+
 }

@@ -1,11 +1,11 @@
 package net.nitrogen.ates.core.enumeration;
 
-public enum CustomParameterType {
-    JVM(0), TESTNG(1), EMAIL(2);
+public enum EmailStatus {
+    STARTED(0), READY(1), SENT(2);
 
     final int value;
 
-    CustomParameterType(int s) {
+    EmailStatus(int s) {
         this.value = s;
     }
 

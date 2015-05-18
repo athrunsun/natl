@@ -10,12 +10,12 @@
     <!-- Custom Javascript contents here -->
 </#macro>
 
-<#macro master>
+<#macro master pageTitle="NATL">
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
     <head>
-        <title>NATL</title>
+        <title>${pageTitle}</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <link rel="icon" href="${CPATH}/img/logo.png" type="image/png">
         <link rel="shortcut icon" href="${CPATH}/img/ATES-logo.png" type="image/png">
@@ -52,10 +52,10 @@
                         <a href="${CPATH}/testsuite">TestSuite</a>
                     </li>
                     <li>
-                        <a href="${CPATH}/project" class="icon-cog"></a>
+                        <a href="${CPATH}/project" class="icon-cog" title="Project Settings"></a>
                     </li>
                     <li>
-                        <a class="icon-help-2" href="${CPATH}/help" target="blank"></a>
+                        <a class="icon-help-2" href="${CPATH}/help" target="blank" title="Help"></a>
                     </li>
                 </ul>
                 <ul class="element-menu place-right">
@@ -65,6 +65,7 @@
                             <li><a href="${CPATH}/admin/queue">Queue</a></li>
                             <li><a href="${CPATH}/admin/project">Project</a></li>
                             <li><a href="${CPATH}/admin/slave">Slave</a></li>
+                            <li><a href="${CPATH}/admin/email">Email</a></li>
                         </ul>
                     </li>
                 </ul>

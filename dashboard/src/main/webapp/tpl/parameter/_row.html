@@ -1,28 +1,60 @@
 <#macro parameterRow paramKey="" paramValue="" paramType="" removeEnabled="true">
-    <div class="row">
+    <div class="span12" style="margin-left:0;">
         <#if removeEnabled == "true">
-            <div class="input-control text span5">
-                <input type="text" name="customFieldName" value="${paramKey}" placeholder="Key" required="required">
-            </div>
+            <#assign required="required='required'">
+            <#assign disabled="">
+            <#assign span="span5">
         <#else>
-            <div class="input-control text span6">
-                <input type="text" name="customFieldName" value="${paramKey}" disabled="disabled">
-            </div>
+            <#assign disabled="disabled='disabled'">
+            <#assign required="">
+            <#assign span="span6">
         </#if>
-        <#if removeEnabled == "true">
-            <div class="input-control text span5">
-                <input type="text" name="customFieldValue" value="${paramValue}" placeholder="Value" required="required">
-            </div>
-        <#else>
-            <div class="input-control text span6">
-                <input type="text" name="customFieldValue" value="${paramValue}" disabled="disabled">
-            </div>
-        </#if>
-        <div style="display:none;">
+        <div class="input-control text ${span}">
+            <input type="text" name="customFieldName" value="${paramKey}" ${disabled} ${required} placeholder="enter key name"/>
+        </div>
+        <div class="input-control text ${span}">
+            <input type="text" name="customFieldValue" value="${paramValue}" ${disabled} ${required} placeholder="enter key value"/>
+        </div>
+        <div class="span1" style="display:none;">
             <div class="input-control select">
                 <select name="customFieldType">
                     <option value="0" selected="selected">JVM</option>
                     <option value="1">TestNG</option>
+                    <option value="2">Email</option>
+                </select>
+            </div>
+        </div>
+        <#if removeEnabled == "true">
+            <div class="input-control text span2">
+                <button class="button danger remPara">Remove</button>
+            </div>
+        </#if>
+    </div>
+</#macro>
+
+<#macro emailSettingsContainer emailSettings editable="true">
+    <div class="span12" style="margin-left:0;">
+        <#if removeEnabled == "true">
+            <#assign required="required='required'">
+            <#assign disabled="">
+            <#assign span="span5">
+        <#else>
+            <#assign disabled="disabled='disabled'">
+            <#assign required="">
+            <#assign span="span6">
+        </#if>
+        <div class="input-control text ${span}">
+            <input type="text" name="customFieldName" value="${paramKey}" ${disabled} ${required} placeholder="enter key name"/>
+        </div>
+        <div class="input-control text ${span}">
+            <input type="text" name="customFieldValue" value="${paramValue}" ${disabled} ${required} placeholder="enter key value"/>
+        </div>
+        <div class="span1" style="display:none;">
+            <div class="input-control select">
+                <select name="customFieldType">
+                    <option value="0" selected="selected">JVM</option>
+                    <option value="1">TestNG</option>
+                    <option value="2">Email</option>
                 </select>
             </div>
         </div>

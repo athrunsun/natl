@@ -1,16 +1,18 @@
 package net.nitrogen.ates.core.model.custom_parameter;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Model;
+
+import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
+import net.nitrogen.ates.core.enumeration.CustomParameterType;
+import net.nitrogen.ates.core.model.custom_parameter.ProjectEmailSetting.Keys;
+import net.nitrogen.ates.core.model.execution.ExecutionModel;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
-import net.nitrogen.ates.core.enumeration.CustomParameterType;
-
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Model;
 
 public class CustomParameterModel extends Model<CustomParameterModel> {
     public static final String TABLE = "custom_parameter";
@@ -36,6 +38,83 @@ public class CustomParameterModel extends Model<CustomParameterModel> {
             params.append(" ");
         }
         return params.toString().trim();
+    }
+
+    public ProjectEmailSetting getProjectEmailSettings(long projectId) {
+        return new ProjectEmailSetting(this.findParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL));
+    }
+
+    /**
+     * Ideally, project.isEmailEnabled should have the highest priority.
+     * 
+     * If it's false, no email should be sent.
+     * 
+     * Else if true, then project.settings > execution.settings.
+     * 
+     * @param projectId
+     * @param testsuiteId
+     * @param executionId
+     * @return
+     */
+    public ProjectEmailSetting getExecutionEmailSettings(long executionId) {
+        ExecutionModel exeModel = ExecutionModel.me.findById(executionId);
+        ProjectEmailSetting projectSettings = this.getProjectEmailSettings(exeModel.getProjectId());
+        ProjectEmailSetting executionSettings = new ProjectEmailSetting(this.findParameters(
+                CustomParameterDomainKey.EXECUTION,
+                executionId,
+                CustomParameterType.EMAIL));
+        executionSettings.setEmailEnabled(projectSettings.isEmailEnabled());
+        executionSettings.setSendWhenExecutionStarted(projectSettings.isSendWhenExecutionStarted());
+        executionSettings.setSendWhenExecutionFinished(projectSettings.isSendWhenExecutionFinished());
+        // There is one exception for defaultRecipients, which is execution > project
+        if (executionSettings.getDefaultRecipients().isEmpty()) {
+            executionSettings.setDefaultRecipients(projectSettings.getDefaultRecipients());
+        }
+        return executionSettings;
+    }
+
+    public void updateProjectEmailSettings(long projectId, ProjectEmailSetting settings) {
+        // if everything is empty from client, we only need to update isEmailEnabled, and keep other field values.
+        if (!settings.isEmailEnabled() && !settings.isSendWhenExecutionStarted() && !settings.isSendWhenExecutionFinished()
+                && settings.getDefaultRecipients().isEmpty()) {
+            ProjectEmailSetting originalSettings = this.getProjectEmailSettings(projectId);
+            settings.setSendWhenExecutionStarted(originalSettings.isSendWhenExecutionStarted());
+            settings.setSendWhenExecutionFinished(originalSettings.isSendWhenExecutionFinished());
+            settings.setDefaultRecipients(originalSettings.getDefaultRecipients());
+        }
+        this.deleteParameters(CustomParameterDomainKey.PROJECT, projectId, CustomParameterType.EMAIL);
+
+        List<CustomParameterModel> models = new ArrayList<CustomParameterModel>();
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.EMAIL_ENABLED).set(Fields.VALUE, settings.isEmailEnabled() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.SEND_WHEN_EXECUTION_STARTED)
+                .set(Fields.VALUE, settings.isSendWhenExecutionStarted() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.SEND_WHEN_EXECUTION_FINISHED)
+                .set(Fields.VALUE, settings.isSendWhenExecutionFinished() + ""));
+        models.add(new CustomParameterModel().set(Fields.DOMAIN_KEY, CustomParameterDomainKey.PROJECT.getValue()).set(Fields.DOMAIN_VALUE, projectId)
+                .set(Fields.TYPE, CustomParameterType.EMAIL.getValue()).set(Fields.KEY, Keys.DEFAULT_RECIPIENTS)
+                .set(Fields.VALUE, settings.getDefaultRecipients()));
+
+        insertParameters(models);
+    }
+
+    public void deleteParameters(final CustomParameterDomainKey key, final long domainValue, final CustomParameterType type) {
+        final String deleteSql = String.format(
+                "DELETE FROM `%s` WHERE `%s`=? AND `%s`=? AND `%s`=?",
+                TABLE,
+                Fields.DOMAIN_KEY,
+                Fields.DOMAIN_VALUE,
+                Fields.TYPE);
+
+        Db.tx(new IAtom() {
+            @Override
+            public boolean run() throws SQLException {
+                Db.update(deleteSql, key.getValue(), domainValue, type.getValue());
+                return true;
+            }
+        });
     }
 
     public List<CustomParameterModel> findParameters(CustomParameterDomainKey key, long domainValue, CustomParameterType type) {

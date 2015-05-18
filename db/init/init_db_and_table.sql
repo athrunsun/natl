@@ -139,3 +139,26 @@ CREATE TABLE IF NOT EXISTS `feedback` (
   `type` INT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;
+
+# `status` enum:
+# 0 - STARTED
+# 1 - READY
+# 2 - SENT
+#
+# `type` enum:
+# 0 - Execution
+# 1 - Suite
+# 2 - CaseReload
+CREATE TABLE IF NOT EXISTS `email` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `from` VARCHAR(100),
+  `to` VARCHAR(100) NOT NULL,
+  `cc` VARCHAR(100),
+  `subject` VARCHAR(1000),
+  `message` TEXT(65000),
+  `status` INT NOT NULL,
+  `updated_date` DATETIME NOT NULL,
+  `type` INT NOT NULL,
+  `value` INT NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_unicode_ci;

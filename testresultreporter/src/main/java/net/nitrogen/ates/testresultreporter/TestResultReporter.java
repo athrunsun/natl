@@ -1,20 +1,5 @@
 package net.nitrogen.ates.testresultreporter;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.core.enumeration.ExecResult;
-import net.nitrogen.ates.core.env.EnvParameter;
-import net.nitrogen.ates.core.model.test_case.TestCaseModel;
-import net.nitrogen.ates.core.model.test_result.TestResultModel;
-import net.nitrogen.ates.util.PropertiesUtil;
-
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.openqa.selenium.OutputType;
@@ -25,6 +10,22 @@ import org.testng.ITestResult;
 
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
+
+import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.core.enumeration.ExecResult;
+import net.nitrogen.ates.core.env.EnvParameter;
+import net.nitrogen.ates.core.model.email.EmailModel;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_result.TestResultModel;
+import net.nitrogen.ates.util.PropertiesUtil;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class TestResultReporter {
     public static final String DRIVER_ATTR = "driver";
@@ -49,6 +50,7 @@ public class TestResultReporter {
         ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin, configName);
         arp.start();
         TestResultModel.me.insertTestResult(this.prepareTestResult(result, status));
+        EmailModel.me.checkAndMarkExecutionEmailAsReady(EnvParameter.executionId());
         arp.stop();
         druidPlugin.stop();
     }
