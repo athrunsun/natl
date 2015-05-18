@@ -2,6 +2,8 @@ package net.nitrogen.ates.core.model.email;
 
 import org.joda.time.DateTime;
 
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.ICallback;
 import com.jfinal.plugin.activerecord.Model;
 
 import net.nitrogen.ates.core.enumeration.EmailStatus;
@@ -10,6 +12,8 @@ import net.nitrogen.ates.core.model.custom_parameter.CustomParameterModel;
 import net.nitrogen.ates.core.model.custom_parameter.ProjectEmailSetting;
 import net.nitrogen.ates.util.DateTimeUtil;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -46,9 +50,24 @@ public class EmailModel extends Model<EmailModel> {
                 EmailModel model = new EmailModel();
                 model.set(Fields.TO, settings.getDefaultRecipients()).set(Fields.STATUS, EmailStatus.STARTED.getValue())
                         .set(Fields.TYPE, EmailType.EXECUTION.getValue()).set(Fields.VALUE, executionId).setUpdatedDate(DateTime.now());
+                model.setSubject("[NATL] Execution Finished: " + executionId);
+                model.setMessage("Hi,\n\nThe execution is Finished.\n\nRegards,\nNitrogen Automation Test Lab");
                 model.save();
             }
         }
+    }
+
+    public void checkAndMarkExecutionEmailAsReady(final long executionId) {
+        Db.execute(new ICallback() {
+            @Override
+            public Object call(Connection conn) throws SQLException {
+                try {
+                    conn.prepareCall("{ call UpdateEmailStatusForExecution(" + executionId + ") }").execute();
+                } catch (SQLException e) {
+                }
+                return null;
+            }
+        });
     }
 
     public EmailModel findUnsentEmail() {
