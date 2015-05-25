@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `test_result` (
   `end_time` DATETIME NOT NULL,
   `exec_result` INT NOT NULL,
   `message` VARCHAR(2000) NOT NULL,
-  `stack_trace` VARCHAR(5000) NOT NULL,
+  `stack_trace` TEXT(20000) NOT NULL,
   `screenshot_url` VARCHAR(500) NOT NULL,
   `execution_id` INT UNSIGNED NOT NULL,
   `project_id` INT UNSIGNED NOT NULL,

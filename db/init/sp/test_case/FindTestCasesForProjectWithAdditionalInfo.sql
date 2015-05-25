@@ -10,28 +10,26 @@ BEGIN
   DECLARE LatestVersion INT UNSIGNED;
 
   SELECT `latest_test_case_version` FROM `project` WHERE `id` = ProjectId INTO LatestVersion;
-
+    
   SELECT 
     `tc`.`id`,
     `tc`.`name`,
     `tc`.`project_id`,
     `tc`.`mapping_id`,
     `tc`.`version`,
-    `tr`.`id` AS `test_result_id`,
+    `tb`.`test_result_id`,
     `tr`.`exec_result`,
     `tr`.`start_time` 
-  FROM 
-    `test_case` AS `tc` 
-  LEFT JOIN 
-    `test_result` AS `tr` 
-  ON 
-    `tc`.`id` = `tr`.`test_case_id`
+  FROM `test_case` AS `tc` 
+  LEFT JOIN
+    (SELECT `test_case_id`, MAX(`id`)  AS `test_result_id` FROM `test_result` WHERE `project_id` = ProjectId GROUP BY `test_case_id`) AS `tb`
+    ON `tc`.`id` = `tb`.`test_case_id`
+  LEFT JOIN `test_result` AS `tr` 
+    ON `tr`.`id` = `tb`.`test_result_id`
   WHERE
     `tc`.`project_id` = ProjectId 
   AND
-    `tc`.`version` = LatestVersion
-  AND
-    NOT EXISTS(SELECT `id` FROM `test_result` WHERE `test_case_id` = `tc`.`id` AND `id` > `tr`.`id` LIMIT 1);
+    `tc`.`version` = LatestVersion;
 END $$
 
 DELIMITER ;
