@@ -1,6 +1,26 @@
 <#macro table showCheckbox="true">
 <div class="panel">
-    <div class="panel-header bg-lightBlue fg-white">${testCaseListWithAdditionalInfo.size()} Test Cases</div>
+    <#assign totalPassed=0>
+    <#assign totalFailed=0>
+    <#assign totalSkipped=0>
+    <#assign totalUnknown=0>
+    <#list testCaseListWithAdditionalInfo as testCaseWithAdditionalInfo>
+        <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
+        <#if testResult == "">
+            <#assign totalUnknown=totalUnknown+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
+            <#assign totalUnknown=totalUnknown+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+            <#assign totalSkipped=totalSkipped+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+            <#assign totalPassed=totalPassed+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+            <#assign totalFailed=totalFailed+1>
+        <#else>
+            <#assign totalUnknown=totalUnknown+1>
+        </#if>
+    </#list>
+    <div class="panel-header bg-lightBlue fg-white">${testCaseListWithAdditionalInfo.size()} Test Cases <a class="fg-black">(${totalPassed} <sub>Passed</sub>/ ${totalFailed} <sub>Failed</sub>/${totalSkipped} <sub>Skipped</sub>/ ${totalUnknown} <sub>Unknown</sub>)</a></div>
     <div class="panel-content">
         <table id="test_case_table" class="table">
             <thead>
