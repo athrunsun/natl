@@ -44,7 +44,8 @@
                         <div class="panel-header bg-lightBlue fg-white">
                             Queue Entries
                             <a href="${CPATH}/execution/rerunAll/${execution.getId()}" class="button primary place-right">Rerun ALL</a>
-                            <a href="${CPATH}/execution/rerunFailed/${execution.getId()}" class="button default place-right">Rerun FAILED</a>
+                            <a href="${CPATH}/execution/rerunUnsuccessful/${execution.getId()}" class="button default place-right">Rerun Non-Pass</a>
+                            <!-- a href="${CPATH}/execution/rerunFailed/${execution.getId()}" class="button default place-right">Rerun FAILED</a-->
                         </div>
                         <div class="panel-content">
                             <table id="queue_table" class="table">
