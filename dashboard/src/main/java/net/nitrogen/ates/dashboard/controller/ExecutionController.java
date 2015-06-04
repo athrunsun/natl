@@ -95,4 +95,10 @@ public class ExecutionController extends Controller {
         redirect(String.format("/execution/detail/%d", newExecutionId));
     }
 
+    public void rerunUnsuccessful() {
+        final long newExecutionId = ExecutionModel.me.createExecutionByExecResult(getParaToLong(0));
+        EmailModel.me.insertEmailForSending(newExecutionId);
+        redirect(String.format("/execution/detail/%d", newExecutionId));
+    }
+
 }

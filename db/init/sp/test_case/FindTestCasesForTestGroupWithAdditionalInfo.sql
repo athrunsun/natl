@@ -19,7 +19,7 @@ BEGIN
     `tc`.`project_id`,
     `tc`.`mapping_id`,
     `tc`.`version`,
-    `tr`.`id` AS `test_result_id`,
+    `tb`.`test_result_id`,
     `tr`.`exec_result`,
     `tr`.`start_time` 
   FROM 
@@ -28,16 +28,15 @@ BEGIN
     `test_case` AS `tc`  
   ON 
     `tc`.`id` = `tg`.`test_case_id`
-  LEFT JOIN 
-    `test_result` AS `tr` 
-  ON 
-    `tc`.`id` = `tr`.`test_case_id`
+  LEFT JOIN
+    (SELECT `test_case_id`, MAX(`id`)  AS `test_result_id` FROM `test_result` WHERE `project_id` = ProjectId GROUP BY `test_case_id`) AS `tb`
+    ON `tc`.`id` = `tb`.`test_case_id`
+  LEFT JOIN `test_result` AS `tr` 
+    ON `tr`.`id` = `tb`.`test_result_id`
   WHERE
     `tg`.`test_group_id` = GroupId 
   AND
-    `tc`.`version` = LatestVersion
-  AND
-    NOT EXISTS(SELECT `id` FROM `test_result` WHERE `test_case_id` = `tc`.`id` AND `id` > `tr`.`id` LIMIT 1);
+    `tc`.`version` = LatestVersion;
 END $$
 
 DELIMITER ;

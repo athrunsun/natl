@@ -1,14 +1,8 @@
 package net.nitrogen.ates.core.model.execution;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.joda.time.DateTime;
+
+import com.jfinal.plugin.activerecord.Model;
 
 import net.nitrogen.ates.core.enumeration.CustomParameterDomainKey;
 import net.nitrogen.ates.core.enumeration.ExecResult;
@@ -23,9 +17,15 @@ import net.nitrogen.ates.core.model.test_result.TestResultModel;
 import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
 import net.nitrogen.ates.util.DateTimeUtil;
 
-import org.joda.time.DateTime;
-
-import com.jfinal.plugin.activerecord.Model;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExecutionModel extends Model<ExecutionModel> {
     public static final String EXEC_RESULT_COUNT_MAP_KEY_TOTAL = "TOTAL";
@@ -251,8 +251,19 @@ public class ExecutionModel extends Model<ExecutionModel> {
     }
 
     public long createExecutionByExecResult(long executionId, ExecResult execResult) {
+        final String namePostfix = String.format("_Rerun%s", execResult.toString());
         List<QueueEntryModel> existingEntries = QueueEntryModel.me.findValidEntriesForExecution(executionId, execResult);
+        return createExecutionByEntries(executionId, namePostfix, existingEntries);
+    }
 
+    public long createExecutionByExecResult(long executionId) {
+        List<QueueEntryModel> existingEntries = QueueEntryModel.me.findValidEntriesForExecution(executionId, ExecResult.FAILED);
+        existingEntries.addAll(QueueEntryModel.me.findValidEntriesForExecution(executionId, ExecResult.SKIPPED));
+        existingEntries.addAll(QueueEntryModel.me.findValidEntriesForExecution(executionId, ExecResult.UNKNOWN));
+        return createExecutionByEntries(executionId, "_RerunNonPass", existingEntries);
+    }
+
+    private long createExecutionByEntries(long executionId, final String namePostfix, List<QueueEntryModel> existingEntries) {
         if (existingEntries == null || existingEntries.size() <= 0) {
             return executionId;
         }
@@ -260,9 +271,9 @@ public class ExecutionModel extends Model<ExecutionModel> {
         ExecutionModel existingExecution = findFirst(
                 String.format("SELECT `%s`,`%s`,`%s` FROM `%s` WHERE `%s`=?", Fields.ID, Fields.NAME, Fields.PROJECT_ID, TABLE, Fields.ID),
                 executionId);
-
+        final String newExecutionName = String.format("%s%s", existingExecution.getName(), namePostfix);
         ExecutionModel newExecution = new ExecutionModel();
-        newExecution.setName(String.format("%s_Rerun%s", existingExecution.getName(), execResult.toString()));
+        newExecution.setName(newExecutionName);
         newExecution.setProjectId(existingExecution.getProjectId());
         newExecution.setCreatedTime(DateTime.now());
         newExecution.save();
