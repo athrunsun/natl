@@ -117,15 +117,14 @@ public class TestResultReporter {
         WebDriver driver = (WebDriver) context.getAttribute(DRIVER_ATTR + Thread.currentThread().getId());
 
         if (driver != null && !(driver.toString().contains("(null)"))) {
-            message.append(String.format(" ; Current url:%s", driver.getCurrentUrl()));
-
             try {
+                message.append(String.format(" ; Current url:%s", driver.getCurrentUrl()));
                 File f = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 File saved = new File(imagePath);
                 FileUtils.copyFile(f, saved);
                 testResult.setScreenshotUrl(imageUrl);
             } catch (Exception e) {
-                System.out.println("Error generating screenshot: " + e.getMessage());
+                message.append("Error generating screenshot: " + e.getMessage());
                 e.printStackTrace();
             }
         }
