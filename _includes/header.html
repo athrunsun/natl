@@ -1,0 +1,20 @@
+<div class="am-topbar am-topbar-inverse">
+  <div class="am-container">
+    <h1 class="am-topbar-brand">
+      <a href="{{ "/" | prepend: site.baseurl }}">ROL Automation Wiki</a>
+    </h1>
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#rsz-topbar-collapse'}">
+      <span class="am-sr-only">Navigation</span> <span class="am-icon-bars"></span>
+    </button>
+    <div class="am-collapse am-topbar-collapse am-topbar-right" id="rsz-topbar-collapse">
+      <ul class="am-nav am-nav-pills am-topbar-nav">
+        <li {% if include.current_loc == "home" %}class="am-active"{% endif %}>
+          <a href="{{ "/index.html" | prepend: site.baseurl }}">Home</a>
+        </li>
+        <li {% if include.current_loc == "faq" %}class="am-active"{% endif %}>
+          <a href="{{ "/faq.html" | prepend: site.baseurl }}">FAQ</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

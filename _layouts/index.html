@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include head.html %}
+    {% include index_head.html %}
+  </head>
+  <body>
+    <div class="rsz-main-content-wrapper">
+      {% include header.html current_loc="home" %}
+      {{ content }}
+      <div class="rsz-main-content-push"></div>
+    </div>
+    {% include footer.html %}
+  </body>
+</html>
