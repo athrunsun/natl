@@ -4,87 +4,132 @@ layout: index
 
 <div class="rsz-index-banner">
     <div class="am-container am-scrollspy-init am-scrollspy-inview am-animation-scale-up" data-am-scrollspy="{animation: 'scale-up', repeat: false}">
-        <h1>Welcome!</h1>
-        This site is the entry to all RegOnline automation resources.
+        <h1>What is NATL?</h1>
+        NATL, i.e. Nitrogen Automation Test Lab, a 'Selenium Grid' like system that supports WebDriver automation with parallel execution, better customization, and a more manageable frontend.
     </div>
 </div>
 <div class="rolaw-index-content">
     <div class="am-container">
-        <h2>Dashboard/Jenkins</h2>
+        <h2>Summary</h2>
         <hr/>
+        <p>Coverage and passrates of recent executions.</p>
         <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://10.119.33.69/ClassicROLATD" title="Classic ROL Automation Dashboard">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/RegOnlineClassicLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
-            </div>
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://10.119.33.69/SNHROLATD" title="SNH ROL Automation Dashboard (for Ruby test framework)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/RegOnlineSNHLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/Summary.png" | prepend: site.baseurl }}"></img>
             </div>
         </div>
-        <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://10.119.33.69/ROLATD" title="SNH ROL Automation Dashboard (for Java test framework)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/LanyonRegOnlineSNHLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
-            </div>
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://10.119.33.69:8080/jenkins">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/jenkins-logo.png" | prepend: site.baseurl }}"></img>
-                </a>
-            </div>
-        </div>
-        <h2>Source Code (Test Framework)</h2>
+        <h2>Queue</h2>
         <hr/>
+        <p>Test entries from all executions, with corresponding results.</p>
         <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/regonline-automation/regonline_regressiontest" title="Classic ROL Test Framework">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/csharp-logo.png" | prepend: site.baseurl }}"></img> Classic
-                </a>
-            </div>
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/snh-smlite-selenium2-java/snh-automation-ruby" title="SNH ROL Test Framework (Ruby)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/ruby-logo.png" | prepend: site.baseurl }}"></img> SNH (Ruby)
-                </a>
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/Queue.png" | prepend: site.baseurl }}"></img>
             </div>
         </div>
-        <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/snh-smlite-selenium2-java/rolatjava" title="SNH ROL Test Framework (Java)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/java-logo.png" | prepend: site.baseurl }}"></img> SNH (Java)
-                </a>
-            </div>
-        </div>
-        <h2>Source Code (Dashboard)</h2>
+        <h2>Execution</h2>
         <hr/>
+        <p>An execution is a group of test entries with the same execution parameters.</p>
         <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/regonline-automation/automationdashboard" title="Classic ROL Automation Dashboard Source Code">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/RegOnlineClassicLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
-            </div>
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/snh-smlite-selenium2-java/snhrolatd" title="SNH ROL Automation Dashboard Source Code (Ruby)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/RegOnlineSNHLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/ExecutionList.png" | prepend: site.baseurl }}"></img>
             </div>
         </div>
+        <p>Execution detail, with corresponding results.</p>
         <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://git.dev.activenetwork.com/snh-smlite-selenium2-java/rolatd" title="SNH ROL Automation Dashboard Source Code (Java)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/LanyonRegOnlineSNHLogo.png" | prepend: site.baseurl }}"></img>
-                </a>
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/ExecutionDetail.png" | prepend: site.baseurl }}"></img>
             </div>
         </div>
-        <h2>NATL (AKA NitrogenAutomationTestLab, the next-generation automation system, multiple project compatible)</h2>
+        <h2>Test Case</h2>
         <hr/>
+        <p>Test cases extracted from code, with their latest results.</p>
         <div class="am-g">
-            <div class="am-u-md-6">
-                <a class="am-btn am-btn-default am-btn-xl am-btn-block rolaw-index-logo-img-btn" href="http://10.136.4.133:8080/ates/" title="NATL (Shanghai)">
-                    <img class="rolaw-index-logo-img" src="{{ "/static/img/logo/natl-big-logo.png" | prepend: site.baseurl }}"></img> NATL
-                </a>
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestCase.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Run selected test cases.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestCase_RunSelected.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Assign selected test cases to a test suite.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestCase_AssignSelectedTestCaseToTestSuite.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Test Group</h2>
+        <hr/>
+        <p>A group of test cases, defined in code (TestNG: <code>@Test(group="xxx")</code>, NUnit: <code>[Category("xxx")]</code>).</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestGroup.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Run selected test groups.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestGroup_RunSelected.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Assign selected test groups to a test suite.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestGroup_AssignSelectedTestGroupToTestSuite.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Test Suite</h2>
+        <hr/>
+        <p>A group of test cases, composed by yourself.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestSuite.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Test suite detail, test cases included in this test suite, custom execution parameters and latest results.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/TestSuiteDetail.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Project Settings</h2>
+        <hr/>
+        <p>Basic information.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/ProjectSettings_BasicInfo.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <p>Email settings.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/ProjectSettings_EmailSettings.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Help</h2>
+        <hr/>
+        <p>Documentation.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/Help.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Admin - Project</h2>
+        <hr/>
+        <p>Manage all projects, we can also create new project.</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/Help.png" | prepend: site.baseurl }}"></img>
+            </div>
+        </div>
+        <h2>Admin - Slave</h2>
+        <hr/>
+        <p>View all slaves (virtual machines that actually execute tests).</p>
+        <div class="am-g">
+            <div class="am-u-md-12">
+                <img class="am-img-responsive" src="{{ "/static/img/screenshot/Slave.png" | prepend: site.baseurl }}"></img>
             </div>
         </div>
     </div>
