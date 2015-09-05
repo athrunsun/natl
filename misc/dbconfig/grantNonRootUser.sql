@@ -1,0 +1,3 @@
+GRANT SELECT ON `mysql`.`proc` TO 'nitrogen_user'@'%' IDENTIFIED BY 'l@ny0n123','nitrogen_user'@'localhost' IDENTIFIED BY 'l@ny0n123','nitrogen_user'@'127.0.0.1' IDENTIFIED BY 'l@ny0n123';
+GRANT CREATE, CREATE ROUTINE, ALTER, ALTER ROUTINE, DROP, DELETE, EVENT, EXECUTE, INDEX, INSERT, LOCK TABLES, SELECT, UPDATE ON `nitrogenates`.* TO 'nitrogen_user'@'%' IDENTIFIED BY 'l@ny0n123','nitrogen_user'@'localhost' IDENTIFIED BY 'l@ny0n123','nitrogen_user'@'127.0.0.1' IDENTIFIED BY 'l@ny0n123';
+FLUSH PRIVILEGES;
