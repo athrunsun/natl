@@ -1,0 +1,7 @@
+<#macro questions qtotal=5>
+    <#list 1..qtotal as i>
+        <#assign importString="/tpl/help/faq/_q_"+i+".html"/>
+        <#import importString as q/>
+        <@q.question num=i/>
+    </#list>
+</#macro>

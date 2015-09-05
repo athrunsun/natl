@@ -1,11 +1,14 @@
 package net.nitrogen.ates.dashboard.controller;
 
+import net.nitrogen.ates.core.model.test_case.TestCaseListFactory;
+
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.TestCaseModel;
 
 public class TestCaseController extends Controller {
     public void index() {
-        setAttr("testCaseList", TestCaseModel.me.findTestCases(ControllerHelper.getProjectPrefFromCookie(this)));
+        ControllerHelper.setExecResultEnumAttr(this);
+        setAttr("testCaseListWithAdditionalInfo", TestCaseListFactory.me()
+                .createTestCaseListWithAdditionalInfoForProject(ControllerHelper.getProjectPrefFromCookie(this)));
         render("index.html");
     }
 }

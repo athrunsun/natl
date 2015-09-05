@@ -1,0 +1,48 @@
+<#include "/tpl/common/_master.html" />
+<#macro customBody>
+    <div class="top-offset">
+        <div class="grid fluid">
+            <div class="row">
+                <div class="span3">
+                    <div class="sidebar">
+                    </div>
+                </div>
+                <div class="span11">
+                    <div class="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Last 10 Emails</div>
+                        <div class="panel-content">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-left">From</th>
+                                    <th class="text-left">To</th>
+                                    <th class="text-left">Subject</th>
+                                    <th class="text-left">Message</th>
+                                    <th class="text-left">Updated</th>
+                                    <th class="text-left">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <#list emailList as item>
+                                    <tr>
+                                        <td>${item.getId()}</td>
+                                        <td>${item.getFrom()}</td>
+                                        <td>${item.getTo()}</td>
+                                        <td>${item.getSubject()}</td>
+                                        <td>${item.getMessage()}</td>
+                                        <td>${item.getUpdatedDateTimestamp()}</td>
+                                        <td>${item.getStatus()}</td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<@master/>

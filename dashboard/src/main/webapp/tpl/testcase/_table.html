@@ -1,0 +1,98 @@
+<#macro table showCheckbox="true">
+<div class="panel">
+    <#assign totalPassed=0>
+    <#assign totalFailed=0>
+    <#assign totalSkipped=0>
+    <#assign totalUnknown=0>
+    <#list testCaseListWithAdditionalInfo as testCaseWithAdditionalInfo>
+        <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
+        <#if testResult == "">
+            <#assign totalUnknown=totalUnknown+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
+            <#assign totalUnknown=totalUnknown+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+            <#assign totalSkipped=totalSkipped+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+            <#assign totalPassed=totalPassed+1>
+        <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+            <#assign totalFailed=totalFailed+1>
+        <#else>
+            <#assign totalUnknown=totalUnknown+1>
+        </#if>
+    </#list>
+    <div class="panel-header bg-lightBlue fg-white">${testCaseListWithAdditionalInfo.size()} Test Cases <a class="fg-black">(${totalPassed} <sub>Passed</sub>/ ${totalFailed} <sub>Failed</sub>/${totalSkipped} <sub>Skipped</sub>/ ${totalUnknown} <sub>Unknown</sub>)</a></div>
+    <div class="panel-content">
+        <table id="test_case_table" class="table">
+            <thead>
+            <tr>
+                <#if showCheckbox == "true">
+                    <th class="text-left"></th>
+                </#if>
+                <th class="text-left">Name</th>
+                <!--<th class="text-left">MappingId</th> -->
+                <th class="text-left">Last Executed</th>
+                <th class="text-left">Latest Result</th>
+                <@additionalThs/>
+            </tr>
+            </thead>
+            <tbody>
+            <#list testCaseListWithAdditionalInfo as testCaseWithAdditionalInfo>
+                <#assign testCase=testCaseWithAdditionalInfo.getTestCase()>
+                <#assign testResult=testCaseWithAdditionalInfo.getLatestTestResult()!>
+                <tr>
+                    <#if showCheckbox == "true">
+                        <td>
+                            <div class="input-control checkbox">
+                                <label>
+                                    <input data-id="${testCase.getId()}" data-name="${testCase.getId()}" type="checkbox" class="check-to-run-test-case"/>
+                                    <span class="check"></span>
+                                </label>
+                            </div>
+                        </td>
+                    </#if>
+                    <td>
+                        <span title="${testCase.getName()}">${testCase.getShortName()}</span>
+                    </td>
+                    <!--<td>${testCase.getMappingId()!}</td> -->
+                    <td>
+                        <#if testResult?? && (testResult.getStartTimestamp())??>
+                            <span>${testResult.getStartTimeAsString()}</span>
+                        </#if>
+                    </td>
+                    <td>
+                        <#if testResult == "">
+                            <span class="label">UNKNOWN</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
+                            <span class="label">UNKNOWN</span>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+                            <a href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                <span class="label warning">${testResult.getExecResultLabel()}</span>
+                            </a>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+                            <a href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                <span class="label success">${testResult.getExecResultLabel()}</span>
+                            </a>
+                        <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+                            <a href="${CPATH}/testresult/detail/${testResult.getId()}">
+                                <span class="label error">${testResult.getExecResultLabel()}</span>
+                            </a>
+                        <#else>
+                            <span class="label">UNKNOWN</span>
+                        </#if>
+                    </td>
+                    <@additionalTds/>
+                </tr>
+            </#list>
+            </tbody>
+        </table>
+    </div>
+</div>
+</#macro>
+
+<#macro additionalThs>
+    <!-- Custom table headers here -->
+</#macro>
+
+<#macro additionalTds>
+    <!-- Custom table columns here -->
+</#macro>

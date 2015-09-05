@@ -20,4 +20,11 @@ $(document).ready(function () {
             }
         });
     });
+    
+    $("#email_enabled").on('click', function(){
+    	var disabledAll = !document.getElementById("email_enabled").checked;
+    	$("#execution_started").prop('disabled', disabledAll);
+    	$("#execution_finished").prop('disabled', disabledAll);
+    	$("#default_recipients").prop('disabled', disabledAll);
+    });
 });

@@ -1,0 +1,119 @@
+<#include "/tpl/common/_master.html" />
+<#include "/tpl/help/faq/_questions.html" />
+<#include "/tpl/help/_howitworks.html" />
+<#macro customBody>
+<div class="container">
+    <div class="grid">
+        <div class="row">
+            <div class="span3">
+                <nav>
+                    <ul class="side-menu" style="position: fixed; top: 65px; z-index: 1000;">
+                        <li><a href="#_general">General</a></li>
+                        <li><a href="#_howitworks">How It Works</a></li>
+                        <li><a href="#_integrationrequirement">Integration Requirements</a></li>
+                        <li><a href="#_faq">FAQ</a></li>
+                        <li><a href="#_feedback">Feedback</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="span9">
+                <div class="panel">
+                    <div id="_general" class="panel-header">General</div>
+                    <div class="panel-content padding20">
+                        <p>NATL (Nitrogen Automation Test Lab) is a website designed for test automation execution for WebDriver(Selenium 2) test cases written in JAVA.</p>
+                        <br/>
+                        <p>The system enables you to:
+                            <ul>
+                                <li>Execute test cases on <strong>slaves</strong> with different browsers <strong>any time, anywhere</strong></li>
+                                <li>Troubleshoot test failures with detailed test reports</li>
+                                <li>Oversee the automation coverage with historical execution results</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+                <br/>
+                
+                <div class="panel">
+                    <div id="_howitworks" class="panel-header">How It Works</div>
+                    <div class="panel-content">
+                        <@howitworks/>
+                    </div>
+                </div>
+                <br/>
+
+                <div class="panel">
+                    <div id="_integrationrequirement" class="panel-header">Integration Requirements</div>
+                    <div class="panel-content">
+                        <p>To make full use of the system, we need to make sure following items are ready:</p>
+                        <div class="panel">
+                            <ul>
+                                <li>The automation code is written in <strong>JAVA</strong></li>
+                                <li>The automation code is annotated by <strong>TestNG</strong></li>
+                                <li>The source is integrated with <strong>MAVEN</strong>, and it's preferred that the project source structure follows MAVEN recommendations.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                
+                <div class="panel">
+                    <div id="_faq" class="panel-header">FAQ</div>
+                    <div class="panel padding10 panel-content">
+                        <@questions qtotal=13/>
+                    </div>
+                </div>
+                <br/>
+                
+                <div class="panel">
+                    <div id="_feedback" class="panel-header">Feedback</div>
+                    <div class="panel padding10 panel-content">
+                        <form action="${CPATH}/help/feedback" method="post">
+                            <label>Your Comment *</label>
+                            <div class="input-control textarea">
+                                <textarea data-transform="input-control" placeholder="message content" name="feedbackContent" maxlength="12000" required="required"></textarea>
+                            </div>
+                            <div class="clearfix">
+                                <label>This is a:</label>
+                                <div class="input-control radio inline-block" data-role="input-control">
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" checked="" value="0">
+                                        <span class="check"></span>
+                                        Comment
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="1">
+                                        <span class="check"></span>
+                                        Bug
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="2">
+                                        <span class="check"></span>
+                                        Suggestion
+                                    </label>
+                                    <label class="inline-block">
+                                        <input type="radio" name="feedbackType" value="3">
+                                        <span class="check"></span>
+                                        Question
+                                    </label>
+                                </div>
+                            </div>
+                            <label>Your Email <small>(Optional)</small></label>
+                            <div class="input-control text">
+                                <input name="feedbackEmail" type="text" placeholder="email address or other contact information"/>
+                            </div>
+                            <input class="button primary place-right" type="submit" value="Send Feedback"/>
+                        </form>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+</#macro>
+
+<#macro customJavascript>
+    <script src="${CPATH}/metro-ui/js/metro-carousel.js" type="text/javascript"></script>
+</#macro>
+
+<@master pageTitle="NATL Help"/>

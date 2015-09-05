@@ -12,15 +12,19 @@
                                 <tr>
                                     <th class="text-left">ID</th>
                                     <th class="text-left">Name</th>
-                                    <th></th>
+                                    <th class="text-left">Created Time</th>
+                                    <th class="text-left">Queue Entry Count</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <#list executionList as execution>
+                                <#list executionListWithAdditionalInfo as executionWithAdditionalInfo>
                                     <tr>
-                                        <td>${execution.getId()}</td>
-                                        <td>${execution.getName()}</td>
-                                        <td><a class="button default" href="${CPATH}/execution/detail/${execution.getId()}">Detail</a></td>
+                                        <td class="span1">${executionWithAdditionalInfo.getExecution().getId()}</td>
+                                        <td class="span7">
+                                            <a href="${CPATH}/execution/detail/${executionWithAdditionalInfo.getExecution().getId()}">${executionWithAdditionalInfo.getExecution().getName()}</a>
+                                        </td>
+                                        <td class="span2">${executionWithAdditionalInfo.getExecution().getCreatedTimeAsString()}</td>
+                                        <td class="span2">${executionWithAdditionalInfo.getQueueEntryCount()}</td>
                                     </tr>
                                 </#list>
                                 </tbody>
@@ -32,4 +36,4 @@
         </div>
     </div>
 </#macro>
-<@master/>
+<@master pageTitle="Test Execution"/>

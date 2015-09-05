@@ -24,14 +24,14 @@
                                         <td>
                                             <#if testResult.getExecResult() == EXEC_RESULT_UNKNOWN>
                                                 <span class="label">${testResult.getExecResultLabel()}</span>
-                                            <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
-                                                <span class="label warning">${testResult.getExecResultLabel()}</span>
-                                            <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
-                                                <span class="label success">${testResult.getExecResultLabel()}</span>
-                                            <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
-                                                <span class="label error">${testResult.getExecResultLabel()}</span>
-                                            <#else>
-                                                <span class="label">${testResult.getExecResultLabel()}</span>
+                                                <#elseif testResult.getExecResult() == EXEC_RESULT_SKIPPED>
+                                                    <span class="label warning">${testResult.getExecResultLabel()}</span>
+                                                <#elseif testResult.getExecResult() == EXEC_RESULT_PASSED>
+                                                    <span class="label success">${testResult.getExecResultLabel()}</span>
+                                                <#elseif testResult.getExecResult() == EXEC_RESULT_FAILED>
+                                                    <span class="label error">${testResult.getExecResultLabel()}</span>
+                                                <#else>
+                                                    <span class="label">${testResult.getExecResultLabel()}</span>
                                             </#if>
                                         </td>
                                         <td><a class="button default" href="${CPATH}/testresult/detail/${testResult.getId()}">Detail</a></td>
@@ -47,4 +47,4 @@
     </div>
 </#macro>
 
-<@master/>
+<@master pageTitle="Test Result"/>

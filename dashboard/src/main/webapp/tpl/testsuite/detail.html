@@ -1,0 +1,81 @@
+<#include "/tpl/common/_master.html" />
+<#include "/tpl/testcase/_table.html" />
+<#include "/tpl/parameter/_row.html" />
+
+<#macro customBody>
+    <input id="current_testsuite_id" type="hidden" value="${testsuite.getId()}">
+    <div class="top-offset">
+        <div class="container fluid grid">
+            <h1>
+                <a href="${CPATH}/testsuite"><i class="icon-arrow-left-3 fg-darker smaller"></i></a>
+                Test Suite<small class="on-right fg-white">${testsuite.getName()}</small>
+            </h1>
+            <div class="row">
+                <div class="span12">
+                    <div class="panel" data-role="panel">
+                        <div class="panel-header bg-lightBlue fg-white">Overview</div>
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="span6">
+                                    <div id="passrate_chart_container" class="grid fluid"></div>
+                                </div>
+                                <div class="span6">
+                                    <div class="panel" data-role="panel">
+                                        <div class="panel-header bg-lightBlue fg-white">Suite Properties</div>
+                                        <div class="panel-content">
+                                            <form id="update_custom_params" action="${CPATH}/testsuite/updateCustomParameters" method="post">
+                                                <div id="custom_params" class="grid fluid">
+                                                    <div class="span5"><a>Property Key</a></div>
+                                                    <div class="span7"><a>Property Value</a></div>
+                                                    <#if customParameterList.size()==0 >
+                                                        <@parameterRow />
+                                                    </#if>
+                                                    <#list customParameterList as customParameter>
+                                                        <@parameterRow paramKey=customParameter.getKey() paramValue=customParameter.getValue() />
+                                                    </#list>
+                                                </div>
+                                                <input type="hidden" name="testSuiteId" value="${testsuite.getId()}"/>
+                                                <div class="row form-actions">
+                                                    <input class="button primary" type="submit" value="Save"/>
+                                                    <button class="button default addPara">Add Parameter</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                <@table showCheckbox="false" />
+                </div>
+            </div>
+        </div>
+    </div>
+</#macro>
+
+<#macro additionalThs>
+    <th class="text-left"></th>
+</#macro>
+
+<#macro additionalTds>
+    <td>
+        <!--<span data-id="${testsuite.getId()}" data-name="${testCase.getName()}" class="remove-from-testsuite" title="Remove from Suite">-->
+            <a class="button danger" href="${CPATH}/testsuite/removeCaseFromSuite?testsuiteId=${testsuite.getId()}&testCaseId=${testCase.getId()}" onclick="if(confirm('Are you sure?')){return true;}else{return false;};">Remove</a>
+        <!--</span>-->
+    </td>
+</#macro>
+
+<#macro customJavascript>
+    <script id="custom_parameter_row_tpl" type="text/x-dot-template">
+        <@parameterRow/>
+    </script>
+    <script src="${CPATH}/highcharts/highcharts.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/customParameter.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/testSuiteDetail.js" type="text/javascript"></script>
+</#macro>
+
+<@master pageTitle="Test Suite Details"/>

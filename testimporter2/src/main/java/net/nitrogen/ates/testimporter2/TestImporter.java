@@ -1,23 +1,29 @@
 package net.nitrogen.ates.testimporter2;
 
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
-import net.nitrogen.ates.core.config.DBConfig;
-import net.nitrogen.ates.core.model.TestCaseModel;
-import net.nitrogen.ates.core.model.TestGroupModel;
-import net.nitrogen.ates.core.model.TestGroupTestCaseModel;
-import net.nitrogen.ates.core.model.TestSuiteTestCaseModel;
-import net.nitrogen.ates.util.PropertiesUtil;
 import org.testng.ITestNGMethod;
 
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+
+import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.core.exec.ExecManager;
+import net.nitrogen.ates.core.model.test_case.TestCaseModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupModel;
+import net.nitrogen.ates.core.model.test_group.TestGroupTestCaseModel;
+import net.nitrogen.ates.core.model.test_suite.TestSuiteTestCaseModel;
+import net.nitrogen.ates.util.PropertiesUtil;
+
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class TestImporter {
     private static final String TEST_CLASS_TEST_METHOD_DELIMITER = ".";
-    private static final String DEFAULT_TEST_CASE_ID = "N/A";
+    private static final String DEFAULT_TEST_CASE_MAPPING_ID = "N/A";
     private static final long DEFAULT_PROJECT_ID = 1;
-    private static final String projectIDProperty = "nitrogen_ates_projectid";
 
     private static List<TestCaseModel> testCasesToReload = new ArrayList<TestCaseModel>();
     private static List<TestGroupModel> testGroupsToReload = new ArrayList<TestGroupModel>();
@@ -26,12 +32,18 @@ public class TestImporter {
 
     public void composeAndImport(List<ITestNGMethod> allTestMethods) {
         Properties props = PropertiesUtil.load("config.txt");
-        DruidPlugin druidPlugin = DBConfig.createDruidPlugin(props.getProperty("jdbcUrl"), props.getProperty("dbuser"), props.getProperty("dbpassword"), 0, 0, 10);
+        DruidPlugin druidPlugin = DBConfig.createDruidPlugin(
+                props.getProperty("jdbcUrl"),
+                props.getProperty("dbuser"),
+                props.getProperty("dbpassword"),
+                0,
+                0,
+                10);
         druidPlugin.start();
         ActiveRecordPlugin arp = DBConfig.createActiveRecordPlugin(druidPlugin);
         arp.start();
 
-        final String projectIDSaved = System.getProperty(projectIDProperty);
+        final String projectIDSaved = System.getProperty(ExecManager.EXEC_PARAM_KEY_PROJECT_ID);
 
         if (projectIDSaved == null) {
             throw new RuntimeException(String.format("Project ID property is null!"));
@@ -97,35 +109,38 @@ public class TestImporter {
 
         tc.setProjectId(projectId);
         tc.setName(testCaseName);
-        initCaseIdIfExists(className, tc, testCaseName);
+        initTestCaseMappingIdIfExists(className, tc, testCaseName);
 
         testCasesToReload.add(tc);
     }
 
-    private void initCaseIdIfExists(String className, TestCaseModel tc, String testCaseName) {
+    private void initTestCaseMappingIdIfExists(String className, TestCaseModel tc, String testCaseName) {
         try {
             final Class<?> testClass = Class.forName(className);
             Method[] reflectedMethods = testClass.getMethods();
+
             for (Method reflectedMethod : reflectedMethods) {
                 if (!testCaseName.endsWith("." + reflectedMethod.getName())) {
                     continue;
                 }
+
                 if (reflectedMethod.isAnnotationPresent(net.nitrogen.ates.testpartner.ATESTest.class)) {
                     tc.setMappingId(reflectedMethod.getAnnotation(net.nitrogen.ates.testpartner.ATESTest.class).mappingId());
-                } else {
-                    tc.setMappingId(DEFAULT_TEST_CASE_ID);
                 }
+
                 break;
             }
         } catch (SecurityException e) {
-            tc.setMappingId(DEFAULT_TEST_CASE_ID);
+            // Do nothing
         } catch (ClassNotFoundException e) {
-            tc.setMappingId(DEFAULT_TEST_CASE_ID);
+            // Do nothing
         }
     }
 
-    private void doImport(List<TestCaseModel> testCasesToReload, List<TestGroupModel> testGroupsToReload, Map<String, List<String>> rawTestGroupTestCasesToReload) {
+    private void doImport(List<TestCaseModel> testCasesToReload, List<TestGroupModel> testGroupsToReload,
+            Map<String, List<String>> rawTestGroupTestCasesToReload) {
         TestCaseModel.me.reloadTestCases(this.projectId, testCasesToReload);
+        Map<String, String> caseNameIdMap = TestCaseModel.me.findAllCaseNameIdMap(projectId);
         TestGroupModel.me.deleteTestGroupsAndRespectiveTestGroupTestCases(this.projectId);
         TestGroupModel.me.insertTestGroups(testGroupsToReload);
         List<TestGroupModel> testGroups = TestGroupModel.me.findTestGroups(this.projectId);
@@ -137,7 +152,7 @@ public class TestImporter {
             for (String testName : rawTestGroupTestCase.getValue()) {
                 TestGroupTestCaseModel tg_tc = new TestGroupTestCaseModel();
                 tg_tc.setTestGroupId(targetTestGroup.getId());
-                tg_tc.setTestName(testName);
+                tg_tc.setTestCaseId(Long.parseLong(caseNameIdMap.get(testName)));
                 testGroupTestCases.add(tg_tc);
             }
         }

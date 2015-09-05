@@ -12,6 +12,8 @@
 
             $('#chart_container_coverage').highcharts({
                 chart: {
+                    type: 'pie',
+                    backgroundColor: 'transparent',
                     plotBackgroundColor: null,
                     plotBorderWidth: null,
                     plotShadow: false
@@ -68,10 +70,27 @@
                 return;
             }
 
+            // Reformat passrates map to an array
+            var execIdMapArray = Object.keys(passrates).map(function(elem, index, arr){
+                var execIdMap = {};
+                var firstCommaIndex = elem.indexOf(",");
+                var executionId = elem.substring(0, firstCommaIndex);
+                execIdMap["execId"] = executionId;
+                execIdMap["execIdAndName"] = elem;
+                return execIdMap;
+            });
+
+            // Sort the reformatted array by execution id DESC
+            execIdMapArray.sort(function(objA, objB) {
+                return objB["execId"] - objA["execId"];
+            });
+
             var chartIndex = 0;
             var $chartRow = undefined;
 
-            $.each(passrates, function(executionIdAndName, execResultCount) {
+            $.each(execIdMapArray, function(index, value) {
+                var executionIdAndName = execIdMapArray[index]["execIdAndName"];
+                var execResultCount = passrates[executionIdAndName];
                 var firstCommaIndex = executionIdAndName.indexOf(",");
                 var executionId = executionIdAndName.substring(0, firstCommaIndex);
                 var executionName = executionIdAndName.substring(firstCommaIndex + 1);
@@ -81,10 +100,12 @@
                 }
 
                 var $chartColumn = $("<div class=\"span6\"></div>");
-                var $chartContainer = $("<div id=\"last_passrate_chart_container_\"" + (chartIndex + 1) + "></div>");
+                var $chartContainer = $("<div id=\"last_passrate_chart_container_" + (chartIndex + 1) + "\"></div>");
 
                 ates.$passratePieChart = $chartContainer.highcharts({
                     chart: {
+                        type: 'pie',
+                        backgroundColor: 'transparent',
                         plotBackgroundColor: null,
                         plotBorderWidth: null,
                         plotShadow: false
@@ -125,10 +146,10 @@
                         type: 'pie',
                         name: 'Percentage',
                         data: [
-                            ['PASSED', execResultCount["PASSED"]],
-                            ['FAILED', execResultCount["FAILED"]],
-                            ['SKIPPED', execResultCount["SKIPPED"]],
-                            ['UNKNOWN', execResultCount["UNKNOWN"]]
+                            {name: 'PASSED', y: execResultCount["PASSED"], color: ates.passrateColorEnum["PASSED"]},
+                            {name: 'FAILED', y: execResultCount["FAILED"], color: ates.passrateColorEnum["FAILED"]},
+                            {name: 'SKIPPED', y: execResultCount["SKIPPED"], color: ates.passrateColorEnum["SKIPPED"]},
+                            {name: 'UNKNOWN', y: execResultCount["UNKNOWN"], color: ates.passrateColorEnum["UNKNOWN"]}
                         ]
                     }]
                 });

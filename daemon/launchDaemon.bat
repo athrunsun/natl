@@ -1,1 +1,1 @@
-start "ATESDaemon" "%JAVA_HOME%\bin\java" -cp C:\ates\lib\ates-daemon-jar-with-dependencies.jar net.nitrogen.ates.daemon.App
+start "NATLDaemon" "%JAVA_HOME%\bin\java" -cp C:\ates\lib\ates-daemon-jar-with-dependencies.jar net.nitrogen.ates.daemon.App

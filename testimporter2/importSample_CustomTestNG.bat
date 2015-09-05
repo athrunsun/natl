@@ -1,2 +1,2 @@
-java -cp C:\ates\lib\ates-testimporter-jar-with-dependencies.jar;atjava-jar-with-dependencies.jar -Dnitrogen_ates_projectid=1 net.nitrogen.ates.testimporter2.CustomTestNG -testjar atjava-jar-with-dependencies.jar -xmlpathinjar ATESTestImport.xml
+java -cp C:\ates\lib\ates-testimporter-jar-with-dependencies.jar;atjava-jar-with-dependencies.jar -Dnitrogen_ates_projectid=1 net.nitrogen.ates.testimporter2.CustomTestNG -testjar atjava-jar-with-dependencies.jar -xmlpathinjar ATLTestImport.xml
 pause

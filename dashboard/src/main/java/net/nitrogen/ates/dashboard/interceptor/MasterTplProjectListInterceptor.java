@@ -2,7 +2,7 @@ package net.nitrogen.ates.dashboard.interceptor;
 
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
-import net.nitrogen.ates.core.model.ProjectModel;
+import net.nitrogen.ates.core.model.project.ProjectModel;
 
 public class MasterTplProjectListInterceptor implements Interceptor {
     @Override

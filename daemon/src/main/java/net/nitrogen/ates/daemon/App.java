@@ -3,6 +3,7 @@ package net.nitrogen.ates.daemon;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import net.nitrogen.ates.core.config.DBConfig;
+import net.nitrogen.ates.core.exec.ExecManager;
 import net.nitrogen.ates.util.PropertiesUtil;
 import org.joda.time.DateTime;
 import org.quartz.*;
@@ -44,5 +45,8 @@ public class App {
         } catch (SchedulerException e) {
             System.out.println(e);
         }
+
+        // For debugging purpose
+        //new ExecManager().fetchAndExecQueueEntry();
     }
 }

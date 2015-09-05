@@ -1,7 +1,7 @@
 package net.nitrogen.ates.dashboard.controller.admin;
 
 import com.jfinal.core.Controller;
-import net.nitrogen.ates.core.model.SlaveModel;
+import net.nitrogen.ates.core.model.slave.SlaveModel;
 
 public class AdminSlaveController extends Controller {
     public void index() {

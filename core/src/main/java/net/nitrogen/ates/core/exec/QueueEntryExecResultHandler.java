@@ -1,6 +1,6 @@
 package net.nitrogen.ates.core.exec;
 
-import net.nitrogen.ates.core.model.QueueEntryModel;
+import net.nitrogen.ates.core.model.queue_entry.QueueEntryModel;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;
 

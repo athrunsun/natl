@@ -1,0 +1,21 @@
+<#include "/tpl/help/faq/_question.html" />
+
+<#macro qname>
+How do we handle file upload and download?
+</#macro>
+
+<#macro qanswer>
+<p>It's pretty much the same as what you did without NATL. Define your working directory by:</p>
+<p><pre class="code">
+String workingRoot = System.getProperty("user.dir");
+String downloadPath = workingRoot + "\\src\\somewhere\\download\\";
+String uploadFilePath = workingRoot + "\\src\\somewhere\\fileName.xml";
+</pre></p>
+<p>Of course, you will need to tell browser the download folder. Take FireFox as example:</p>
+<p><pre class="code">
+FirefoxProfile profile = new FirefoxProfile();
+profile.setPreference("browser.download.dir", downloadPath);
+// Some other profile settings
+WebDriver driver = new FirefoxDriver(profile);
+</pre></p>
+</#macro>

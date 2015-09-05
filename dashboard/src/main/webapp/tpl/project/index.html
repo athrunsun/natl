@@ -6,32 +6,91 @@
             <div class="row">
                 <div class="span12">
                     <div class="panel">
-                        <div class="panel-header bg-lightBlue fg-white">Project Details</div>
+                        <div class="panel-header bg-lightBlue fg-white">Project Settings</div>
                         <div class="panel-content">
-                            <form action="${CPATH}/project/save" method="post">
-                                <input name="id" type="hidden" value="${project.getId()}">
-                                <label>Name</label>
-                                <div class="input-control text">
-                                    <input name="name" type="text" value="${project.getName()}">
+                            <div class="tab-control" data-role="tab-control">
+                                <ul class="tabs">
+                                    <li class="active"><a href="#frame_1">Basic Info</a></li>
+                                    <li><a href="#frame_4">Email Settings</a></li>
+                                </ul>
+                                <div class="frames ">
+                                    <div class="frame" id="frame_1">
+                                        <form action="${CPATH}/project/save" method="post">
+                                            <input name="id" type="hidden" value="${project.getId()}">
+                                            <p>Name</p>
+                                            <div class="input-control text">
+                                                <input name="name" type="text" value="${project.getName()}" required="required">
+                                            </div>
+                                            <p>Git URL</p>
+                                            <div class="input-control text">
+                                                <input name="git_url" type="text" value="${project.getGitUrl()}" required="required">
+                                            </div>
+                                            <p>Jar Name - With Dependency</p>
+                                            <div class="input-control text">
+                                                <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}" required="required">
+                                            </div>
+                                            <p>Total Test Case Count</p>
+                                            <div class="input-control text">
+                                                <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}" required="required">
+                                            </div>
+                                            <input class="button primary" type="submit" value="Save">
+                                        </form>
+                                    </div>
+                                    <div class="frame" id="frame_4">
+                                        <form action="${CPATH}/project/saveEmailSettings" method="post">
+                                            <input name="id" type="hidden" value="${project.getId()}">
+                                            <div class="panel padding20">
+                                                <label class="input-control checkbox small-check">
+                                                <#assign checked="">
+                                                <#assign disabled="">
+                                                <#if emailSettings.isEmailEnabled()>
+                                                    <#assign checked="checked=''">
+                                                <#else>
+                                                    <#assign disabled="disabled=''">
+                                                </#if>
+                                                    <input id="email_enabled" type="checkbox" name="email_enabled" ${checked}>
+                                                    <span class="check"></span>
+                                                    <span class="caption">Enable email notifications</span>
+                                                </label>
+                                                <div class="row panel padding20">
+                                                    <div class="span11">
+                                                        <p>Send email when:</p>
+                                                        <div>
+                                                            <label class="input-control checkbox small-check">
+                                                                <#assign checked1="">
+                                                                <#if emailSettings.isSendWhenExecutionStarted()>
+                                                                    <#assign checked1="checked=''">
+                                                                </#if>
+                                                                <input id="execution_started" type="checkbox" name="execution_started" ${disabled} ${checked1}>
+                                                                <span class="check"></span>
+                                                                <span class="caption">Execution is started</span>
+                                                            </label>
+                                                        </div>
+                                                        <div>
+                                                            <label class="input-control checkbox small-check">
+                                                                <#assign checked2="">
+                                                                <#if emailSettings.isSendWhenExecutionFinished()>
+                                                                    <#assign checked2="checked=''">
+                                                                </#if>
+                                                                <input id="execution_finished" type="checkbox" name="execution_finished" ${disabled} ${checked2}>
+                                                                <span class="check"></span>
+                                                                <span class="caption">Execution is finished</span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="row"/>
+                                                        <p>Default email recipients:</p>
+                                                        <div class="input-control text">
+                                                            <input id="default_recipients" ${disabled} name="default_recipients" type="text" value="${emailSettings.getDefaultRecipients()}" placeholder="emails seperated by semicolon(;)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row"/>
+                                            <input class="button primary" type="submit" value="Save">
+                                        </form>
+                                    </div>
                                 </div>
-                                <label>Git URL</label>
-                                <div class="input-control text">
-                                    <input name="git_url" type="text" value="${project.getGitUrl()}">
-                                </div>
-                                <label>Jar Name</label>
-                                <div class="input-control text">
-                                    <input name="jar_name" type="text" value="${project.getJarName()}">
-                                </div>
-                                <label>Jar Name - With Dependency</label>
-                                <div class="input-control text">
-                                    <input name="jar_with_dependency_name" type="text" value="${project.getJarWithDependencyName()}">
-                                </div>
-                                <label>Total Test Case Count</label>
-                                <div class="input-control text">
-                                    <input name="total_test_case_count" type="text" value="${project.getTotalTestCaseCount()}">
-                                </div>
-                                <input class="button primary" type="submit" value="Save">
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -40,4 +99,9 @@
     </div>
 </#macro>
 
-<@master/>
+<#macro customJavascript>
+    <script src="${CPATH}/metro-ui/js/metro-tab-control.js" type="text/javascript"></script>
+    <script src="${CPATH}/js/project.js" type="text/javascript"></script>
+</#macro>
+
+<@master pageTitle="Project Settings"/>

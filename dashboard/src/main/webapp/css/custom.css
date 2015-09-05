@@ -1,5 +1,36 @@
+body {
+    background: url('/ates/img/body-bg.png');
+    background-attachment: fixed;
+}
+
+.main-content-wrapper {
+    min-height: 100%;
+    height: auto!important;
+    height: 100%;
+    margin: 0 auto -213px;
+}
+
+.main-content-push {
+    height: 213px;
+}
+
+.global-footer {
+    height: 213px;
+    margin-top:0;
+}
+
+.global-footer > .part1 {
+    height: 175px;
+    padding: 10px 0;
+}
+
+.global-footer > .part2 {
+    height: 38px;
+    padding: 10px 0;
+}
+
 .top-offset {
-    margin-top: 70px;
+    /*margin-top: 70px;*/
 }
 
 .callout-default {
@@ -41,3 +72,16 @@
 .bs-callout-success {
     border-left-color: #4cae4c;
 }
+
+.img-thumb{
+    width: 160px;
+    height: 120px;
+}
+
+.panel > .panel-content {
+    background-color: #FFF;
+}
+
+/*.panel > .panel-content .chart-container {
+    width: 96%;
+}*/

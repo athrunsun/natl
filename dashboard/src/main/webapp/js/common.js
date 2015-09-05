@@ -1,7 +1,15 @@
 (function(ates, $, undefined){
     ates.contextPath = "/ates";
-    ates.cookieKeyProjectPref = "ates_project_pref";
+    ates.jenkinsUrl = "http://10.136.4.133:8080/jenkins";
+    ates.cookieKeyProjectPref = "natl_project_pref";
     ates.maxTestNameLength = 80;
+
+    ates.passrateColorEnum = {
+        "PASSED":'#60a917',
+        "FAILED":'#e51400',
+        "SKIPPED":'#e3c800',
+        "UNKNOWN":'#555555'
+    };
 
     ates.queueEntryStatusEnum = {
         "WAITING":0,
@@ -36,11 +44,45 @@
 
         return dateTimeStr;
     }
+
+    ates.globalFooterContactUsTplFn = doT.template($('#global_footer_contact_us_tpl').text(), undefined, undefined);
 })(window.ates = window.ates || {}, jQuery)
 
 $(document).ready(function(){
     $("#navbar_project_list").on("change", function(event){
         $.cookie(ates.cookieKeyProjectPref, $(this).find("option:selected").val());
         window.location.replace(window.location.href);
+    });
+
+    if ($('.sticky-sidebar').length) {
+        // Check the initial position of the sticky sidebar
+        var stickySidebarTop = $('.sticky-sidebar').offset().top;
+
+        $(window).scroll(function () {
+            var stickySidebarWidth = $('.sticky-sidebar').width();
+            var stickySidebarHeight = $('.sticky-sidebar').height();
+            console.log(stickySidebarWidth);
+            console.log(stickySidebarHeight);
+
+            if ($(window).scrollTop() > stickySidebarTop) {
+                $('.sticky-sidebar').css({ position: 'fixed', top: '0px', 'margin-top': '0px', width: stickySidebarWidth, height: stickySidebarHeight, 'z-index': '10' });
+            } else {
+                $('.sticky-sidebar').css({ position: '', top: '', background: '', 'margin-top': '', width: '', height: '', 'z-index': '' });
+            }
+        });
+    }
+
+    $("#global_footer_contact_us").on("click", function() {
+        $.Dialog({
+            shadow: true,
+            overlay: false,
+            icon: false,
+            title: 'Contact us',
+            padding: 30,
+            content: '',
+            onShow: function() {
+                $.Dialog.content(ates.globalFooterContactUsTplFn({}));
+            }
+        });
     });
 });

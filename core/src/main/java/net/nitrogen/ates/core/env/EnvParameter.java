@@ -17,10 +17,6 @@ public class EnvParameter {
         }
     }
 
-    public static String env() {
-        return System.getProperty(ExecManager.EXEC_PARAM_KEY_ENV);
-    }
-
     public static long entryId() {
         return Long.parseLong(System.getProperty(ExecManager.EXEC_PARAM_KEY_ENTRY_ID));
     }

@@ -1,0 +1,22 @@
+<#include "/tpl/help/faq/_question.html" />
+
+<#macro qname>
+Why I cannot find screenshot on the result page?
+</#macro>
+
+<#macro qanswer>
+<p>In order to enable the executor to take screenshot upon any failures, we need to add one piece of code into your @BeforeClass method of your base test class.</p> 
+<p>Here is an example:</p>
+<p><pre class="code">
+@BeforeClass(alwaysRun = true)
+public void assignDriverToScreenshotListener(ITestContext context) {
+    final String DRIVER_ATTR = "driver";
+    context.setAttribute(DRIVER_ATTR + Thread.currentThread().getId(), 
+        this.driver);
+}
+</pre></p>
+<p>Notice that we are assigning <a class="code">this.driver</a> to the TestNG test context. 
+That means, we will take screenshot with the driver being passed. 
+Sometimes, we will create multiple driver instances within one test case. 
+In that case we would require you to assign the "latest" driver instance again, to the <a class="code">ITestContext</a>.</p>
+</#macro>

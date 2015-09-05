@@ -1,0 +1,36 @@
+<#include "/tpl/help/faq/_question.html" />
+
+<#macro qname>
+What if each slave requires a unique login user account?
+</#macro>
+
+<#macro qanswer>
+<p>Yes. There are possibilities that we would like each test slave have a unique value during testing. 
+For example, some products only allow one user logged in from one IP.</p>
+
+<p>In this case, NATL provides flexibility to get its unique ID of each slave, which can be read by the code at run time. 
+Here is the steps to introduce the unique ID:</p>
+
+<p>First, it's pretty easy to read the value:</p>
+<p><pre class="code">
+public int getSlaveId(int maxNum) {
+    int pointer = 0;
+<a class="fg-black">    String NATL_QUEUE_INDEX = "nitrogen_atl_entryindex";
+    String pointerIndex = System.getProperty(NATL_QUEUE_INDEX);</a>
+    
+    if (pointerIndex == null || pointerIndex.isEmpty()) {
+        // make sure no exception thrown here. Keep default as 0;
+    }
+    else {
+        pointer = Integer.parseInt(pointerIndex);
+    }
+    return pointer % maxNum; // Pointer is always smaller than maxNum.
+    // Or, you can return pointer directly if there is no such maxNum.
+}</pre></p>
+
+<p>That system property <a class="code">nitrogen_atl_entryindex</a> is numbered by NATL for each test slave. 
+The possible value would be [1, n], where n is the total slave numbers.
+With that, you can fetch your unique value from lists defined in your project.</p>
+
+</#macro>
+

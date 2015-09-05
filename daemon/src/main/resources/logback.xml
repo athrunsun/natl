@@ -1,6 +1,6 @@
 <configuration>
     <appender name="AllROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/home/athrun/log/nitrogen_ates_daemon.log</file>
+        <file>C:\ates\log\nitrogen_ates_daemon.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>daemon.%d{yyyy-MM-dd}.log</fileNamePattern>
